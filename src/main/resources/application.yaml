@@ -1,3 +1,18 @@
 server:
-  port: 80
+  port: 8080
   shutdown: graceful
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            # @todo #1:60min Configure OAuth2 client for Google.
+            #  We need to configure OAuth2 client for Google to allow
+            #  users to login with their Google accounts. We should
+            #  provide corresponding client id and client secret from
+            #  Google Cloud.
+  config:
+    import: optional:file:.env[.properties]
