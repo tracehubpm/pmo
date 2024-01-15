@@ -28,13 +28,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PmoApplication {
 
-	/**
-	 * Application entry point.
-	 *
-	 * @param args Application arguments
-	 */
-	public static void main(final String[] args) {
-		SpringApplication.run(PmoApplication.class, args);
-	}
+  /**
+   * Application entry point.
+   *
+   * @param args Application arguments
+   */
+  public static void main(final String[] args) {
+    SpringApplication.run(PmoApplication.class, args);
+  }
 
 }
