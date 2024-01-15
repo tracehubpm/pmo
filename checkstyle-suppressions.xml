@@ -22,4 +22,4 @@ SOFTWARE.
   <suppress checks="HideUtilityClassConstructor" files=".*\.java$"/>
   <suppress checks="DesignForExtension" files=".*\.java$"/>
   <suppress checks="InvalidJavadocPosition" files=".*\.java$"/>
- </suppressions>
+</suppressions>
