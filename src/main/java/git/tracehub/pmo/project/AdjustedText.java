@@ -15,29 +15,37 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.function.Predicate;
+import lombok.AllArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Entry point.
+ * Adjusted text.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@AllArgsConstructor
+public final class AdjustedText implements Scalar<String> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Raw text.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final String text;
+
+    /**
+     * Condition.
+     */
+    private final Predicate<String> condition;
+
+    @Override
+    public String value() {
+        String value = "";
+        if (this.condition.test(this.text)) {
+            value = this.text;
+        }
+        return value;
     }
 
 }

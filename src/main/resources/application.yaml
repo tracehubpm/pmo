@@ -16,3 +16,13 @@ spring:
             #  Google Cloud.
   config:
     import: optional:file:.env[.properties]
+  liquibase:
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/postgres
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/postgres

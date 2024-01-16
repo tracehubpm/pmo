@@ -15,29 +15,21 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package git.tracehub.pmo.exception;
 
 /**
- * Entry point.
+ * ResourceAlreadyExistsException.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+public class ResourceConflictException extends RuntimeException {
 
     /**
-     * Application entry point.
+     * Constructor.
      *
-     * @param args Application arguments
+     * @param message Message
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    public ResourceConflictException(final String message) {
+        super(message);
     }
-
 }

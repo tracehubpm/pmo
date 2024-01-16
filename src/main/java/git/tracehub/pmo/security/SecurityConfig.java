@@ -35,34 +35,38 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  /**
-   * Filter.
-   *
-   * @param http HttpSecurity
-   * @return SecurityFilterChain
-   */
-  @Bean
-  @SneakyThrows
-  public SecurityFilterChain chain(final HttpSecurity http) {
-    return http.cors(Customizer.withDefaults())
-      .csrf(AbstractHttpConfigurer::disable)
-      .httpBasic(AbstractHttpConfigurer::disable)
-      .sessionManagement(configurer ->
-        configurer.sessionCreationPolicy(
-          SessionCreationPolicy.STATELESS
-        )
-      ).authorizeHttpRequests(auth -> auth
-        .requestMatchers("/login").permitAll()
-        .anyRequest().authenticated()
-      ).exceptionHandling(configurer -> configurer
-        .accessDeniedHandler(
-          (request, response, ex) -> {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("Access denied");
-          }
-        )
-      ).oauth2Login(Customizer.withDefaults())
-      .build();
-  }
+    /**
+     * Filter.
+     *
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @checkstyle NonStaticMethodCheck (30 lines)
+     */
+    @Bean
+    @SneakyThrows
+    public SecurityFilterChain chain(final HttpSecurity http) {
+        return http.cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .sessionManagement(
+                configurer ->
+                    configurer.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS
+                    )
+            ).authorizeHttpRequests(
+                auth -> auth
+                    .requestMatchers("/login").permitAll()
+                    .anyRequest().authenticated()
+            ).exceptionHandling(
+                configurer -> configurer
+                    .accessDeniedHandler(
+                        (request, response, ex) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.getWriter().write("Access denied");
+                        }
+                    )
+            ).oauth2Login(Customizer.withDefaults())
+            .build();
+    }
 
 }
