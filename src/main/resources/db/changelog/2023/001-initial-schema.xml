@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2023-2024 Tracehub
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to read
+the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd" logicalFilePath="001-initial-schema.xml">
+  <changeSet id="001" author="avbialiauski">
+    <sql>
+      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    </sql>
+    <sql>
+      CREATE SCHEMA IF NOT EXISTS users;
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS users."user"
+      (
+        id          uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        email       CHARACTER VARYING(256) UNIQUE NOT NULL,
+        firstname   CHARACTER VARYING(128) NOT NULL,
+        lastname    CHARACTER VARYING(128) NOT NULL,
+        timezone    CHARACTER VARYING(32),
+        company     CHARACTER VARYING(128),
+        avatar_url  CHARACTER VARYING(512),
+        password    CHARACTER VARYING(512) NOT NULL,
+        system_role CHARACTER VARYING(16) DEFAULT 'USER':: CHARACTER VARYING NOT NULL
+      );
+    </sql>
+    <sql>
+      CREATE SCHEMA IF NOT EXISTS projects;
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.project
+      (
+        id             uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        private        BOOLEAN NOT NULL,
+        name           CHARACTER VARYING(64) NOT NULL,
+        business_model CHARACTER VARYING(32) DEFAULT 'full-time'::CHARACTER VARYING NOT NULL,
+        description    CHARACTER VARYING(256),
+        subscribers    text[]      DEFAULT '{}'::text[] NOT NULL,
+        status         CHARACTER VARYING(32) NOT NULL,
+        location       CHARACTER VARYING default 'github@tracehubpm/facade:master'::CHARACTER VARYING UNIQUE NOT NULL,
+        start          DATE,
+        "end"          DATE
+      );
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.individual
+      (
+        "user"     uuid NOT NULL REFERENCES users."user",
+        project    uuid NOT NULL REFERENCES projects.project,
+        permission CHARACTER VARYING(16) DEFAULT 'READ'::CHARACTER VARYING NOT NULL,
+        roles      text[]      DEFAULT '{}'::text[] NOT NULL,
+        PRIMARY KEY("user", project)
+      );
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.team
+      (
+        id                 uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name               CHARACTER VARYING(48) NOT NULL,
+        project            uuid NOT NULL REFERENCES projects.project,
+        default_permission CHARACTER VARYING(16) DEFAULT 'WRITE'::CHARACTER VARYING NOT NULL
+      );
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.team_performer
+      (
+        team       uuid NOT NULL REFERENCES projects.team,
+        "user"     uuid NOT NULL REFERENCES users."user",
+        permission CHARACTER VARYING(16) DEFAULT 'WRITE'::CHARACTER VARYING NOT NULL,
+        roles      text[]      DEFAULT '{}'::text[]               NOT NULL,
+        PRIMARY KEY(team, "user")
+      );
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.artifact
+      (
+        id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        project uuid NOT NULL REFERENCES projects.project
+      );
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS projects.job
+      (
+        id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        project uuid NOT NULL REFERENCES projects.project
+      );
+    </sql>
+    <sql>
+      CREATE SCHEMA IF NOT EXISTS threads;
+    </sql>
+    <sql>
+      CREATE TABLE IF NOT EXISTS threads.thread
+      (
+        id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        project uuid NOT NULL REFERENCES projects.project
+      );
+    </sql>
+  </changeSet>
+</databaseChangeLog>
