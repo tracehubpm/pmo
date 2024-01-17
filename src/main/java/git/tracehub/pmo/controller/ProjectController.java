@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.controller;
 
+import git.tracehub.pmo.agents.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import java.util.List;
@@ -90,6 +91,13 @@ public class ProjectController {
      *   otherwise we need to request a payment from the user.
      */
     public Project employ(@RequestBody final Project project) {
+        Project created = this.projects.employ(project);
+        /*
+         * @todo #1:45min/DEV define appropriate agent according to location
+         *   of the project. We need to define appropriate agent and call
+         *   corresponding implementation to invite collaborators here.
+         */
+        new InviteCollaborator(created.getLocation(), "tracehubgit").exec();
         return this.projects.employ(project);
     }
 

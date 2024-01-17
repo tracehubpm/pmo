@@ -9,6 +9,9 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - repo:invite
             # @todo #1:60min Configure OAuth2 client for Google.
             #  We need to configure OAuth2 client for Google to allow
             #  users to login with their Google accounts. We should
