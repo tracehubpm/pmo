@@ -16,18 +16,10 @@
  */
 
 SELECT p.id,
-       p.private,
        p.name,
-       p.business_model,
-       p.description,
-       p.subscribers,
-       p.status,
        p.location,
-       p.start,
-       p."end" AS enddate
-FROM projects.project p
-         INNER JOIN projects.team t on p.id = t.project
-         INNER JOIN projects.team_performer tp on t.id = tp.team
-         INNER JOIN projects.individual i on p.id = i.project
-         INNER JOIN users."user" u on (i."user" = u.id OR tp."user" = u.id)
-WHERE u.email = ?;
+       p.description,
+       p.active
+FROM projects.projects p
+         INNER JOIN projects.performers on p.id = performers.project
+WHERE performers.email = ?;

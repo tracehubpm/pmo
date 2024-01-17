@@ -47,35 +47,20 @@ final class ProjectOfTest {
         final Project expected = new Project(
             UUID.randomUUID(),
             "Test Project",
-            "Model",
-            "Description",
-            Project.Status.TRACKING,
             "Location",
-            "2022-01-01",
-            "2022-12-31",
-            true,
-            "Subscribers"
+            "Description",
+            true
         );
         Mockito.when(this.set.getString("id"))
             .thenReturn(expected.getId().toString());
         Mockito.when(this.set.getString("name"))
             .thenReturn(expected.getName());
-        Mockito.when(this.set.getString("business_model"))
-            .thenReturn(expected.getModel());
-        Mockito.when(this.set.getString("description"))
-            .thenReturn(expected.getDescription());
-        Mockito.when(this.set.getString("status"))
-            .thenReturn(expected.getStatus().toString());
         Mockito.when(this.set.getString("location"))
             .thenReturn(expected.getLocation());
-        Mockito.when(this.set.getString("start"))
-            .thenReturn(expected.getStart());
-        Mockito.when(this.set.getString("enddate"))
-            .thenReturn(expected.getEnd());
-        Mockito.when(this.set.getBoolean("private"))
-            .thenReturn(expected.isSecured());
-        Mockito.when(this.set.getString("subscribers"))
-            .thenReturn(expected.getSubscribers());
+        Mockito.when(this.set.getString("description"))
+            .thenReturn(expected.getDescription());
+        Mockito.when(this.set.getBoolean("active"))
+            .thenReturn(expected.isActive());
         final Project project = new ProjectOf(this.set).value();
         MatcherAssert.assertThat(
             "Project %s is null".formatted(project),

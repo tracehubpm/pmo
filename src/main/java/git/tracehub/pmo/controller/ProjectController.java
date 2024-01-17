@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,11 @@ public class ProjectController {
      * Projects.
      */
     private final Projects projects;
+
+    /**
+     * OAuth2AuthorizedClientService.
+     */
+    private final OAuth2AuthorizedClientService service;
 
     /**
      * Projects by user.
@@ -80,7 +87,9 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
+     * @param token   Token
      * @return Project
+     * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
     @PostMapping
     /*
@@ -90,15 +99,25 @@ public class ProjectController {
      *   if project is public, every one can create it;
      *   otherwise we need to request a payment from the user.
      */
-    public Project employ(@RequestBody final Project project) {
-        Project created = this.projects.employ(project);
+    public Project employ(
+        @RequestBody final Project project,
+        final OAuth2AuthenticationToken token
+    ) {
+        final Project created = this.projects.employ(project);
         /*
          * @todo #1:45min/DEV define appropriate agent according to location
          *   of the project. We need to define appropriate agent and call
          *   corresponding implementation to invite collaborators here.
          */
-        new InviteCollaborator(created.getLocation(), "tracehubgit").exec();
-        return this.projects.employ(project);
+        new InviteCollaborator(
+            created.getLocation(),
+            "tracehubgit",
+            this.service.loadAuthorizedClient(
+                token.getAuthorizedClientRegistrationId(),
+                token.getName()
+            ).getAccessToken().getTokenValue()
+        ).exec();
+        return created;
     }
 
 }

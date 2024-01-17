@@ -16,14 +16,9 @@
  */
 
 SELECT id,
-       private,
        name,
-       business_model,
-       description,
-       subscribers,
-       status,
        location,
-       start,
-       "end" AS enddate
-FROM projects.project
+       description,
+       active
+FROM projects.projects
 WHERE id = ?;

@@ -15,23 +15,13 @@
  * SOFTWARE.
  */
 
-INSERT INTO projects.project (private,
-                              name,
-                              business_model,
-                              description,
-                              subscribers,
-                              status,
-                              location,
-                              start,
-                              "end")
-VALUES (?, ?, ?, ?, COALESCE(?::text[], '{}'::text[]), ?, ?, ?, ?)
+INSERT INTO projects.projects (name,
+                               location,
+                               description,
+                               active)
+VALUES (?, ?, ?, ?)
 RETURNING id,
-    private,
     name,
-    business_model,
-    description,
-    subscribers,
-    status,
     location,
-    start,
-    "end" AS enddate;
+    description,
+    active;

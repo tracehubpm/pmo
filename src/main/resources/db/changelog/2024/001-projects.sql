@@ -15,46 +15,29 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.project;
+--liquibase formatted sql
 
-import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+--changeset hizmailovich:1
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-/**
- * Project.
- *
- * @since 0.0.0
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Project {
+--changeset hizmailovich:2
+CREATE SCHEMA IF NOT EXISTS projects;
 
-    /**
-     * Id.
-     */
-    private UUID id;
+--changeset hizmailovich:3
+CREATE TABLE IF NOT EXISTS projects.projects
+(
+    id          uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name        CHARACTER VARYING(64)        NOT NULL,
+    location    CHARACTER VARYING(64) UNIQUE NOT NULL,
+    description CHARACTER VARYING(256),
+    active      BOOLEAN                      NOT NULL
+);
 
-    /**
-     * Name.
-     */
-    private String name;
-
-    /**
-     * Location.
-     */
-    private String location;
-
-    /**
-     * Description.
-     */
-    private String description;
-
-    /**
-     * Visibility.
-     */
-    private boolean active;
-
-}
+--changeset hizmailovich:4
+CREATE TABLE IF NOT EXISTS projects.performers
+(
+    id         uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    email      CHARACTER VARYING(64) NOT NULL,
+    project    uuid                  NOT NULL REFERENCES projects.projects,
+    permission CHARACTER VARYING(16) NOT NULL
+);

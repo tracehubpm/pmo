@@ -19,7 +19,6 @@ package git.tracehub.pmo.security;
 
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,7 +32,6 @@ import org.springframework.security.web.SecurityFilterChain;
  *
  * @since 0.0.0
  */
-@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -59,8 +57,7 @@ public class SecurityConfig {
                 auth -> auth
                     .requestMatchers("/login").permitAll()
                     .anyRequest().authenticated()
-            ).oauth2Login(Customizer.withDefaults())
-            .exceptionHandling(
+            ).exceptionHandling(
                 configurer -> configurer
                     .accessDeniedHandler(
                         (request, response, ex) -> {
@@ -68,7 +65,8 @@ public class SecurityConfig {
                             response.getWriter().write("Access denied");
                         }
                     )
-            ).build();
+            ).oauth2Login(Customizer.withDefaults())
+            .build();
     }
 
 }

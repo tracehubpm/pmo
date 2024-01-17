@@ -89,15 +89,10 @@ public class DefaultProjects implements Projects {
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("insert-project.sql").asString()
-            ).set(project.isSecured())
-            .set(project.getName())
-            .set(project.getModel())
-            .set(project.getDescription())
-            .set(project.getSubscribers())
-            .set(project.getStatus().toString())
+            ).set(project.getName())
             .set(project.getLocation())
-            .set(new DateOf(project.getStart()).value())
-            .set(new DateOf(project.getEnd()).value())
+            .set(project.getDescription())
+            .set(project.isActive())
             .update(
                 (rs, stmt) -> {
                     rs.next();

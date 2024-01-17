@@ -43,26 +43,12 @@ public final class ProjectOf implements Scalar<Project> {
         return new Project(
             UUID.fromString(this.set.getString("id")),
             this.set.getString("name"),
-            this.set.getString("business_model"),
+            this.set.getString("location"),
             new AdjustedText(
                 this.set.getString("description"),
                 Objects::nonNull
             ).value(),
-            Project.Status.valueOf(this.set.getString("status")),
-            this.set.getString("location"),
-            new AdjustedText(
-                this.set.getString("start"),
-                Objects::nonNull
-            ).value(),
-            new AdjustedText(
-                this.set.getString("enddate"),
-                Objects::nonNull
-            ).value(),
-            this.set.getBoolean("private"),
-            new AdjustedText(
-                this.set.getString("subscribers"),
-                subs -> !"{}".equals(subs)
-            ).value()
+            this.set.getBoolean("active")
         );
     }
 

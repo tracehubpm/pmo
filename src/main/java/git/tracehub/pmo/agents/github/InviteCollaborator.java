@@ -47,6 +47,11 @@ public final class InviteCollaborator implements Action {
      */
     private final String username;
 
+    /**
+     * Token.
+     */
+    private final String token;
+
     @Override
     @SneakyThrows
     public void exec() {
@@ -66,7 +71,10 @@ public final class InviteCollaborator implements Action {
                 ).toString()
             ).back()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            .fetch()
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(this.token)
+            ).fetch()
             .as(RestResponse.class)
             .assertStatus(HttpURLConnection.HTTP_CREATED);
     }
