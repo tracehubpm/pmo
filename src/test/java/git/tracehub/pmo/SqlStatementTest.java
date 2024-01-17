@@ -15,47 +15,31 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.project;
+package git.tracehub.pmo;
 
-import java.io.InputStream;
+
+import git.tracehub.pmo.project.SqlStatement;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * SQL Statement.
+ * Test suite for {@link SqlStatement}.
  *
  * @since 0.0.0
  */
-public final class SqlStatement implements Sql {
+final class SqlStatementTest {
 
-    /**
-     * InputStream.
-     */
-    private final InputStream input;
-
-    /**
-     * Ctor.
-     *
-     * @param path Path
-     * @throws Exception if something went wrong
-     */
-    public SqlStatement(final String path) throws Exception {
-        this(new ResourceOf("sql/%s".formatted(path)).stream());
+    @Test
+    void readsSqlInRightFormat() throws Exception {
+        MatcherAssert.assertThat(
+            "SQL is not in right format",
+            new SqlStatement(
+                new ResourceOf("analyze.sql").stream()
+            ).asString(),
+            new IsEqual<>("ANALYZE my_table")
+        );
     }
 
-    /**
-     * Ctor.
-     *
-     * @param stream InputStream
-     */
-    public SqlStatement(final InputStream stream) {
-        this.input = stream;
-    }
-
-    @Override
-    public String asString() throws Exception {
-        return new TextOf(
-            this.input
-        ).asString();
-    }
 }

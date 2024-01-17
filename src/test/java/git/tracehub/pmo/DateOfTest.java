@@ -15,47 +15,41 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.project;
+package git.tracehub.pmo;
 
-import java.io.InputStream;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
+import git.tracehub.pmo.project.DateOf;
+import java.time.LocalDate;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * SQL Statement.
+ * Test suite for {@link DateOf}.
  *
  * @since 0.0.0
  */
-public final class SqlStatement implements Sql {
+final class DateOfTest {
 
-    /**
-     * InputStream.
-     */
-    private final InputStream input;
-
-    /**
-     * Ctor.
-     *
-     * @param path Path
-     * @throws Exception if something went wrong
-     */
-    public SqlStatement(final String path) throws Exception {
-        this(new ResourceOf("sql/%s".formatted(path)).stream());
+    @Test
+    void returnsNullWhenStringIsEmpty() {
+        final LocalDate date = new DateOf(null).value();
+        MatcherAssert.assertThat(
+            "Date %s is not empty".formatted(date),
+            date,
+            new IsEqual<>(null)
+        );
     }
 
-    /**
-     * Ctor.
-     *
-     * @param stream InputStream
-     */
-    public SqlStatement(final InputStream stream) {
-        this.input = stream;
+    @Test
+    void returnsDateWhenStringExists() {
+        final LocalDate date = new DateOf(
+            LocalDate.of(2024, 1, 17).toString()
+        ).value();
+        MatcherAssert.assertThat(
+            "Date %s is empty".formatted(date),
+            date,
+            new IsEqual<>(LocalDate.of(2024, 1, 17))
+        );
     }
 
-    @Override
-    public String asString() throws Exception {
-        return new TextOf(
-            this.input
-        ).asString();
-    }
 }

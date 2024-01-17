@@ -47,7 +47,7 @@ public class DefaultProjects implements Projects {
     public Project byId(final UUID id) {
         return new JdbcSession(this.source)
             .sql(
-                new SqlStatement("projects/select-project-by-id.sql").asString()
+                new SqlStatement("select-project-by-id.sql").asString()
             ).set(id)
             .select(
                 (rs, stmt) -> {
@@ -69,7 +69,7 @@ public class DefaultProjects implements Projects {
     public List<Project> byUser(final String email) {
         return new JdbcSession(this.source)
             .sql(
-                new SqlStatement("projects/select-projects-by-user-email.sql")
+                new SqlStatement("select-projects-by-user-email.sql")
                     .asString()
             ).set(email)
             .select(
@@ -88,7 +88,7 @@ public class DefaultProjects implements Projects {
     public Project employ(final Project project) {
         return new JdbcSession(this.source)
             .sql(
-                new SqlStatement("projects/insert-project.sql").asString()
+                new SqlStatement("insert-project.sql").asString()
             ).set(project.isSecured())
             .set(project.getName())
             .set(project.getModel())

@@ -1,0 +1,1 @@
+ANALYZE my_table

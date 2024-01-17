@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,13 +48,11 @@ public class ProjectController {
      * Projects by user.
      *
      * @param user User
-     * @param token Token
      * @return List of projects
      */
     @GetMapping
     public List<Project> byUser(
-        @AuthenticationPrincipal final OAuth2User user,
-        final OAuth2AuthenticationToken token
+        @AuthenticationPrincipal final OAuth2User user
     ) {
         return this.projects.byUser(user.getAttribute("email"));
     }

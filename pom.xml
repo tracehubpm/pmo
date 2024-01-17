@@ -246,6 +246,8 @@ SOFTWARE.
               <excludes>
                 <exclude>duplicatefinder:.*</exclude>
                 <exclude>dependencies:.*</exclude>
+                <exclude>checkstyle:/src/test/.*</exclude>
+                <exclude>pmd:/src/test/.*</exclude>
               </excludes>
             </configuration>
           </execution>
