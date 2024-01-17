@@ -23,6 +23,7 @@ import git.tracehub.pmo.project.Projects;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -58,7 +59,7 @@ public class ProjectController {
      * @param user User
      * @return List of projects
      */
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Project> byUser(
         @AuthenticationPrincipal final OAuth2User user
     ) {
@@ -71,7 +72,10 @@ public class ProjectController {
      * @param id Project id
      * @return Project
      */
-    @GetMapping("/{id}")
+    @GetMapping(
+        value = "/{id}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     /*
      * @todo #1:45min/DEV check if authenticated user can access the Project.
      *   we need create security checks that will made a statement
@@ -87,11 +91,11 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param token Authentication token
+     * @param token   Authentication token
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     /*
      * @todo #1:45min/DEV check if authenticated user can create a new
      *   project. We need to create security checks that will make a statement
