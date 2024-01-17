@@ -87,7 +87,7 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param token   Token
+     * @param token Authentication token
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
