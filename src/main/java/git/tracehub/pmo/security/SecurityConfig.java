@@ -19,10 +19,13 @@ package git.tracehub.pmo.security;
 
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,7 +35,8 @@ import org.springframework.security.web.SecurityFilterChain;
  *
  * @since 0.0.0
  */
-@EnableWebSecurity
+@Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     /**
@@ -43,8 +47,9 @@ public class SecurityConfig {
      * @checkstyle NonStaticMethodCheck (30 lines)
      */
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     @SneakyThrows
-    public SecurityFilterChain chain(final HttpSecurity http) {
+    public SecurityFilterChain client(final HttpSecurity http) {
         return http.cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
@@ -65,8 +70,9 @@ public class SecurityConfig {
                             response.getWriter().write("Access denied");
                         }
                     )
-            ).oauth2Login(Customizer.withDefaults())
-            .build();
+            ).oauth2ResourceServer(
+                configurer -> configurer.jwt(Customizer.withDefaults())
+            ).build();
     }
 
 }
