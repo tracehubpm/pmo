@@ -20,14 +20,14 @@ package git.tracehub.pmo.controller;
 import git.tracehub.pmo.agents.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
+import git.tracehub.pmo.security.ClaimOf;
+import git.tracehub.pmo.security.ExistsRole;
+import git.tracehub.pmo.security.IdpToken;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,21 +49,22 @@ public class ProjectController {
     private final Projects projects;
 
     /**
-     * OAuth2AuthorizedClientService.
+     * Issuer url.
      */
-    private final OAuth2AuthorizedClientService service;
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String url;
 
     /**
      * Projects by user.
      *
-     * @param user User
+     * @param token JwtAuthenticationToken
      * @return List of projects
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Project> byUser(
-        @AuthenticationPrincipal final OAuth2User user
-    ) {
-        return this.projects.byUser(user.getAttribute("email"));
+    @GetMapping
+    public List<Project> byUser(final JwtAuthenticationToken token) {
+        return this.projects.byUser(
+            new ClaimOf(token, "preferred_username").value()
+        );
     }
 
     /**
@@ -72,10 +73,7 @@ public class ProjectController {
      * @param id Project id
      * @return Project
      */
-    @GetMapping(
-        value = "/{id}",
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping("/{id}")
     /*
      * @todo #1:45min/DEV check if authenticated user can access the Project.
      *   we need create security checks that will made a statement
@@ -91,11 +89,11 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param token Authentication token
+     * @param token JwtAuthenticationToken
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     /*
      * @todo #1:45min/DEV check if authenticated user can create a new
      *   project. We need to create security checks that will make a statement
@@ -105,7 +103,7 @@ public class ProjectController {
      */
     public Project employ(
         @RequestBody final Project project,
-        final OAuth2AuthenticationToken token
+        final JwtAuthenticationToken token
     ) {
         final Project created = this.projects.employ(project);
         /*
@@ -113,14 +111,13 @@ public class ProjectController {
          *   of the project. We need to define appropriate agent and call
          *   corresponding implementation to invite collaborators here.
          */
-        new InviteCollaborator(
-            created.getLocation(),
-            "tracehubgit",
-            this.service.loadAuthorizedClient(
-                token.getAuthorizedClientRegistrationId(),
-                token.getName()
-            ).getAccessToken().getTokenValue()
-        ).exec();
+        if (new ExistsRole(token, "user_github").value()) {
+            new InviteCollaborator(
+                created.getLocation(),
+                "tracehubgit",
+                new IdpToken(token, "github", this.url).value()
+            ).exec();
+        }
         return created;
     }
 
