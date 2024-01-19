@@ -7,8 +7,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${ISSUER_URI}
-  config:
-    import: optional:file:.env[.properties]
   liquibase:
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
