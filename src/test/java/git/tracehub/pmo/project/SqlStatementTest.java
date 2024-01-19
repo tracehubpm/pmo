@@ -15,7 +15,7 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
 
 import git.tracehub.pmo.project.SqlStatement;

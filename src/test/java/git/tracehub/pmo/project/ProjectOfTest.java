@@ -15,7 +15,7 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.ProjectOf;
@@ -39,6 +39,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 final class ProjectOfTest {
 
+    /**
+     * Result set.
+     */
     @Mock
     private ResultSet set;
 
