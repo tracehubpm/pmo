@@ -22,7 +22,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Does the user have provided role from token.
@@ -33,9 +32,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public final class ExistsRole implements Scalar<Boolean> {
 
     /**
-     * Token.
+     * JWT.
      */
-    private final JwtAuthenticationToken token;
+    private final Jwt jwt;
 
     /**
      * Role.
@@ -44,8 +43,7 @@ public final class ExistsRole implements Scalar<Boolean> {
 
     @Override
     public Boolean value() {
-        final Map<String, Object> map = ((Jwt) this.token.getCredentials())
-            .getClaimAsMap("realm_access");
+        final Map<String, Object> map = this.jwt.getClaimAsMap("realm_access");
         return ((List<String>) map.get("roles")).contains(this.role);
     }
 

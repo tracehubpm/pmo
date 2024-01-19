@@ -20,7 +20,6 @@ package git.tracehub.pmo.security;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Claim from provided token.
@@ -31,9 +30,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public final class ClaimOf implements Scalar<String> {
 
     /**
-     * Token.
+     * JWT.
      */
-    private final JwtAuthenticationToken token;
+    private final Jwt jwt;
 
     /**
      * Claim.
@@ -42,8 +41,7 @@ public final class ClaimOf implements Scalar<String> {
 
     @Override
     public String value() {
-        return ((Jwt) this.token.getCredentials())
-            .getClaim(this.claim);
+        return this.jwt.getClaim(this.claim);
     }
 
 }

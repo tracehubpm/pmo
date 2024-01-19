@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,13 +58,13 @@ public class ProjectController {
     /**
      * Projects by user.
      *
-     * @param token JwtAuthenticationToken
+     * @param jwt Jwt
      * @return List of projects
      */
     @GetMapping
-    public List<Project> byUser(final JwtAuthenticationToken token) {
+    public List<Project> byUser(@AuthenticationPrincipal final Jwt jwt) {
         return this.projects.byUser(
-            new ClaimOf(token, "preferred_username").value()
+            new ClaimOf(jwt, "preferred_username").value()
         );
     }
 
@@ -89,7 +90,7 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param token JwtAuthenticationToken
+     * @param jwt Jwt
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
@@ -103,7 +104,7 @@ public class ProjectController {
      */
     public Project employ(
         @RequestBody final Project project,
-        final JwtAuthenticationToken token
+        @AuthenticationPrincipal final Jwt jwt
     ) {
         final Project created = this.projects.employ(project);
         /*
@@ -111,11 +112,11 @@ public class ProjectController {
          *   of the project. We need to define appropriate agent and call
          *   corresponding implementation to invite collaborators here.
          */
-        if (new ExistsRole(token, "user_github").value()) {
+        if (new ExistsRole(jwt, "user_github").value()) {
             new InviteCollaborator(
                 created.getLocation(),
                 "tracehubgit",
-                new IdpToken(token, "github", this.url).value()
+                new IdpToken(jwt, "github", this.url).value()
             ).exec();
         }
         return created;

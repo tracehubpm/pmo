@@ -25,21 +25,21 @@ import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
  * Token from IDP.
  *
- * @since 0.0.0
  * @checkstyle MethodBodyCommentsCheck (50 lines)
+ * @since 0.0.0
  */
 @RequiredArgsConstructor
 public final class IdpToken implements Scalar<String> {
 
     /**
-     * Token.
+     * JWT.
      */
-    private final JwtAuthenticationToken token;
+    private final Jwt jwt;
 
     /**
      * Provider name.
@@ -70,7 +70,7 @@ public final class IdpToken implements Scalar<String> {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
             .header(
                 HttpHeaders.AUTHORIZATION,
-                "Bearer %s".formatted(this.token.getToken().getTokenValue())
+                "Bearer %s".formatted(this.jwt.getTokenValue())
             ).fetch()
             .as(RestResponse.class);
         return null;
