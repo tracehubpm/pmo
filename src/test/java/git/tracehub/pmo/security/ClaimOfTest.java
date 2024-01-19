@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Test suite for {@link ClaimOf}.
@@ -37,12 +36,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 final class ClaimOfTest {
 
     /**
-     * Token.
-     */
-    @Mock
-    private JwtAuthenticationToken token;
-
-    /**
      * JWT.
      */
     @Mock
@@ -51,9 +44,8 @@ final class ClaimOfTest {
     @Test
     void returnsValueWhenClaimExists() {
         final String value = "value";
-        Mockito.when(this.token.getCredentials()).thenReturn(this.jwt);
         Mockito.when(this.jwt.getClaim("claim")).thenReturn(value);
-        final String claim = new ClaimOf(this.token, "claim").value();
+        final String claim = new ClaimOf(this.jwt, "claim").value();
         MatcherAssert.assertThat(
             "Claim value %s is not %s".formatted(claim, value),
             claim,
@@ -63,9 +55,8 @@ final class ClaimOfTest {
 
     @Test
     void returnsValueWhenClaimDoesNotExist() {
-        Mockito.when(this.token.getCredentials()).thenReturn(this.jwt);
         Mockito.when(this.jwt.getClaim("claim")).thenReturn(null);
-        final String claim = new ClaimOf(this.token, "claim").value();
+        final String claim = new ClaimOf(this.jwt, "claim").value();
         MatcherAssert.assertThat(
             "Claim value %s is not null".formatted(claim),
             claim,

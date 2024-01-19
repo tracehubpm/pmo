@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Test suite for {@link ExistsRole}.
@@ -39,12 +38,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 final class ExistsRoleTest {
 
     /**
-     * Token.
-     */
-    @Mock
-    private JwtAuthenticationToken token;
-
-    /**
      * JWT.
      */
     @Mock
@@ -52,7 +45,6 @@ final class ExistsRoleTest {
 
     @Test
     void returnsTrueIfRoleExists() {
-        Mockito.when(this.token.getCredentials()).thenReturn(this.jwt);
         Mockito.when(this.jwt.getClaimAsMap("realm_access")).thenReturn(
             new MapOf<>(
                 new MapEntry<>("roles", new ListOf<>("role"))
@@ -60,14 +52,13 @@ final class ExistsRoleTest {
         );
         MatcherAssert.assertThat(
             "Role doesn't exist",
-            new ExistsRole(this.token, "role").value(),
+            new ExistsRole(this.jwt, "role").value(),
             new IsEqual<>(true)
         );
     }
 
     @Test
     void returnsFalseIfRoleDoesNotExist() {
-        Mockito.when(this.token.getCredentials()).thenReturn(this.jwt);
         Mockito.when(this.jwt.getClaimAsMap("realm_access")).thenReturn(
             new MapOf<>(
                 new MapEntry<>("roles", new ListOf<>())
@@ -75,7 +66,7 @@ final class ExistsRoleTest {
         );
         MatcherAssert.assertThat(
             "Role exists",
-            new ExistsRole(this.token, "role").value(),
+            new ExistsRole(this.jwt, "role").value(),
             new IsEqual<>(false)
         );
     }
