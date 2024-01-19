@@ -15,29 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.project;
-
-import org.cactoos.io.ResourceOf;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test suite for {@link SqlStatement}.
+ * Security Tests.
  *
  * @since 0.0.0
  */
-final class SqlStatementTest {
-
-    @Test
-    void readsSqlInRightFormat() throws Exception {
-        MatcherAssert.assertThat(
-            "SQL is not in right format",
-            new SqlStatement(
-                new ResourceOf("analyze.sql").stream()
-            ).asString(),
-            new IsEqual<>("ANALYZE my_table")
-        );
-    }
-
-}
+package git.tracehub.pmo.security;

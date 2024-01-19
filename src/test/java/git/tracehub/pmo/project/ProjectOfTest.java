@@ -17,8 +17,6 @@
 
 package git.tracehub.pmo.project;
 
-import git.tracehub.pmo.project.Project;
-import git.tracehub.pmo.project.ProjectOf;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;

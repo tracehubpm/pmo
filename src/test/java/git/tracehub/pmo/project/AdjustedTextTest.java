@@ -17,7 +17,6 @@
 
 package git.tracehub.pmo.project;
 
-import git.tracehub.pmo.project.AdjustedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
