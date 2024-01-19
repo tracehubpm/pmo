@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
  * Token from IDP.
  *
  * @since 0.0.0
+ * @checkstyle MethodBodyCommentsCheck (50 lines)
  */
 @RequiredArgsConstructor
 public final class IdpToken implements Scalar<String> {
@@ -53,6 +54,13 @@ public final class IdpToken implements Scalar<String> {
     @Override
     @SneakyThrows
     public String value() {
+        /*
+         * @todo #1:45min/DEV fix 403 Forbidden error when trying to get
+         *   token from IDP. It seems that the user hasn't enough permissions
+         *   to get the token from IDP. We need to configure Keycloak to allow
+         *   the user to read the token. See the following link for more info:
+         *   https://www.keycloak.org/docs/latest/server_admin/#retrieving-external-idp-tokens
+         */
         new JdkRequest(
             "%s//broker/%s/token".formatted(
                 this.url,
