@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -102,6 +104,7 @@ public class ProjectController {
      *   if project is public, every one can create it;
      *   otherwise we need to request a payment from the user.
      */
+    @ResponseStatus(HttpStatus.CREATED)
     public Project employ(
         @RequestBody final Project project,
         @AuthenticationPrincipal final Jwt jwt
