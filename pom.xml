@@ -43,9 +43,11 @@ SOFTWARE.
     <maven-verifier-plugin.version>1.1</maven-verifier-plugin.version>
     <eokson.version>0.3.2</eokson.version>
     <jcabi-jdbc.version>0.19.0</jcabi-jdbc.version>
-    <jcabi-http.version>2.0.0</jcabi-http.version>
     <qulice.version>0.22.0</qulice.version>
     <spring-addons.version>7.1.8</spring-addons.version>
+    <jcabi-github.version>1.8.0</jcabi-github.version>
+    <jersey-common.version>3.1.2</jersey-common.version>
+    <jcabi-http.version>1.20.1</jcabi-http.version>
   </properties>
   <dependencies>
     <dependency>
@@ -99,6 +101,16 @@ SOFTWARE.
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-jdbc</artifactId>
       <version>${jcabi-jdbc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-github</artifactId>
+      <version>${jcabi-github.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
+      <version>${jersey-common.version}</version>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>

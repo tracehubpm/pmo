@@ -17,17 +17,11 @@
 
 package git.tracehub.pmo.agents.github;
 
-import com.jcabi.http.Request;
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.RestResponse;
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.agents.Action;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.MutableJson;
-import java.net.HttpURLConnection;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 /**
  * Invite collaborator.
@@ -55,28 +49,15 @@ public final class InviteCollaborator implements Action {
     @Override
     @SneakyThrows
     public void exec() {
-        new JdkRequest(
-            "https://api.github.com/repos/%s/collaborators/%s".formatted(
-                this.location.replaceAll(
-                    "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
-                ),
-                this.username
-            )
-        ).method(Request.PUT)
-            .body()
-            .set(
-                new Jocument(
-                    new MutableJson()
-                        .with("permission", "admin")
-                ).toString()
-            ).back()
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            .header(
-                HttpHeaders.AUTHORIZATION,
-                "Bearer %s".formatted(this.token)
-            ).fetch()
-            .as(RestResponse.class)
-            .assertStatus(HttpURLConnection.HTTP_CREATED);
+        new RtGithub(this.token).repos()
+            .get(
+                new Coordinates.Simple(
+                    this.location.replaceAll(
+                        "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
+                    )
+                )
+            ).collaborators()
+            .add(this.username);
     }
 
 }
