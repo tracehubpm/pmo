@@ -15,29 +15,27 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.platforms;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Entry point.
+ * Test suite for {@link RepoPath}.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+final class RepoPathTest {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    @Test
+    void returnsOwnerAndRepoFromLocation() {
+        final String path = new RepoPath("github@user/repo:branch").value();
+        MatcherAssert.assertThat(
+            "Path %s isn't correct".formatted(path),
+            path,
+            new IsEqual<>("user/repo")
+        );
     }
 
 }

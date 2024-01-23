@@ -15,29 +15,29 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Entry point.
+ * Test suite for {@link SqlStatement}.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+final class SqlStatementTest {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    @Test
+    void readsSqlInRightFormat() throws Exception {
+        MatcherAssert.assertThat(
+            "SQL is not in right format",
+            new SqlStatement(
+                new ResourceOf("analyze.sql").stream()
+            ).asString(),
+            new IsEqual<>("ANALYZE my_table")
+        );
     }
 
 }

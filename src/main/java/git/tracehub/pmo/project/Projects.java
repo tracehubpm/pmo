@@ -15,29 +15,39 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Entry point.
+ * Projects.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+public interface Projects {
 
     /**
-     * Application entry point.
+     * Project by id.
      *
-     * @param args Application arguments
+     * @param id Project ID
+     * @return Project
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
-    }
+    Project byId(UUID id);
 
+    /**
+     * Projects by user email.
+     *
+     * @param email User Email
+     * @return List of projects
+     */
+    List<Project> byUser(String email);
+
+    /**
+     * Employ new project.
+     *
+     * @param project Project to Employ
+     * @return Project
+     */
+    Project employ(Project project);
 }

@@ -15,29 +15,29 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.platforms;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Entry point.
+ * Extract path from provided location (ex. github@user/repo:branch).
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@RequiredArgsConstructor
+public final class RepoPath implements Scalar<String> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Location.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final String location;
+
+    @Override
+    public String value() {
+        return this.location.replaceAll(
+            "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
+        );
     }
 
 }

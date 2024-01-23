@@ -15,29 +15,11 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-/**
- * Entry point.
- *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
- * @since 0.0.0
- */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
-
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
-    }
-
-}
+SELECT p.id,
+       p.name,
+       p.location,
+       p.description,
+       p.active
+FROM projects.projects p
+         INNER JOIN projects.performers on p.id = performers.project
+WHERE performers.email = ?;

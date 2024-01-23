@@ -15,29 +15,29 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+--liquibase formatted sql
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+--changeset hizmailovich:1
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-/**
- * Entry point.
- *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
- * @since 0.0.0
- */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+--changeset hizmailovich:2
+CREATE SCHEMA IF NOT EXISTS projects;
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
-    }
+--changeset hizmailovich:3
+CREATE TABLE IF NOT EXISTS projects.projects
+(
+    id          uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name        CHARACTER VARYING(64)        NOT NULL,
+    location    CHARACTER VARYING(64) UNIQUE NOT NULL,
+    description CHARACTER VARYING(256),
+    active      BOOLEAN                      NOT NULL
+);
 
-}
+--changeset hizmailovich:4
+CREATE TABLE IF NOT EXISTS projects.performers
+(
+    id         uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    email      CHARACTER VARYING(64) NOT NULL,
+    project    uuid                  NOT NULL REFERENCES projects.projects,
+    permission CHARACTER VARYING(16) NOT NULL
+);

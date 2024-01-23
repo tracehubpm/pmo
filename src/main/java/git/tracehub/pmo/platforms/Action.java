@@ -15,29 +15,18 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package git.tracehub.pmo.platforms;
 
 /**
- * Entry point.
+ * Action.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+public interface Action {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Execute.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
-    }
+    void exec();
 
 }

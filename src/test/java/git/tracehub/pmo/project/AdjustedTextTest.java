@@ -15,29 +15,39 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Entry point.
+ * Test suite for {@link AdjustedText}.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+final class AdjustedTextTest {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    @Test
+    void returnsEmptyStringWhenConditionIsFalse() {
+        final String text = new AdjustedText("Raw", condition -> false)
+            .value();
+        MatcherAssert.assertThat(
+            "String %s is not empty".formatted(text),
+            text,
+            new IsEqual<>("")
+        );
+    }
+
+    @Test
+    void returnsRawStringWhenConditionIsTrue() {
+        final String text = new AdjustedText("Raw", condition -> true)
+            .value();
+        MatcherAssert.assertThat(
+            "String %s is empty".formatted(text),
+            text,
+            new IsEqual<>("Raw")
+        );
     }
 
 }

@@ -15,29 +15,47 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.io.InputStream;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 
 /**
- * Entry point.
+ * SQL Statement.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+public final class SqlStatement implements Sql {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * InputStream.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final InputStream input;
+
+    /**
+     * Ctor.
+     *
+     * @param path Path
+     * @throws Exception if something went wrong
+     */
+    public SqlStatement(final String path) throws Exception {
+        this(new ResourceOf("sql/%s".formatted(path)).stream());
     }
 
+    /**
+     * Ctor.
+     *
+     * @param stream InputStream
+     */
+    public SqlStatement(final InputStream stream) {
+        this.input = stream;
+    }
+
+    @Override
+    public String asString() throws Exception {
+        return new TextOf(
+            this.input
+        ).asString();
+    }
 }

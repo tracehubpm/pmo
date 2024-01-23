@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2023-2024 Tracehub
+Copyright (c) 2023-2024 Tracehub.git
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to read
@@ -41,8 +41,15 @@ SOFTWARE.
     <org.jacoco.version>0.8.10</org.jacoco.version>
     <cactoos-matchers.version>0.25</cactoos-matchers.version>
     <maven-verifier-plugin.version>1.1</maven-verifier-plugin.version>
-    <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
-    <jcabi-http.version>2.0.0</jcabi-http.version>
+    <eokson.version>0.3.2</eokson.version>
+    <jcabi-jdbc.version>0.19.0</jcabi-jdbc.version>
+    <qulice.version>0.22.0</qulice.version>
+    <spring-addons.version>7.1.8</spring-addons.version>
+    <jcabi-github.version>1.8.0</jcabi-github.version>
+    <jersey-common.version>3.1.2</jersey-common.version>
+    <jcabi-http.version>1.20.1</jcabi-http.version>
+    <testcontainers-keycloak.version>3.2.0</testcontainers-keycloak.version>
+    <testcontainers.version>1.19.3</testcontainers.version>
   </properties>
   <dependencies>
     <dependency>
@@ -53,6 +60,26 @@ SOFTWARE.
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
@@ -73,9 +100,29 @@ SOFTWARE.
       <version>${jcabi-http.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-jdbc</artifactId>
+      <version>${jcabi-jdbc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-github</artifactId>
+      <version>${jcabi-github.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
+      <version>${jersey-common.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <version>${cactoos.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.eo-cqrs</groupId>
+      <artifactId>eokson</artifactId>
+      <version>${eokson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -87,6 +134,23 @@ SOFTWARE.
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.dasniko</groupId>
+      <artifactId>testcontainers-keycloak</artifactId>
+      <version>${testcontainers-keycloak.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <!-- version from parent -->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -199,17 +263,23 @@ SOFTWARE.
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${maven-checkstyle-plugin.version}</version>
+        <groupId>com.qulice</groupId>
+        <artifactId>qulice-maven-plugin</artifactId>
+        <version>${qulice.version}</version>
         <configuration>
-          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+          <license>file:${basedir}/LICENSE.txt</license>
         </configuration>
         <executions>
           <execution>
             <goals>
               <goal>check</goal>
             </goals>
+            <configuration>
+              <excludes>
+                <exclude>duplicatefinder:.*</exclude>
+                <exclude>dependencies:.*</exclude>
+              </excludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

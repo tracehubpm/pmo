@@ -15,29 +15,40 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.time.LocalDate;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Entry point.
+ * Test suite for {@link DateOf}.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+final class DateOfTest {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    @Test
+    void returnsNullWhenStringIsEmpty() {
+        final LocalDate date = new DateOf(null).value();
+        MatcherAssert.assertThat(
+            "Date %s is not empty".formatted(date),
+            date,
+            new IsEqual<>(null)
+        );
+    }
+
+    @Test
+    void returnsDateWhenStringExists() {
+        final LocalDate date = new DateOf(
+            LocalDate.of(2024, 1, 17).toString()
+        ).value();
+        MatcherAssert.assertThat(
+            "Date %s is empty".formatted(date),
+            date,
+            new IsEqual<>(LocalDate.of(2024, 1, 17))
+        );
     }
 
 }

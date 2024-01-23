@@ -15,29 +15,36 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.security;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Entry point.
+ * Does the user have provided role from token.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@RequiredArgsConstructor
+public final class ExistsRole implements Scalar<Boolean> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * JWT.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final Jwt jwt;
+
+    /**
+     * Role.
+     */
+    private final String role;
+
+    @Override
+    public Boolean value() {
+        final Map<String, Object> map = this.jwt.getClaimAsMap("realm_access");
+        return ((List<String>) map.get("roles")).contains(this.role);
     }
 
 }

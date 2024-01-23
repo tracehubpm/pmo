@@ -15,29 +15,41 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.sql.ResultSet;
+import java.util.Objects;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 
 /**
- * Entry point.
+ * Project from result set.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@RequiredArgsConstructor
+public final class ProjectOf implements Scalar<Project> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Result set.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final ResultSet set;
+
+    @Override
+    @SneakyThrows
+    public Project value() {
+        return new Project(
+            UUID.fromString(this.set.getString("id")),
+            this.set.getString("name"),
+            this.set.getString("location"),
+            new AdjustedText(
+                this.set.getString("description"),
+                Objects::nonNull
+            ).value(),
+            this.set.getBoolean("active")
+        );
     }
 
 }

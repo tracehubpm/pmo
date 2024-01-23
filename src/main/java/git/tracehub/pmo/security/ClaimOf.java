@@ -15,29 +15,33 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.security;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Entry point.
+ * Claim from provided token.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@RequiredArgsConstructor
+public final class ClaimOf implements Scalar<String> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * JWT.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final Jwt jwt;
+
+    /**
+     * Claim.
+     */
+    private final String claim;
+
+    @Override
+    public String value() {
+        return this.jwt.getClaim(this.claim);
     }
 
 }

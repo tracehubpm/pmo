@@ -15,29 +15,46 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * Entry point.
+ * Project.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Project {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Id.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
-    }
+    private UUID id;
+
+    /**
+     * Name.
+     */
+    private String name;
+
+    /**
+     * Location.
+     */
+    private String location;
+
+    /**
+     * Description.
+     */
+    private String description;
+
+    /**
+     * Visibility.
+     */
+    private boolean active;
 
 }

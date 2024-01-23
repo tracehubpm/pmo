@@ -15,29 +15,32 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Entry point.
+ * Date of.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@AllArgsConstructor
+public final class DateOf implements Scalar<LocalDate> {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Raw date.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final String date;
+
+    @Override
+    public LocalDate value() {
+        LocalDate value = null;
+        if (this.date != null) {
+            value = LocalDate.parse(this.date);
+        }
+        return value;
     }
 
 }

@@ -15,29 +15,48 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo;
+package git.tracehub.pmo.platforms.github;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.Action;
+import git.tracehub.pmo.platforms.RepoPath;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
- * Entry point.
+ * Invite collaborator.
  *
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  * @since 0.0.0
  */
-@SpringBootApplication
-@SuppressWarnings("PMD.UseUtilityClass")
-public class PmoApplication {
+@RequiredArgsConstructor
+public final class InviteCollaborator implements Action {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
+     * Owner and repo.
      */
-    @SuppressWarnings("ProhibitPublicStaticMethods")
-    public static void main(final String[] args) {
-        SpringApplication.run(PmoApplication.class, args);
+    private final String location;
+
+    /**
+     * Username.
+     */
+    private final String username;
+
+    /**
+     * Token.
+     */
+    private final String token;
+
+    @Override
+    @SneakyThrows
+    public void exec() {
+        new RtGithub(this.token).repos()
+            .get(
+                new Coordinates.Simple(
+                    new RepoPath(this.location).value()
+                )
+            ).collaborators()
+            .add(this.username);
     }
 
 }
