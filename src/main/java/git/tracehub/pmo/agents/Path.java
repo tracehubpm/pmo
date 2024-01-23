@@ -15,48 +15,29 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.agents.github;
+package git.tracehub.pmo.agents;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.RtGithub;
-import git.tracehub.pmo.agents.Action;
-import git.tracehub.pmo.agents.Path;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 
 /**
- * Invite collaborator.
+ * Extract path from provided location (ex. github@user/repo:branch).
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class InviteCollaborator implements Action {
+public final class Path implements Scalar<String> {
 
     /**
-     * Owner and repo.
+     * Location
      */
     private final String location;
 
-    /**
-     * Username.
-     */
-    private final String username;
-
-    /**
-     * Token.
-     */
-    private final String token;
-
     @Override
-    @SneakyThrows
-    public void exec() {
-        new RtGithub(this.token).repos()
-            .get(
-                new Coordinates.Simple(
-                    new Path(this.location).value()
-                )
-            ).collaborators()
-            .add(this.username);
+    public String value() {
+        return this.location.replaceAll(
+            "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
+        );
     }
 
 }
