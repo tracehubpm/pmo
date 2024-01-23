@@ -17,24 +17,26 @@
 
 package git.tracehub.pmo.agents;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Test suite for {@link Path}.
+ * Extract path from provided location (ex. github@user/repo:branch).
  *
  * @since 0.0.0
  */
-final class PathTest {
+@RequiredArgsConstructor
+public final class RepoPath implements Scalar<String> {
 
-    @Test
-    void returnsOwnerAndRepoFromLocation() {
-        final String path = new Path("github@user/repo:branch").value();
-        MatcherAssert.assertThat(
-            "Path %s isn't correct".formatted(path),
-            path,
-            new IsEqual<>("user/repo")
+    /**
+     * Location
+     */
+    private final String location;
+
+    @Override
+    public String value() {
+        return this.location.replaceAll(
+            "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
         );
     }
 

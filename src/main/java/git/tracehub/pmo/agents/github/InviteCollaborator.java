@@ -20,7 +20,7 @@ package git.tracehub.pmo.agents.github;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.agents.Action;
-import git.tracehub.pmo.agents.Path;
+import git.tracehub.pmo.agents.RepoPath;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -53,7 +53,7 @@ public final class InviteCollaborator implements Action {
         new RtGithub(this.token).repos()
             .get(
                 new Coordinates.Simple(
-                    new Path(this.location).value()
+                    new RepoPath(this.location).value()
                 )
             ).collaborators()
             .add(this.username);
