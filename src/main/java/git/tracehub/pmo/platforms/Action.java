@@ -15,29 +15,18 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.agents;
-
-import lombok.RequiredArgsConstructor;
-import org.cactoos.Scalar;
+package git.tracehub.pmo.platforms;
 
 /**
- * Extract path from provided location (ex. github@user/repo:branch).
+ * Action.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class RepoPath implements Scalar<String> {
+public interface Action {
 
     /**
-     * Location.
+     * Execute.
      */
-    private final String location;
-
-    @Override
-    public String value() {
-        return this.location.replaceAll(
-            "([^@/]+)@([^/]+)/([^:]+):.*", "$2/$3"
-        );
-    }
+    void exec();
 
 }

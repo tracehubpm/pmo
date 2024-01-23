@@ -15,27 +15,48 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.agents;
+package git.tracehub.pmo.platforms.github;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.Action;
+import git.tracehub.pmo.platforms.RepoPath;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
- * Test suite for {@link RepoPath}.
+ * Invite collaborator.
  *
  * @since 0.0.0
  */
-final class RepoPathTest {
+@RequiredArgsConstructor
+public final class InviteCollaborator implements Action {
 
-    @Test
-    void returnsOwnerAndRepoFromLocation() {
-        final String path = new RepoPath("github@user/repo:branch").value();
-        MatcherAssert.assertThat(
-            "Path %s isn't correct".formatted(path),
-            path,
-            new IsEqual<>("user/repo")
-        );
+    /**
+     * Owner and repo.
+     */
+    private final String location;
+
+    /**
+     * Username.
+     */
+    private final String username;
+
+    /**
+     * Token.
+     */
+    private final String token;
+
+    @Override
+    @SneakyThrows
+    public void exec() {
+        new RtGithub(this.token).repos()
+            .get(
+                new Coordinates.Simple(
+                    new RepoPath(this.location).value()
+                )
+            ).collaborators()
+            .add(this.username);
     }
 
 }

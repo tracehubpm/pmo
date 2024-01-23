@@ -17,7 +17,7 @@
 
 package git.tracehub.pmo.controller;
 
-import git.tracehub.pmo.agents.github.InviteCollaborator;
+import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;

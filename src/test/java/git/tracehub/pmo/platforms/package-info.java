@@ -15,18 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.agents;
-
 /**
- * Action.
+ * Platforms Tests.
  *
  * @since 0.0.0
  */
-public interface Action {
-
-    /**
-     * Execute.
-     */
-    void exec();
-
-}
+package git.tracehub.pmo.platforms;

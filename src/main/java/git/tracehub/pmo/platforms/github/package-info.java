@@ -16,8 +16,8 @@
  */
 
 /**
- * Agents Tests.
+ * Github.
  *
  * @since 0.0.0
  */
-package git.tracehub.pmo.agents;
+package git.tracehub.pmo.platforms.github;
