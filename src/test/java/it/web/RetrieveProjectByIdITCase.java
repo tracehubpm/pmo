@@ -67,7 +67,7 @@ final class RetrieveProjectByIdITCase
             .header(
                 HttpHeaders.AUTHORIZATION,
                 "Bearer %s".formatted(
-                    new Token(
+                    new AccessToken(
                         KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
                     ).value()
                 )

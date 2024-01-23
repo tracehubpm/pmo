@@ -25,7 +25,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 /**
- * PostgreSQL Integration Suite.
+ * Keycloak Integration Suite.
  *
  * @since 0.0.0
  */

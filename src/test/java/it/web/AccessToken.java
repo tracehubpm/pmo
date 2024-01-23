@@ -35,10 +35,11 @@ import org.springframework.http.MediaType;
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-@SuppressWarnings(
-    {"JTCOP.RuleCorrectTestName", "JTCOP.RuleAllTestsHaveProductionClass"}
-)
-public final class Token implements Scalar<String> {
+@SuppressWarnings({
+    "JTCOP.RuleCorrectTestName",
+    "JTCOP.RuleAllTestsHaveProductionClass"
+})
+public final class AccessToken implements Scalar<String> {
 
     /**
      * Auth server url.
