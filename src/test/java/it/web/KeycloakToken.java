@@ -39,7 +39,7 @@ import org.springframework.http.MediaType;
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleAllTestsHaveProductionClass"
 })
-public final class AccessToken implements Scalar<String> {
+public final class KeycloakToken implements Scalar<String> {
 
     /**
      * Auth server url.
