@@ -1,5 +1,5 @@
 architect:
-  - h1alexbel
+  - hizmailovich
 docker:
   image: l3r8y/rultor-image:1.0.3
 merge:
