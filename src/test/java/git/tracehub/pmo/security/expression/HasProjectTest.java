@@ -68,13 +68,12 @@ final class HasProjectTest {
         final UUID id =  UUID.randomUUID();
         final String user = "email";
         new Authentication(user).authenticate();
-        Mockito.when(this.projects.byUser(user)).thenReturn(new ArrayList<>());
+        Mockito.when(this.projects.byUser(user)).thenReturn(new ArrayList<>(0));
         MatcherAssert.assertThat(
             "User %s has project %s".formatted(user, id),
             new HasProject(this.projects).validate(id),
             new IsEqual<>(false)
         );
     }
-
 
 }

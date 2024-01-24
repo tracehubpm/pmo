@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Proxy
+ * Copyright (c) 2023-2024 Tracehub.git
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -43,12 +43,12 @@ public final class Authentication {
      * Authenticate user.
      */
     public void authenticate() {
-        final UsernamePasswordAuthenticationToken auth =
+        SecurityContextHolder.getContext().setAuthentication(
             new UsernamePasswordAuthenticationToken(
                 new Jwt(
                     "value",
                     Instant.now(),
-                    Instant.MAX,
+                    Instant.now().plusMillis(5000),
                     new MapOf<>(
                         new MapEntry<>("header", "value")
                     ),
@@ -58,8 +58,8 @@ public final class Authentication {
                 ),
                 null,
                 null
-            );
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            )
+        );
     }
 
 }

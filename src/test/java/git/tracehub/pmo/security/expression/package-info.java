@@ -15,22 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.security.expression;
-
 /**
- * Security expression.
+ * Security Expressions Tests.
  *
- * @param <T> Type of argument
  * @since 0.0.0
  */
-public interface Expression<T> {
-
-    /**
-     * Validate.
-     *
-     * @param arg Argument
-     * @return Result
-     */
-    boolean validate(T arg);
-
-}
+package git.tracehub.pmo.security.expression;

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 /**
  * Has project.
  *
+ * @checkstyle DesignForExtensionCheck (30 lines)
  * @since 0.0.0
  */
 @Component
@@ -43,11 +44,13 @@ public class HasProject implements Expression<UUID> {
 
     @Override
     public boolean validate(final UUID project) {
-        final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
         return Stream.concat(
-                this.projects.byUser(
-                    new ClaimOf(jwt, "email").value()
-                ).stream(),
+            this.projects.byUser(
+                new ClaimOf(jwt, "email").value()
+            ).stream(),
                 this.projects.byUser(
                     new ClaimOf(jwt, "preferred_username").value()
                 ).stream()
