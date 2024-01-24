@@ -2,8 +2,8 @@
 [![DevOps By Rultor.com](https://www.rultor.com/b/ac-californium/api)](https://www.rultor.com/p/ac-californium/api)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![mvn](https://github.com/tracehubpm/pmo/actions/workflows/maven.yml/badge.svg)](https://github.com/tracehubpm/pmo/actions/workflows/maven.yml)
-[![codecov](https://codecov.io/gh/tracehubpm/pmo/graph/badge.svg?token=QLRSWBDRBS)](https://codecov.io/gh/tracehubpm/pmo)
+[![mvn](https://github.com/tracehubpm/pmo/actions/workflows/mvn.yml/badge.svg)](https://github.com/tracehubpm/pmo/actions/workflows/mvn.yml)
+[![codecov](https://codecov.io/gh/tracehubpm/pmo/graph/badge.svg?token=rnRZ3e6s6e)](https://codecov.io/gh/tracehubpm/pmo)
 [![PDD status](http://www.0pdd.com/svg?name=tracehubpm/pmo)](http://www.0pdd.com/p?name=tracehubpm/pmo)
 
 Project architect: [@hizmailovich](https://github.com/hizmailovich)
