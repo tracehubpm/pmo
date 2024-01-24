@@ -78,13 +78,7 @@ public class ProjectController {
      * @return Project
      */
     @GetMapping("/{id}")
-    /*
-     * @todo #1:45min/DEV check if authenticated user can access the Project.
-     *   we need create security checks that will made a statement
-     *   does authenticated user can access the project or not:
-     *   if project is public, every one can see it;
-     *   otherwise user must be individual performer or team member.
-     */
+    @PreAuthorize("@hasProject.validate(#id)")
     public Project byId(@PathVariable final UUID id) {
         return this.projects.byId(id);
     }
@@ -93,7 +87,7 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param jwt Jwt
+     * @param jwt     Jwt
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
