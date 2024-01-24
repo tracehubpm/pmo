@@ -28,6 +28,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,18 +93,12 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param jwt Jwt
+     * @param jwt     Jwt
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
-    @PostMapping
-    /*
-     * @todo #1:45min/DEV check if authenticated user can create a new
-     *   project. We need to create security checks that will make a statement
-     *   does authenticated user can create a new project or not:
-     *   if project is public, every one can create it;
-     *   otherwise we need to request a payment from the user.
-     */
+    @PostMapping()
+    @PreAuthorize("hasAuthority('user_github')")
     @ResponseStatus(HttpStatus.CREATED)
     public Project employ(
         @RequestBody final Project project,

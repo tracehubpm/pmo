@@ -20,8 +20,6 @@ package git.tracehub.pmo.security;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -47,7 +45,6 @@ public class SecurityConfig {
      * @checkstyle NonStaticMethodCheck (30 lines)
      */
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     @SneakyThrows
     public SecurityFilterChain client(final HttpSecurity http) {
         return http.cors(Customizer.withDefaults())
@@ -71,7 +68,9 @@ public class SecurityConfig {
                         }
                     )
             ).oauth2ResourceServer(
-                configurer -> configurer.jwt(Customizer.withDefaults())
+                configurer -> configurer.jwt(
+                    jwt -> jwt.jwtAuthenticationConverter(new AuthoritiesConverter())
+                )
             ).build();
     }
 
