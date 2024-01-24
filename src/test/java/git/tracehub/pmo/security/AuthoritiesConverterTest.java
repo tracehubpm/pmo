@@ -68,4 +68,15 @@ final class AuthoritiesConverterTest {
         );
     }
 
+    @Test
+    void returnsEmptyListOfAuthorities() {
+        JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
+        MatcherAssert.assertThat(
+            "List of authorities %s isn't empty"
+                .formatted(token.getAuthorities()),
+            token.getAuthorities().isEmpty(),
+            new IsEqual<>(true)
+        );
+    }
+
 }

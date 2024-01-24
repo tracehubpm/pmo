@@ -17,10 +17,9 @@
 
 package git.tracehub.pmo.security;
 
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
@@ -43,8 +42,8 @@ public final class ExistsRole implements Scalar<Boolean> {
 
     @Override
     public Boolean value() {
-        final Map<String, Object> map = this.jwt.getClaimAsMap("realm_access");
-        return ((List<String>) map.get("roles")).contains(this.role);
+        return new AuthoritiesConverter().convert(this.jwt).getAuthorities()
+            .contains(new SimpleGrantedAuthority(this.role));
     }
 
 }
