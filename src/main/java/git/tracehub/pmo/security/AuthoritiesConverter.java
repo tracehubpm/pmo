@@ -35,7 +35,7 @@ public final class AuthoritiesConverter implements Converter<Jwt, JwtAuthenticat
     @Override
     public JwtAuthenticationToken convert(final Jwt jwt) {
         final Map<String, Object> map = jwt.getClaimAsMap("realm_access");
-        final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        final List<SimpleGrantedAuthority> authorities = new ArrayList<>(5);
         if (map != null && !map.isEmpty()) {
             authorities.addAll(
                 ((List<String>) map.get("roles"))

@@ -52,7 +52,7 @@ final class AuthoritiesConverterTest {
                 new MapEntry<>("roles", new ListOf<>("role"))
             )
         );
-        JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
+        final JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
         MatcherAssert.assertThat(
             "List of authorities is empty",
             token.getAuthorities().isEmpty(),
@@ -70,7 +70,7 @@ final class AuthoritiesConverterTest {
 
     @Test
     void returnsEmptyListOfAuthorities() {
-        JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
+        final JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
         MatcherAssert.assertThat(
             "List of authorities %s isn't empty"
                 .formatted(token.getAuthorities()),
