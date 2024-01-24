@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.security;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
@@ -34,12 +35,16 @@ public final class AuthoritiesConverter implements Converter<Jwt, JwtAuthenticat
     @Override
     public JwtAuthenticationToken convert(final Jwt jwt) {
         final Map<String, Object> map = jwt.getClaimAsMap("realm_access");
-        return new JwtAuthenticationToken(
-            jwt,
-            ((List<String>) map.get("roles")).stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList()
-        );
+        final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if (map != null && !map.isEmpty()) {
+            authorities.addAll(
+                ((List<String>) map.get("roles"))
+                    .stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList()
+            );
+        }
+        return new JwtAuthenticationToken(jwt, authorities);
     }
 
 }

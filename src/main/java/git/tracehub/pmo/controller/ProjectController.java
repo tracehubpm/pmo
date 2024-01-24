@@ -93,7 +93,7 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param jwt     Jwt
+     * @param jwt Jwt
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
