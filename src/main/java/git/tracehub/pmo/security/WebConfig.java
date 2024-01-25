@@ -17,11 +17,18 @@
 
 package git.tracehub.pmo.security;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.Scopes;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -31,13 +38,25 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Security configurations.
+ * Web configurations.
  *
  * @since 0.0.0
  */
 @Configuration
 @EnableMethodSecurity
-public class SecurityConfig {
+public class WebConfig {
+
+    /**
+     * API Version.
+     */
+    @Value("${application.version}")
+    private String version;
+
+    /**
+     * Auth server url.
+     */
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String url;
 
     /**
      * Filter.
@@ -47,7 +66,6 @@ public class SecurityConfig {
      * @checkstyle NonStaticMethodCheck (30 lines)
      */
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     @SneakyThrows
     public SecurityFilterChain client(final HttpSecurity http) {
         return http.cors(Customizer.withDefaults())
@@ -60,7 +78,11 @@ public class SecurityConfig {
                     )
             ).authorizeHttpRequests(
                 auth -> auth
-                    .requestMatchers("/login").permitAll()
+                    .requestMatchers(
+                        "/login",
+                        "/v3/**",
+                        "/swagger-ui/**"
+                    ).permitAll()
                     .anyRequest().authenticated()
             ).exceptionHandling(
                 configurer -> configurer
@@ -75,6 +97,47 @@ public class SecurityConfig {
                     jwt -> jwt.jwtAuthenticationConverter(new AuthoritiesConverter())
                 )
             ).build();
+    }
+
+    /**
+     * Open API config for Swagger.
+     *
+     * @return OpenAPI
+     */
+    @Bean
+    public OpenAPI openApi() {
+        final String name = "auth";
+        return new OpenAPI()
+            .addSecurityItem(
+                new SecurityRequirement()
+                    .addList(name)
+            ).components(
+                new Components()
+                    .addSecuritySchemes(
+                        name, new SecurityScheme()
+                            .name(name)
+                            .type(SecurityScheme.Type.OAUTH2)
+                            .flows(
+                                new OAuthFlows().authorizationCode(
+                                    new OAuthFlow()
+                                        .authorizationUrl(
+                                            "%s/protocol/openid-connect/auth"
+                                                .formatted(this.url)
+                                        ).refreshUrl(
+                                            "%s/protocol/openid-connect/token"
+                                                .formatted(this.url)
+                                        ).tokenUrl(
+                                            "%s/protocol/openid-connect/token"
+                                                .formatted(this.url)
+                                        ).scopes(new Scopes())
+                                )
+                            )
+                    )
+            ).info(
+                new Info()
+                    .title("PMO API")
+                    .version(this.version)
+            );
     }
 
 }

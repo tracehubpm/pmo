@@ -1,3 +1,6 @@
+application:
+  title: ${APP_TITLE}
+  version: ${APP_VERSION}
 server:
   port: 8080
   shutdown: graceful
