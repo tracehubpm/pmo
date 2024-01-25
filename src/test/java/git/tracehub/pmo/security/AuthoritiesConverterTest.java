@@ -69,7 +69,7 @@ final class AuthoritiesConverterTest {
     }
 
     @Test
-    void returnsEmptyListOfAuthoritiesWhenMapIsEmpty() {
+    void returnsEmptyListWhenMapIsEmpty() {
         final JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
         MatcherAssert.assertThat(
             "List of authorities %s isn't empty"
@@ -80,7 +80,7 @@ final class AuthoritiesConverterTest {
     }
 
     @Test
-    void returnsEmptyListOfAuthoritiesWhenMapIsNull() {
+    void returnsEmptyListWhenMapIsNull() {
         Mockito.when(this.jwt.getClaimAsMap("realm_access")).thenReturn(null);
         final JwtAuthenticationToken token = new AuthoritiesConverter().convert(this.jwt);
         MatcherAssert.assertThat(
