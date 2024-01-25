@@ -18,6 +18,7 @@
 package git.tracehub.pmo.security.expression;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
@@ -56,8 +57,8 @@ public final class Authentication {
                         new MapEntry<>("email", this.email)
                     )
                 ),
-                null,
-                null
+                "",
+                new ArrayList<>(0)
             )
         );
     }
