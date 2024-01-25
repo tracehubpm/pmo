@@ -1,3 +1,6 @@
+application:
+  title: IT
+  version: 0.0.1
 spring:
   datasource:
     username: test
