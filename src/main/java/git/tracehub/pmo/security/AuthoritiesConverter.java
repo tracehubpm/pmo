@@ -17,33 +17,34 @@
 
 package git.tracehub.pmo.security;
 
-import lombok.RequiredArgsConstructor;
-import org.cactoos.Scalar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
- * Does the user have provided role from token.
+ * Converter for granted authorities.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class ExistsRole implements Scalar<Boolean> {
-
-    /**
-     * JWT.
-     */
-    private final Jwt jwt;
-
-    /**
-     * Role.
-     */
-    private final String role;
+public final class AuthoritiesConverter implements Converter<Jwt, JwtAuthenticationToken> {
 
     @Override
-    public Boolean value() {
-        return new AuthoritiesConverter().convert(this.jwt).getAuthorities()
-            .contains(new SimpleGrantedAuthority(this.role));
+    public JwtAuthenticationToken convert(final Jwt jwt) {
+        final Map<String, Object> map = jwt.getClaimAsMap("realm_access");
+        final List<SimpleGrantedAuthority> authorities = new ArrayList<>(5);
+        if (map != null && !map.isEmpty()) {
+            authorities.addAll(
+                ((List<String>) map.get("roles"))
+                    .stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList()
+            );
+        }
+        return new JwtAuthenticationToken(jwt, authorities);
     }
 
 }

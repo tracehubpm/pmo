@@ -93,7 +93,9 @@ public class WebConfig {
                         }
                     )
             ).oauth2ResourceServer(
-                configurer -> configurer.jwt(Customizer.withDefaults())
+                configurer -> configurer.jwt(
+                    jwt -> jwt.jwtAuthenticationConverter(new AuthoritiesConverter())
+                )
             ).build();
     }
 

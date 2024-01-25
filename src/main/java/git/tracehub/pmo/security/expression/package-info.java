@@ -15,35 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.security;
-
-import lombok.RequiredArgsConstructor;
-import org.cactoos.Scalar;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
-
 /**
- * Does the user have provided role from token.
+ * Security expressions.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class ExistsRole implements Scalar<Boolean> {
-
-    /**
-     * JWT.
-     */
-    private final Jwt jwt;
-
-    /**
-     * Role.
-     */
-    private final String role;
-
-    @Override
-    public Boolean value() {
-        return new AuthoritiesConverter().convert(this.jwt).getAuthorities()
-            .contains(new SimpleGrantedAuthority(this.role));
-    }
-
-}
+package git.tracehub.pmo.security.expression;
