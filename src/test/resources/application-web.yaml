@@ -1,0 +1,15 @@
+application:
+  title: IT
+  version: 0.0.1
+spring:
+  datasource:
+    username: test
+    password: test
+  liquibase:
+    user: test
+    password: test
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: url
