@@ -10,6 +10,22 @@ Project architect: [@hizmailovich](https://github.com/hizmailovich)
 
 Project registry, facilities and its governance.
 
+### How to use?
+
+Project Management Office (PMO) is a RESTful JSON API with ability to
+manipulate with projects. To check this RESTful API, all you need is Swagger Docs,
+it can be found here: `/swagger-ui/index.html`.
+
+**Functionality:**
+
+* It allows to log in using login and password.
+* It allows to log in using such social networks as Google and GitHub.
+* It allows to create a project.
+
+After project creation bot [@tracehubgit](https://github.com/tracehubgit) will be invited
+to the repository and a `new` label for issues will be added. Moreover, a webhook for `push` events will be 
+created to notify PMO about changes in the repository.
+
 ### How to run?
 
 Before you start the app locally, you need to run Keycloak and PostgreSQL using such command:
