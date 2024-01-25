@@ -20,6 +20,7 @@ package git.tracehub.pmo.security;
 import com.jcabi.http.Request;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
+import java.net.HttpURLConnection;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
@@ -54,15 +55,8 @@ public final class IdpToken implements Scalar<String> {
     @Override
     @SneakyThrows
     public String value() {
-        /*
-         * @todo #1:45min/DEV fix 403 Forbidden error when trying to get
-         *   token from IDP. It seems that the user hasn't enough permissions
-         *   to get the token from IDP. We need to configure Keycloak to allow
-         *   the user to read the token. See the following link for more info:
-         *   https://www.keycloak.org/docs/latest/server_admin/#retrieving-external-idp-tokens
-         */
-        new JdkRequest(
-            "%s//broker/%s/token".formatted(
+        return new JdkRequest(
+            "%s/broker/%s/token".formatted(
                 this.url,
                 this.provider
             )
@@ -72,8 +66,11 @@ public final class IdpToken implements Scalar<String> {
                 HttpHeaders.AUTHORIZATION,
                 "Bearer %s".formatted(this.jwt.getTokenValue())
             ).fetch()
-            .as(RestResponse.class);
-        return null;
+            .as(RestResponse.class)
+            .assertStatus(HttpURLConnection.HTTP_OK)
+            .body()
+            .split("&")[0]
+            .split("=")[1];
     }
 
 }
