@@ -18,9 +18,8 @@
 package git.tracehub.pmo.platforms.github;
 
 import com.jcabi.github.Coordinates;
-import com.jcabi.github.RtGithub;
+import com.jcabi.github.Github;
 import git.tracehub.pmo.platforms.Action;
-import git.tracehub.pmo.platforms.RepoPath;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -43,18 +42,16 @@ public final class InviteCollaborator implements Action {
     private final String username;
 
     /**
-     * Token.
+     * Github.
      */
-    private final String token;
+    private final Github github;
 
     @Override
     @SneakyThrows
     public void exec() {
-        new RtGithub(this.token).repos()
+        this.github.repos()
             .get(
-                new Coordinates.Simple(
-                    new RepoPath(this.location).value()
-                )
+                new Coordinates.Simple(this.location)
             ).collaborators()
             .add(this.username);
     }
