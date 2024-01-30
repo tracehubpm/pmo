@@ -17,14 +17,14 @@
 
 package git.tracehub.pmo.platforms.github;
 
-import com.jcabi.github.Collaborators;
-import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import java.io.IOException;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 /**
  * Test suite for {@link InviteCollaborator}.
@@ -34,17 +34,18 @@ import org.mockito.Mockito;
 final class InviteCollaboratorTest {
 
     @Test
-    void invitesCollaboratorSuccessfully() {
-        final Github github = Mockito.mock(Github.class);
-        final Repos repos = Mockito.mock(Repos.class);
-        final Repo repo = Mockito.mock(Repo.class);
-        Mockito.when(github.repos()).thenReturn(repos);
-        Mockito.when(repos.get(Mockito.any())).thenReturn(repo);
-        Mockito.when(repo.collaborators()).thenReturn(Mockito.mock(Collaborators.class));
-        new InviteCollaborator("user/repo", "user", github).exec();
-        Mockito.verify(github, Mockito.times(1)).repos();
-        Mockito.verify(repos, Mockito.times(1)).get(Mockito.any());
-        Mockito.verify(repo, Mockito.times(1)).collaborators();
+    void invitesCollaboratorSuccessfully() throws IOException {
+        final String collaborator = "name";
+        final MkGithub github = new MkGithub("user");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("repo", false)
+        );
+        new InviteCollaborator("user/repo", collaborator, github).exec();
+        MatcherAssert.assertThat(
+            "Collaborator %s isn't invited".formatted(collaborator),
+            repo.collaborators().isCollaborator(collaborator),
+            new IsEqual<>(true)
+        );
     }
 
     @Test
