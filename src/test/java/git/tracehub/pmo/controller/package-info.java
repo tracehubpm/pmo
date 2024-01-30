@@ -16,8 +16,8 @@
  */
 
 /**
- * Security Integration Tests.
+ * Controllers Tests.
  *
  * @since 0.0.0
  */
-package it.security;
+package git.tracehub.pmo.controller;
