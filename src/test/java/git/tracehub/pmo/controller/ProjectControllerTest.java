@@ -18,7 +18,6 @@
 package git.tracehub.pmo.controller;
 
 import git.tracehub.pmo.project.Projects;
-import git.tracehub.pmo.security.IdpToken;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import org.cactoos.io.ResourceOf;
@@ -36,7 +35,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * Test suite for {@link IdpToken}.
+ * Test suite for {@link ProjectController}.
  *
  * @since 0.0.0
  */
