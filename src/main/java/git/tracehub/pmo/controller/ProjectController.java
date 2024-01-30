@@ -17,8 +17,10 @@
 
 package git.tracehub.pmo.controller;
 
+import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.RepoPath;
+import git.tracehub.pmo.platforms.github.CreateLabel;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
@@ -107,13 +109,16 @@ public class ProjectController {
          *   corresponding implementation to invite collaborators here.
          */
         if (new ExistsRole(jwt, "user_github").value()) {
+            final String location = new RepoPath(created.getLocation()).value();
+            final Github github = new RtGithub(
+                new IdpToken(jwt, "github", this.url).value()
+            );
             new InviteCollaborator(
-                new RepoPath(created.getLocation()).value(),
+                location,
                 "tracehubgit",
-                new RtGithub(
-                    new IdpToken(jwt, "github", this.url).value()
-                )
+                github
             ).exec();
+            new CreateLabel(location, github, "new").exec();
         }
         return created;
     }
