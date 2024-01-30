@@ -16,7 +16,7 @@
  */
 
 /**
- * Github Integration Tests.
+ * Github Platform Tests.
  *
  * @since 0.0.0
  */
