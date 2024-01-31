@@ -52,7 +52,7 @@ final class CreateLabelTest {
     void trowsOnInvalidLocation() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new CreateLabel("user", new MkGithub("user"), "label")
+            () -> new CreateLabel("user/repo", new MkGithub("user"), "label")
                 .exec(),
             "Exception is not thrown or valid"
         );
