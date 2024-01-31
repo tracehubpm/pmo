@@ -15,45 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
-
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
-import git.tracehub.pmo.platforms.Action;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-
 /**
- * Invite collaborator.
+ * Controllers Tests.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class InviteCollaborator implements Action {
-
-    /**
-     * Owner and repo.
-     */
-    private final String location;
-
-    /**
-     * Username.
-     */
-    private final String username;
-
-    /**
-     * Github.
-     */
-    private final Github github;
-
-    @Override
-    @SneakyThrows
-    public void exec() {
-        this.github.repos()
-            .get(
-                new Coordinates.Simple(this.location)
-            ).collaborators()
-            .add(this.username);
-    }
-
-}
+package git.tracehub.pmo.controller;

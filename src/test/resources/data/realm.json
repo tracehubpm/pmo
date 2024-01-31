@@ -43,13 +43,35 @@
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
   "failureFactor": 30,
+  "roles": {
+    "realm": [
+      {
+        "id": "79dad14b-4887-4002-a3f3-05dbd3c8d1bf",
+        "name": "user_github",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "test",
+        "attributes": {}
+      },
+      {
+        "id": "d6258175-81e1-4185-956f-19be7552950e",
+        "name": "read-token",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "test",
+        "attributes": {}
+      }
+    ]
+  },
   "defaultRole": {
     "id": "ae0de638-8b16-4d7f-9c1d-e1a55129f895",
-    "name": "default-roles-baeldung",
+    "name": "default-roles-test",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
-    "containerId": "baeldung"
+    "containerId": "test"
   },
   "requiredCredentials": [
     "password"
@@ -112,13 +134,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/baeldung/account/",
+      "baseUrl": "/realms/test/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/baeldung/account/*"
+        "/realms/test/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -153,13 +175,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/baeldung/account/",
+      "baseUrl": "/realms/test/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/baeldung/account/*"
+        "/realms/test/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -413,6 +435,16 @@
         "microprofile-jwt"
       ]
     }
+  ],
+  "groups": [
+    {
+      "id": "c0dde556-f6b3-4025-8de2-55e42319e1d3",
+      "name": "broker",
+      "path": "/broker"
+    }
+  ],
+  "defaultGroups": [
+    "/broker"
   ],
   "clientScopes": [
     {
@@ -1795,9 +1827,16 @@
       "clientRoles": {
         "account": [
           "view-profile",
-          "manage-account"
+          "manage-account",
+          "user_github"
+        ],
+        "broker": [
+          "read-token"
         ]
-      }
+      },
+      "realmRoles": [
+        "user_github"
+      ]
     }
   ]
 }
