@@ -34,6 +34,11 @@ import lombok.SneakyThrows;
 public final class CreateLabel implements Action {
 
     /**
+     * Label color.
+     */
+    private static final String COLOR = "fad8d8";
+
+    /**
      * Owner and repo.
      */
     private final String location;
@@ -59,7 +64,7 @@ public final class CreateLabel implements Action {
             false
         ).anyMatch(label -> this.name.equals(label.name()));
         if (!exists) {
-            labels.create(this.name, "fad8d8");
+            labels.create(this.name, CreateLabel.COLOR);
         }
     }
 
