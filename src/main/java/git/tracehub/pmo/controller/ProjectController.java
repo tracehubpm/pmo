@@ -27,6 +27,7 @@ import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
 import git.tracehub.pmo.security.ExistsRole;
 import git.tracehub.pmo.security.IdpToken;
+import java.awt.Color;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -114,11 +115,16 @@ public class ProjectController {
                 new IdpToken(jwt, "github", this.url).value()
             );
             new InviteCollaborator(
+                github,
                 location,
-                "tracehubgit",
-                github
+                "tracehubgit"
             ).exec();
-            new CreateLabel(location, github, "new").exec();
+            new CreateLabel(
+                github,
+                location,
+                "new",
+                Color.PINK
+            ).exec();
         }
         return created;
     }

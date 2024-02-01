@@ -21,6 +21,8 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Labels;
 import git.tracehub.pmo.platforms.Action;
+import git.tracehub.pmo.platforms.ColorInHex;
+import java.awt.Color;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -34,9 +36,9 @@ import lombok.SneakyThrows;
 public final class CreateLabel implements Action {
 
     /**
-     * Label color.
+     * Github.
      */
-    private static final String COLOR = "fad8d8";
+    private final Github github;
 
     /**
      * Owner and repo.
@@ -44,14 +46,14 @@ public final class CreateLabel implements Action {
     private final String location;
 
     /**
-     * Github.
-     */
-    private final Github github;
-
-    /**
      * Label name.
      */
     private final String name;
+
+    /**
+     * Label color.
+     */
+    private final Color color;
 
     @Override
     @SneakyThrows
@@ -64,7 +66,7 @@ public final class CreateLabel implements Action {
             false
         ).anyMatch(label -> this.name.equals(label.name()));
         if (!exists) {
-            labels.create(this.name, CreateLabel.COLOR);
+            labels.create(this.name, new ColorInHex(this.color).value());
         }
     }
 
