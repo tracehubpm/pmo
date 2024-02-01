@@ -42,7 +42,8 @@ final class InviteCollaboratorTest {
         );
         new InviteCollaborator("user/repo", collaborator, github).exec();
         MatcherAssert.assertThat(
-            "Collaborator %s isn't invited".formatted(collaborator),
+            "Collaborator %s isn't invited as expected"
+                .formatted(collaborator),
             repo.collaborators().isCollaborator(collaborator),
             new IsEqual<>(true)
         );
