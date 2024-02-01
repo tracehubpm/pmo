@@ -15,37 +15,39 @@
  * SOFTWARE.
  */
 
-package it.platforms.github;
+package git.tracehub.pmo.platforms;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
-import com.jcabi.github.RtGithub;
-import git.tracehub.pmo.platforms.github.CreateLabel;
 import java.awt.Color;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for {@link CreateLabel}.
+ * Test suite for {@link ColorInHex}.
  *
  * @since 0.0.0
  */
-final class CreateLabelIT {
+final class ColorInHexTest {
 
     @Test
-    void createsLabelSuccessfully() {
-        final String label = "new";
-        final String location = "hizmailovich/draft";
-        final String token = System.getProperty("GithubToken");
-        final Github github = new RtGithub(token);
-        new CreateLabel(github, location, label, Color.RED).exec();
+    void returnsCorrectHexValue() {
+        final String red = "ff0000";
         MatcherAssert.assertThat(
-            "Label %s isn't created".formatted(label),
-            github.repos().get(
-                new Coordinates.Simple(location)
-            ).labels().get(label).name(),
-            new IsEqual<>(label)
+            "Hex value for red isn't equal to %s".formatted(red),
+            new ColorInHex(Color.RED).value(),
+            new IsEqual<>(red)
+        );
+        final String pink = "ffafaf";
+        MatcherAssert.assertThat(
+            "Hex value for pink isn't equal to %s".formatted(pink),
+            new ColorInHex(Color.PINK).value(),
+            new IsEqual<>(pink)
+        );
+        final String blue = "0000ff";
+        MatcherAssert.assertThat(
+            "Hex value for blue isn't equal to %s".formatted(blue),
+            new ColorInHex(Color.BLUE).value(),
+            new IsEqual<>(blue)
         );
     }
 

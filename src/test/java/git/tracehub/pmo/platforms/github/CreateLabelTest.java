@@ -20,6 +20,7 @@ package git.tracehub.pmo.platforms.github;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import java.awt.Color;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -40,7 +41,7 @@ final class CreateLabelTest {
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("repo", false)
         );
-        new CreateLabel("user/repo", github, label).exec();
+        new CreateLabel(github, "user/repo", label, Color.BLUE).exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
             repo.labels().get(label).name(),
@@ -52,8 +53,12 @@ final class CreateLabelTest {
     void trowsOnInvalidLocation() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new CreateLabel("user/repo", new MkGithub("user"), "label")
-                .exec(),
+            () -> new CreateLabel(
+                new MkGithub("user"),
+                "user/repo",
+                "label",
+                Color.BLUE
+            ).exec(),
             "Exception is not thrown or valid"
         );
     }
