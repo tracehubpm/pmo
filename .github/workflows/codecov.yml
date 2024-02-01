@@ -20,7 +20,7 @@ jobs:
           restore-keys: |
             maven-
       - run: |
-          mvn clean install -DGithubToken=${{ secrets.GITHUB_TOKEN }} --errors --batch-mode
+          mvn clean install -DGithubToken=${{ secrets.TOKEN }} --errors --batch-mode
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
