@@ -40,7 +40,7 @@ final class InviteCollaboratorTest {
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("repo", false)
         );
-        new InviteCollaborator("user/repo", collaborator, github).exec();
+        new InviteCollaborator(github, "user/repo", collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"
                 .formatted(collaborator),
@@ -53,8 +53,11 @@ final class InviteCollaboratorTest {
     void trowsOnInvalidLocation() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new InviteCollaborator("user", "user", new MkGithub("user"))
-                .exec(),
+            () -> new InviteCollaborator(
+                new MkGithub("user"),
+                "user/repo",
+                "user"
+            ).exec(),
             "Exception is not thrown or valid"
         );
     }

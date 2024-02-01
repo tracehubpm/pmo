@@ -39,7 +39,7 @@ final class InviteCollaboratorIT {
         final String location = "hizmailovich/draft";
         final String token = System.getProperty("GithubToken");
         final Github github = new RtGithub(token);
-        new InviteCollaborator(location, collaborator, github).exec();
+        new InviteCollaborator(github, location, collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"
                 .formatted(collaborator),
