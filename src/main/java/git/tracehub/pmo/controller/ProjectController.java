@@ -19,6 +19,7 @@ package git.tracehub.pmo.controller;
 
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.RepoPath;
+import git.tracehub.pmo.platforms.github.CreateWebhook;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
@@ -61,6 +62,12 @@ public class ProjectController {
     private String url;
 
     /**
+     * Github host.
+     */
+    @Value("${platforms.github}")
+    private String host;
+
+    /**
      * Projects by user.
      *
      * @param jwt Jwt
@@ -89,7 +96,7 @@ public class ProjectController {
      * Employ new project.
      *
      * @param project Project
-     * @param jwt Jwt
+     * @param jwt     Jwt
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
@@ -107,12 +114,19 @@ public class ProjectController {
          *   corresponding implementation to invite collaborators here.
          */
         if (new ExistsRole(jwt, "user_github").value()) {
+            final String location = new RepoPath(created.getLocation()).value();
+            final String token = new IdpToken(jwt, "github", this.url).value();
             new InviteCollaborator(
-                new RepoPath(created.getLocation()).value(),
+                location,
                 "tracehubgit",
-                new RtGithub(
-                    new IdpToken(jwt, "github", this.url).value()
-                )
+                new RtGithub(token)
+            ).exec();
+            new CreateWebhook(
+                this.host,
+                token,
+                location,
+                "Tracehub",
+                "url"
             ).exec();
         }
         return created;
