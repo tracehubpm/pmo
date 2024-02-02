@@ -17,9 +17,8 @@
 
 package git.tracehub.pmo.platforms.github;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
 import com.jcabi.github.Labels;
+import com.jcabi.github.Repo;
 import git.tracehub.pmo.platforms.Action;
 import git.tracehub.pmo.platforms.ColorInHex;
 import java.awt.Color;
@@ -36,14 +35,9 @@ import lombok.SneakyThrows;
 public final class CreateLabel implements Action {
 
     /**
-     * Github.
+     * Github repository.
      */
-    private final Github github;
-
-    /**
-     * Owner and repo.
-     */
-    private final String location;
+    private final Repo repo;
 
     /**
      * Label name.
@@ -58,9 +52,7 @@ public final class CreateLabel implements Action {
     @Override
     @SneakyThrows
     public void exec() {
-        final Labels labels = this.github.repos()
-            .get(new Coordinates.Simple(this.location))
-            .labels();
+        final Labels labels = this.repo.labels();
         final boolean exists = StreamSupport.stream(
             labels.iterate().spliterator(),
             false
