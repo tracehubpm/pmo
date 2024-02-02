@@ -22,6 +22,7 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.github.CreateLabel;
 import java.awt.Color;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,8 @@ final class CreateLabelIT {
             .get(
                 new Coordinates.Simple("hizmailovich/draft")
             );
-        new CreateLabel(repo, label, Color.RED).exec();
+        new CreateLabel(repo, new ListOf<>(label), new ListOf<>(Color.RED))
+            .exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
             repo.labels().get(label).name(),

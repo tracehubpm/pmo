@@ -18,7 +18,6 @@
 package git.tracehub.pmo.platforms.github;
 
 import com.jcabi.github.Repo;
-import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
@@ -35,11 +34,7 @@ final class InviteCollaboratorTest {
     @Test
     void invitesCollaboratorSuccessfully() throws IOException {
         final String collaborator = "name";
-        final Repo repo = new MkGithub("user")
-            .repos()
-            .create(
-                new Repos.RepoCreate("repo", false)
-            );
+        final Repo repo = new MkGithub("user").randomRepo();
         new InviteCollaborator(repo, collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"

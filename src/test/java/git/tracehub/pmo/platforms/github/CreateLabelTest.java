@@ -18,10 +18,10 @@
 package git.tracehub.pmo.platforms.github;
 
 import com.jcabi.github.Repo;
-import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import java.awt.Color;
 import java.io.IOException;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -36,12 +36,9 @@ final class CreateLabelTest {
     @Test
     void createsLabelSuccessfully() throws IOException {
         final String label = "new";
-        final Repo repo = new MkGithub("user")
-            .repos()
-            .create(
-                new Repos.RepoCreate("repo", false)
-            );
-        new CreateLabel(repo, label, Color.BLUE).exec();
+        final Repo repo = new MkGithub("user").randomRepo();
+        new CreateLabel(repo, new ListOf<>(label), new ListOf<>(Color.BLUE))
+            .exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
             repo.labels().get(label).name(),
