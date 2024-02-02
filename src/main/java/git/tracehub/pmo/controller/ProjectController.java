@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.cactoos.list.ListOf;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -125,8 +126,8 @@ public class ProjectController {
             ).exec();
             new CreateLabel(
                 repo,
-                "new",
-                Color.PINK
+                new ListOf<>("new"),
+                new ListOf<>(Color.PINK)
             ).exec();
         }
         return created;

@@ -22,6 +22,7 @@ import com.jcabi.github.Repo;
 import git.tracehub.pmo.platforms.Action;
 import git.tracehub.pmo.platforms.ColorInHex;
 import java.awt.Color;
+import java.util.List;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -29,6 +30,7 @@ import lombok.SneakyThrows;
 /**
  * Create label in Github.
  *
+ * @checkstyle IllegalTokenCheck (40 lines)
  * @since 0.0.0
  */
 @RequiredArgsConstructor
@@ -40,25 +42,31 @@ public final class CreateLabel implements Action {
     private final Repo repo;
 
     /**
-     * Label name.
+     * Names of labels.
      */
-    private final String name;
+    private final List<String> names;
 
     /**
-     * Label color.
+     * Colors of labels.
      */
-    private final Color color;
+    private final List<Color> colors;
 
     @Override
     @SneakyThrows
     public void exec() {
         final Labels labels = this.repo.labels();
-        final boolean exists = StreamSupport.stream(
-            labels.iterate().spliterator(),
-            false
-        ).anyMatch(label -> this.name.equals(label.name()));
-        if (!exists) {
-            labels.create(this.name, new ColorInHex(this.color).value());
+        for (int index = 0; index < this.names.size(); index++) {
+            final String name = this.names.get(index);
+            final boolean exists = StreamSupport.stream(
+                labels.iterate().spliterator(),
+                false
+            ).anyMatch(label -> name.equals(label.name()));
+            if (!exists) {
+                labels.create(
+                    name,
+                    new ColorInHex(this.colors.get(index)).value()
+                );
+            }
         }
     }
 
