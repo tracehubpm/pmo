@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     name: Build
+    permissions: write-all
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-12]
@@ -29,6 +30,7 @@ jobs:
       - run: mvn clean install -DskipITs --errors --batch-mode
   it-test:
     name: Build Integrations
+    permissions: write-all
     strategy:
       matrix:
         os-integration: [ubuntu-20.04]
