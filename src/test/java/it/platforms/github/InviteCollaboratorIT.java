@@ -18,7 +18,7 @@
 package it.platforms.github;
 
 import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import java.io.IOException;
@@ -36,16 +36,17 @@ final class InviteCollaboratorIT {
     @Test
     void createsLabelSuccessfully() throws IOException {
         final String collaborator = "tracehubgit";
-        final String location = "hizmailovich/draft";
-        final String token = System.getProperty("GithubToken");
-        final Github github = new RtGithub(token);
-        new InviteCollaborator(github, location, collaborator).exec();
+        final Repo repo = new RtGithub(
+            System.getProperty("GithubToken")
+        ).repos()
+            .get(
+                new Coordinates.Simple("hizmailovich/draft")
+            );
+        new InviteCollaborator(repo, collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"
                 .formatted(collaborator),
-            github.repos().get(
-                new Coordinates.Simple(location)
-            ).collaborators().isCollaborator(collaborator),
+            repo.collaborators().isCollaborator(collaborator),
             new IsEqual<>(true)
         );
     }

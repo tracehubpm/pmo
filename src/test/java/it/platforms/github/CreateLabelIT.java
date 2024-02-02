@@ -18,7 +18,7 @@
 package it.platforms.github;
 
 import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.github.CreateLabel;
 import java.awt.Color;
@@ -36,15 +36,16 @@ final class CreateLabelIT {
     @Test
     void createsLabelSuccessfully() {
         final String label = "new";
-        final String location = "hizmailovich/draft";
-        final String token = System.getProperty("GithubToken");
-        final Github github = new RtGithub(token);
-        new CreateLabel(github, location, label, Color.RED).exec();
+        final Repo repo = new RtGithub(
+            System.getProperty("GithubToken")
+        ).repos()
+            .get(
+                new Coordinates.Simple("hizmailovich/draft")
+            );
+        new CreateLabel(repo, label, Color.RED).exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
-            github.repos().get(
-                new Coordinates.Simple(location)
-            ).labels().get(label).name(),
+            repo.labels().get(label).name(),
             new IsEqual<>(label)
         );
     }

@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,29 +36,16 @@ final class CreateLabelTest {
     @Test
     void createsLabelSuccessfully() throws IOException {
         final String label = "new";
-        final MkGithub github = new MkGithub("user");
-        final Repo repo = github.repos().create(
-            new Repos.RepoCreate("repo", false)
-        );
-        new CreateLabel(github, "user/repo", label, Color.BLUE).exec();
+        final Repo repo = new MkGithub("user")
+            .repos()
+            .create(
+                new Repos.RepoCreate("repo", false)
+            );
+        new CreateLabel(repo, label, Color.BLUE).exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
             repo.labels().get(label).name(),
             new IsEqual<>(label)
-        );
-    }
-
-    @Test
-    void trowsOnInvalidLocation() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new CreateLabel(
-                new MkGithub("user"),
-                "user/repo",
-                "label",
-                Color.BLUE
-            ).exec(),
-            "Exception is not thrown or valid"
         );
     }
 

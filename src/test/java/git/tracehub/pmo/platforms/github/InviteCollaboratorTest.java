@@ -23,7 +23,6 @@ import com.jcabi.github.mock.MkGithub;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,29 +35,17 @@ final class InviteCollaboratorTest {
     @Test
     void invitesCollaboratorSuccessfully() throws IOException {
         final String collaborator = "name";
-        final MkGithub github = new MkGithub("user");
-        final Repo repo = github.repos().create(
-            new Repos.RepoCreate("repo", false)
-        );
-        new InviteCollaborator(github, "user/repo", collaborator).exec();
+        final Repo repo = new MkGithub("user")
+            .repos()
+            .create(
+                new Repos.RepoCreate("repo", false)
+            );
+        new InviteCollaborator(repo, collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"
                 .formatted(collaborator),
             repo.collaborators().isCollaborator(collaborator),
             new IsEqual<>(true)
-        );
-    }
-
-    @Test
-    void trowsOnInvalidLocation() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new InviteCollaborator(
-                new MkGithub("user"),
-                "user/repo",
-                "user"
-            ).exec(),
-            "Exception is not thrown or valid"
         );
     }
 
