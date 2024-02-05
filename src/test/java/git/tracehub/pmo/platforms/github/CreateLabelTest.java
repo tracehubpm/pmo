@@ -19,6 +19,7 @@ package git.tracehub.pmo.platforms.github;
 
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.pmo.platforms.Label;
 import java.awt.Color;
 import java.io.IOException;
 import org.cactoos.list.ListOf;
@@ -37,7 +38,7 @@ final class CreateLabelTest {
     void createsLabelSuccessfully() throws IOException {
         final String label = "new";
         final Repo repo = new MkGithub("user").randomRepo();
-        new CreateLabel(repo, new ListOf<>(label), new ListOf<>(Color.BLUE))
+        new CreateLabel(repo, new ListOf<>(new Label(label, Color.BLUE)))
             .exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
