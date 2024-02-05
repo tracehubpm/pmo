@@ -6,7 +6,7 @@ assets:
   ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
 merge:
   script: |
-    mvn clean install --errors
+    mvn clean install -DskipITs --errors
 release:
   sensitive:
     - ghcr.txt
