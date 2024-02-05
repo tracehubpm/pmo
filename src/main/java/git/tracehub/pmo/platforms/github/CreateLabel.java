@@ -21,11 +21,12 @@ import com.jcabi.github.Labels;
 import com.jcabi.github.Repo;
 import git.tracehub.pmo.platforms.Action;
 import git.tracehub.pmo.platforms.ColorInHex;
-import java.awt.Color;
+import git.tracehub.pmo.platforms.Label;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.StreamSupport;
+import lombok.Lombok;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 /**
  * Create label in Github.
@@ -42,32 +43,31 @@ public final class CreateLabel implements Action {
     private final Repo repo;
 
     /**
-     * Names of labels.
+     * List of labels.
      */
-    private final List<String> names;
-
-    /**
-     * Colors of labels.
-     */
-    private final List<Color> colors;
+    private final List<Label> labels;
 
     @Override
-    @SneakyThrows
     public void exec() {
-        final Labels labels = this.repo.labels();
-        for (int index = 0; index < this.names.size(); index++) {
-            final String name = this.names.get(index);
-            final boolean exists = StreamSupport.stream(
-                labels.iterate().spliterator(),
-                false
-            ).anyMatch(label -> name.equals(label.name()));
-            if (!exists) {
-                labels.create(
-                    name,
-                    new ColorInHex(this.colors.get(index)).value()
-                );
+        final Labels items = this.repo.labels();
+        this.labels.forEach(
+            label -> {
+                final boolean absent = StreamSupport.stream(
+                    items.iterate().spliterator(),
+                    false
+                ).noneMatch(item -> item.name().equals(label.getName()));
+                if (absent) {
+                    try {
+                        items.create(
+                            label.getName(),
+                            new ColorInHex(label.getColor()).value()
+                        );
+                    } catch (final IOException ex) {
+                        throw Lombok.sneakyThrow(ex);
+                    }
+                }
             }
-        }
+        );
     }
 
 }

@@ -20,6 +20,7 @@ package git.tracehub.pmo.controller;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.Label;
 import git.tracehub.pmo.platforms.RepoPath;
 import git.tracehub.pmo.platforms.github.CreateLabel;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
@@ -126,8 +127,9 @@ public class ProjectController {
             ).exec();
             new CreateLabel(
                 repo,
-                new ListOf<>("new"),
-                new ListOf<>(Color.PINK)
+                new ListOf<>(
+                    new Label("new", Color.PINK)
+                )
             ).exec();
         }
         return created;
