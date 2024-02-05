@@ -22,7 +22,7 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.Label;
 import git.tracehub.pmo.platforms.RepoPath;
-import git.tracehub.pmo.platforms.github.CreateLabel;
+import git.tracehub.pmo.platforms.github.CreateLabels;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
@@ -125,7 +125,7 @@ public class ProjectController {
                 repo,
                 "tracehubgit"
             ).exec();
-            new CreateLabel(
+            new CreateLabels(
                 repo,
                 new ListOf<>(
                     new Label("new", Color.PINK)

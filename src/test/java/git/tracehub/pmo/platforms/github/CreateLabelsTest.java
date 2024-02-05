@@ -28,17 +28,17 @@ import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link CreateLabel}.
+ * Test suite for {@link CreateLabels}.
  *
  * @since 0.0.0
  */
-final class CreateLabelTest {
+final class CreateLabelsTest {
 
     @Test
     void createsLabelSuccessfully() throws IOException {
         final String label = "new";
         final Repo repo = new MkGithub("user").randomRepo();
-        new CreateLabel(repo, new ListOf<>(new Label(label, Color.BLUE)))
+        new CreateLabels(repo, new ListOf<>(new Label(label, Color.BLUE)))
             .exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),

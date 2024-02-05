@@ -29,13 +29,13 @@ import lombok.Lombok;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Create label in Github.
+ * Create labels in Github.
  *
  * @checkstyle IllegalTokenCheck (40 lines)
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class CreateLabel implements Action {
+public final class CreateLabels implements Action {
 
     /**
      * Github repository.

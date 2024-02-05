@@ -21,7 +21,7 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.platforms.Label;
-import git.tracehub.pmo.platforms.github.CreateLabel;
+import git.tracehub.pmo.platforms.github.CreateLabels;
 import java.awt.Color;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -29,11 +29,11 @@ import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for {@link CreateLabel}.
+ * Integration tests for {@link CreateLabels}.
  *
  * @since 0.0.0
  */
-final class CreateLabelIT {
+final class CreateLabelsIT {
 
     @Test
     void createsLabelSuccessfully() {
@@ -44,7 +44,7 @@ final class CreateLabelIT {
             .get(
                 new Coordinates.Simple("hizmailovich/draft")
             );
-        new CreateLabel(repo, new ListOf<>(new Label(label, Color.RED)))
+        new CreateLabels(repo, new ListOf<>(new Label(label, Color.RED)))
             .exec();
         MatcherAssert.assertThat(
             "Label %s isn't created".formatted(label),
