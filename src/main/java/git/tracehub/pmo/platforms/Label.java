@@ -24,10 +24,11 @@ import lombok.Getter;
 /**
  * Label.
  *
+ * @todo #8:30min try to refactor this code to avoid such data classes
  * @since 0.0.0
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public final class Label {
 
     /**
