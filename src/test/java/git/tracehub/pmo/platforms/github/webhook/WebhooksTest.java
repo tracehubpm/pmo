@@ -78,14 +78,19 @@ final class WebhooksTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidHost() {
+        final String url = "http://localhost:1000";
+        final String location = "user/repo";
         new Assertion<>(
             "Exception is not thrown or valid",
-            () ->  new Webhooks(
-                "http://localhost:1000",
-                "user/repo",
+            () -> new Webhooks(
+                url,
+                location,
                 "token"
             ).value(),
-            new Throws<>(IOException.class)
+            new Throws<>(
+                "Failed GET request to %s/repos/%s/hooks".formatted(url, location),
+                IOException.class
+            )
         ).affirm();
     }
 

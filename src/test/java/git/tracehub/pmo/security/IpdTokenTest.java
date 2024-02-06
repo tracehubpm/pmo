@@ -65,14 +65,19 @@ final class IpdTokenTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidHost() {
+        final String url = "http://localhost:1000";
+        final String provider = "provider";
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> new IdpToken(
                 Mockito.mock(Jwt.class),
-                "provider",
-                "http://localhost:1000"
+                provider,
+                url
             ).value(),
-            new Throws<>(IOException.class)
+            new Throws<>(
+                "Failed GET request to %s/broker/%s/token".formatted(url, provider),
+                IOException.class
+            )
         ).affirm();
     }
 
