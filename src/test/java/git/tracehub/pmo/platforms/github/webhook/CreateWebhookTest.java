@@ -62,4 +62,29 @@ final class CreateWebhookTest {
         container.stop();
     }
 
+    @Test
+    void doesNotCreateWebhookWhenAlreadyExists() throws IOException {
+        final MkContainer container = new MkGrizzlyContainer()
+            .next(
+                new MkAnswer.Simple(
+                    HttpURLConnection.HTTP_OK,
+                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"test/url\"},\"events\":[\"push\"]}]"
+                )
+            ).start();
+        final String location = "user/repo";
+        final String url = container.home().toString();
+        new CreateWebhook(
+            url.substring(0, url.length() - 1),
+            "token",
+            location,
+            "test/url"
+        ).exec();
+        MatcherAssert.assertThat(
+            "Webhook is created when it already exists",
+            container.take().uri().toString(),
+            new IsEqual<>("/repos/%s/hooks".formatted(location))
+        );
+        container.stop();
+    }
+
 }
