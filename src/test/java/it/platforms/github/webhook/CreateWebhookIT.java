@@ -45,7 +45,7 @@ final class CreateWebhookIT {
             new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
-            "Webhook isn't created as expected",
+            "Webhook %s isn't created as expected".formatted(url),
             new ExistsWebhook(host, location, token, url).value(),
             new IsEqual<>(true)
         );

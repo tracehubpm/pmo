@@ -57,7 +57,7 @@ final class CreateWebhookTest {
             new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
-            "Webhook isn't created as expected",
+            "Webhook %s isn't created as expected".formatted(url),
             container.take().uri().toString(),
             new IsEqual<>("/repos/%s/hooks".formatted(location))
         );
@@ -83,7 +83,7 @@ final class CreateWebhookTest {
             new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
-            "Webhook is created when it already exists",
+            "Webhook %s is created when it already exists".formatted(url),
             container.take().uri().toString(),
             new IsEqual<>("/repos/%s/hooks".formatted(location))
         );
