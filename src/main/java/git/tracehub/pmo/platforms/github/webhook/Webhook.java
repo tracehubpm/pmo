@@ -22,7 +22,7 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.cactoos.Text;
 
@@ -32,7 +32,7 @@ import org.cactoos.Text;
  * @checkstyle ConstantUsageCheck (20 lines)
  * @since 0.0.0
  */
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
