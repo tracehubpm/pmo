@@ -33,15 +33,16 @@ final class WebhookTest {
 
     @Test
     void returnsCorrectWebhookBody() {
+        final String webhook = new Webhook(
+            new MapOf<String, String>(
+                new MapEntry<>("url", "test/url"),
+                new MapEntry<>("content_type", "json")
+            ),
+            new ListOf<>("push")
+        ).asString();
         MatcherAssert.assertThat(
-            "Webhook body isn't correct",
-            new Webhook(
-                new MapOf<String, String>(
-                    new MapEntry<>("url", "test/url"),
-                    new MapEntry<>("content_type", "json")
-                ),
-                new ListOf<>("push")
-            ).asString(),
+            "Webhook body %s isn't correct".formatted(webhook),
+            webhook,
             new IsEqual<>(
                 "{\"config\":{\"content_type\":\"json\",\"url\":\"test/url\"},\"events\":[\"push\"]}"
             )
