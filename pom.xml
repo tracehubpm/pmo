@@ -53,6 +53,7 @@ SOFTWARE.
     <testcontainers.version>1.19.3</testcontainers.version>
     <grizzly.version>4.0.2</grizzly.version>
     <json-api.version>1.1.4</json-api.version>
+    <gson.version>2.10.1</gson.version>
   </properties>
   <dependencies>
     <dependency>
@@ -131,6 +132,11 @@ SOFTWARE.
       <groupId>io.github.eo-cqrs</groupId>
       <artifactId>eokson</artifactId>
       <version>${eokson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springdoc</groupId>

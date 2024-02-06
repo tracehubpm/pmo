@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.platforms.github.webhook;
 
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 
@@ -59,7 +60,10 @@ public final class ExistsWebhook implements Scalar<Boolean> {
             .stream()
             .anyMatch(
                 content -> this.url.equals(
-                    content.getConfig().getOrDefault("url", "")
+                    JsonParser.parseString(content.asString())
+                        .getAsJsonObject()
+                        .get("config").getAsJsonObject()
+                        .get("url").getAsString()
                 )
             );
     }

@@ -21,8 +21,7 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.cactoos.Text;
 
 /**
@@ -31,10 +30,8 @@ import org.cactoos.Text;
  * @checkstyle ConstantUsageCheck (20 lines)
  * @since 0.0.0
  */
-@Data
-@NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Webhook implements Text {
 
     /**
