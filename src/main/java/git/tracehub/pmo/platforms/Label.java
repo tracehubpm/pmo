@@ -15,33 +15,30 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
+package git.tracehub.pmo.platforms;
 
-import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
-import java.io.IOException;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
+import java.awt.Color;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Label.
  *
+ * @todo #8:30min try to refactor this code to avoid such data classes
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
+@Getter
+@AllArgsConstructor
+public final class Label {
 
-    @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
-        final Repo repo = new MkGithub("user").randomRepo();
-        new InviteCollaborator(repo, collaborator).exec();
-        MatcherAssert.assertThat(
-            "Collaborator %s isn't invited as expected"
-                .formatted(collaborator),
-            repo.collaborators().isCollaborator(collaborator),
-            new IsEqual<>(true)
-        );
-    }
+    /**
+     * Name.
+     */
+    private String name;
+
+    /**
+     * Color.
+     */
+    private Color color;
 
 }

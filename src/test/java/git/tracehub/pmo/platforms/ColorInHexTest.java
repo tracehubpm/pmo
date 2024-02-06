@@ -15,32 +15,39 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
+package git.tracehub.pmo.platforms;
 
-import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
-import java.io.IOException;
+import java.awt.Color;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Test suite for {@link ColorInHex}.
  *
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
+final class ColorInHexTest {
 
     @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
-        final Repo repo = new MkGithub("user").randomRepo();
-        new InviteCollaborator(repo, collaborator).exec();
+    void returnsCorrectHexValue() {
+        final String red = "ff0000";
         MatcherAssert.assertThat(
-            "Collaborator %s isn't invited as expected"
-                .formatted(collaborator),
-            repo.collaborators().isCollaborator(collaborator),
-            new IsEqual<>(true)
+            "Hex value for red isn't equal to %s".formatted(red),
+            new ColorInHex(Color.RED).value(),
+            new IsEqual<>(red)
+        );
+        final String pink = "ffafaf";
+        MatcherAssert.assertThat(
+            "Hex value for pink isn't equal to %s".formatted(pink),
+            new ColorInHex(Color.PINK).value(),
+            new IsEqual<>(pink)
+        );
+        final String blue = "0000ff";
+        MatcherAssert.assertThat(
+            "Hex value for blue isn't equal to %s".formatted(blue),
+            new ColorInHex(Color.BLUE).value(),
+            new IsEqual<>(blue)
         );
     }
 
