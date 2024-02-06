@@ -22,9 +22,15 @@ import com.jcabi.http.mock.MkContainer;
 import com.jcabi.http.mock.MkGrizzlyContainer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
+import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
 
 /**
  * Test suite for {@link Webhooks}.
@@ -35,26 +41,52 @@ final class WebhooksTest {
 
     @Test
     void returnsListOfWebhooks() throws IOException {
+        final Webhook webhook = new Webhook(
+            new MapOf<String, String>(
+                new MapEntry<>("url", "test/url"),
+                new MapEntry<>("content_type", "json")
+            ),
+            new ListOf<>("push")
+        );
         final MkContainer container = new MkGrizzlyContainer()
             .next(
                 new MkAnswer.Simple(
                     HttpURLConnection.HTTP_OK,
-                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"url\"},\"events\":[\"push\"]}]"
+                    "[%s]".formatted(webhook.asString())
                 )
             ).start();
         final String url = container.home().toString();
-        final String webhook = "url";
-        MatcherAssert.assertThat(
-            "Webhook %s doesn't exist".formatted(webhook),
-            new ExistsWebhook(
+        final List<Webhook> webhooks =
+            new Webhooks(
                 url.substring(0, url.length() - 1),
                 "user/repo",
-                "token",
-                webhook
-            ).value(),
-            new IsEqual<>(true)
+                "token"
+            ).value();
+        MatcherAssert.assertThat(
+            "List of webhooks is equal to null",
+            webhooks,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "List of webhooks doesn't contain %s".formatted(webhook),
+            webhooks,
+            Matchers.contains(webhook)
         );
         container.stop();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidHost() {
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () ->  new Webhooks(
+                "http://localhost:1000",
+                "user/repo",
+                "token"
+            ).value(),
+            new Throws<>(IOException.class)
+        ).affirm();
     }
 
 }
