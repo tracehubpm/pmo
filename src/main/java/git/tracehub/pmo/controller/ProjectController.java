@@ -29,6 +29,7 @@ import git.tracehub.pmo.security.IdpToken;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.cactoos.list.ListOf;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -125,7 +126,8 @@ public class ProjectController {
                 this.host,
                 token,
                 location,
-                "url"
+                "url",
+                new ListOf<>("push")
             ).exec();
         }
         return created;

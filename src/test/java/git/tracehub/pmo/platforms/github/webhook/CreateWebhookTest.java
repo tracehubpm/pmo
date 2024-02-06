@@ -22,6 +22,7 @@ import com.jcabi.http.mock.MkContainer;
 import com.jcabi.http.mock.MkGrizzlyContainer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,8 @@ final class CreateWebhookTest {
             url.substring(0, url.length() - 1),
             "token",
             location,
-            "url"
+            "url",
+            new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
             "Webhook isn't created as expected",
@@ -77,7 +79,8 @@ final class CreateWebhookTest {
             url.substring(0, url.length() - 1),
             "token",
             location,
-            "test/url"
+            "test/url",
+            new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
             "Webhook is created when it already exists",

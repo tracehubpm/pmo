@@ -19,6 +19,7 @@ package it.platforms.github.webhook;
 
 import git.tracehub.pmo.platforms.github.webhook.CreateWebhook;
 import git.tracehub.pmo.platforms.github.webhook.ExistsWebhook;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ final class CreateWebhookIT {
             "https://api.github.com",
             token,
             location,
-            url
+            url,
+            new ListOf<>("push")
         ).exec();
         MatcherAssert.assertThat(
             "Webhook isn't created as expected",

@@ -22,9 +22,9 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import git.tracehub.pmo.platforms.Action;
 import java.net.HttpURLConnection;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.springframework.http.HttpHeaders;
@@ -57,6 +57,11 @@ public final class CreateWebhook implements Action {
      */
     private final String url;
 
+    /**
+     * Events.
+     */
+    private final List<String> events;
+
     @Override
     @SneakyThrows
     public void exec() {
@@ -80,7 +85,7 @@ public final class CreateWebhook implements Action {
                             new MapEntry<>("url", this.url),
                             new MapEntry<>("content_type", "json")
                         ),
-                        new ListOf<>("push")
+                        this.events
                     ).asString()
                 ).back()
                 .header(
