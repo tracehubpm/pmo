@@ -48,11 +48,6 @@ public final class Webhook implements Text {
      */
     private List<String> events;
 
-    /**
-     * Id.
-     */
-    private long id;
-
     @Override
     public String asString() {
         return new Gson().toJson(this);

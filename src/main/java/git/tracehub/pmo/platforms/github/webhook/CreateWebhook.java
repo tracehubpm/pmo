@@ -60,28 +60,35 @@ public final class CreateWebhook implements Action {
     @Override
     @SneakyThrows
     public void exec() {
-        new JdkRequest(
-            "%s/repos/%s/hooks".formatted(
-                this.host,
-                this.location
-            )
-        ).method(Request.POST)
-            .body()
-            .set(
-                new Webhook(
-                    new MapOf<String, String>(
-                        new MapEntry<>("url", this.url),
-                        new MapEntry<>("content_type", "json")
-                    ),
-                    new ListOf<>("push"),
-                    0L
-                ).asString()
-            ).back()
-            .header(
-                HttpHeaders.AUTHORIZATION,
-                "Bearer %s".formatted(this.token)
-            ).fetch()
-            .as(RestResponse.class)
-            .assertStatus(HttpURLConnection.HTTP_CREATED);
+        final boolean exists = new ExistsWebhook(
+            this.host,
+            this.location,
+            this.token,
+            this.url
+        ).value();
+        if (!exists) {
+            new JdkRequest(
+                "%s/repos/%s/hooks".formatted(
+                    this.host,
+                    this.location
+                )
+            ).method(Request.POST)
+                .body()
+                .set(
+                    new Webhook(
+                        new MapOf<String, String>(
+                            new MapEntry<>("url", this.url),
+                            new MapEntry<>("content_type", "json")
+                        ),
+                        new ListOf<>("push")
+                    ).asString()
+                ).back()
+                .header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer %s".formatted(this.token)
+                ).fetch()
+                .as(RestResponse.class)
+                .assertStatus(HttpURLConnection.HTTP_CREATED);
+        }
     }
 }
