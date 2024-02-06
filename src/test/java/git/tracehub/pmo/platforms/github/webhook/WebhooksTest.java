@@ -15,40 +15,46 @@
  * SOFTWARE.
  */
 
-package it.platforms.github;
+package git.tracehub.pmo.platforms.github.webhook;
 
-import git.tracehub.pmo.platforms.github.webhook.CreateWebhook;
-import git.tracehub.pmo.platforms.github.webhook.ExistsWebhook;
-import it.platforms.github.webhook.DeleteWebhook;
+import com.jcabi.http.mock.MkAnswer;
+import com.jcabi.http.mock.MkContainer;
+import com.jcabi.http.mock.MkGrizzlyContainer;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for {@link CreateWebhook}.
+ * Test suite for {@link Webhooks}.
  *
  * @since 0.0.0
  */
-final class CreateWebhookIT {
+final class WebhooksTest {
 
     @Test
-    void createsWebhookSuccessfully() {
-        final String host = "https://api.github.com";
-        final String url = "http://it/webhook";
-        final String location = "hizmailovich/draft";
-        final String token = System.getProperty("GithubToken");
-        new DeleteWebhook(host, location, token, url).exec();
-        new CreateWebhook(
-            "https://api.github.com",
-            token,
-            location,
-            url
-        ).exec();
+    void returnsListOfWebhooks() throws IOException {
+        final MkContainer container = new MkGrizzlyContainer()
+            .next(
+                new MkAnswer.Simple(
+                    HttpURLConnection.HTTP_OK,
+                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"url\"},\"events\":[\"push\"]}]"
+                )
+            ).start();
+        final String url = container.home().toString();
+        final String webhook = "url";
         MatcherAssert.assertThat(
-            "Webhook isn't created as expected",
-            new ExistsWebhook(host, location, token, url).value(),
+            "Webhook %s doesn't exist".formatted(webhook),
+            new ExistsWebhook(
+                url.substring(0, url.length() - 1),
+                "user/repo",
+                "token",
+                webhook
+            ).value(),
             new IsEqual<>(true)
         );
+        container.stop();
     }
 
 }

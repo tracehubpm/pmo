@@ -38,6 +38,11 @@ final class CreateWebhookTest {
         final MkContainer container = new MkGrizzlyContainer()
             .next(
                 new MkAnswer.Simple(
+                    HttpURLConnection.HTTP_OK,
+                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"test/url\"},\"events\":[\"push\"]}]"
+                )
+            ).next(
+                new MkAnswer.Simple(
                     HttpURLConnection.HTTP_CREATED
                 )
             ).start();

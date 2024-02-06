@@ -15,36 +15,30 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github.webhook;
+package it.platforms.github.webhook;
 
-import org.cactoos.list.ListOf;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import git.tracehub.pmo.platforms.github.webhook.Webhooks;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link Webhook}.
+ * Integration tests for {@link Webhooks}.
  *
  * @since 0.0.0
  */
-final class WebhookTest {
+final class WebhooksIT {
 
     @Test
-    void returnsCorrectWebhookBody() {
+    void returnsListOfWebhooks() {
         MatcherAssert.assertThat(
-            "Webhook body isn't correct",
-            new Webhook(
-                new MapOf<String, String>(
-                    new MapEntry<>("url", "test/url"),
-                    new MapEntry<>("content_type", "json")
-                ),
-                new ListOf<>("push")
-            ).asString(),
-            new IsEqual<>(
-                "{\"config\":{\"content_type\":\"json\",\"url\":\"test/url\"},\"events\":[\"push\"]}"
-            )
+            "Webhooks aren't retrieved",
+            new Webhooks(
+                "https://api.github.com",
+                "hizmailovich/draft",
+                System.getProperty("GithubToken")
+            ).value(),
+            Matchers.notNullValue()
         );
     }
 

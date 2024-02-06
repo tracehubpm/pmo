@@ -17,35 +17,44 @@
 
 package git.tracehub.pmo.platforms.github.webhook;
 
-import org.cactoos.list.ListOf;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import com.jcabi.http.mock.MkAnswer;
+import com.jcabi.http.mock.MkContainer;
+import com.jcabi.http.mock.MkGrizzlyContainer;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link Webhook}.
+ * Test suite for {@link ExistsWebhook}.
  *
  * @since 0.0.0
  */
-final class WebhookTest {
+final class ExistsWebhookTest {
 
     @Test
-    void returnsCorrectWebhookBody() {
+    void checksIfWebhookExists() throws IOException {
+        final MkContainer container = new MkGrizzlyContainer()
+            .next(
+                new MkAnswer.Simple(
+                    HttpURLConnection.HTTP_OK,
+                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"url\"},\"events\":[\"push\"]}]"
+                )
+            ).start();
+        final String url = container.home().toString();
+        final String webhook = "url";
         MatcherAssert.assertThat(
-            "Webhook body isn't correct",
-            new Webhook(
-                new MapOf<String, String>(
-                    new MapEntry<>("url", "test/url"),
-                    new MapEntry<>("content_type", "json")
-                ),
-                new ListOf<>("push")
-            ).asString(),
-            new IsEqual<>(
-                "{\"config\":{\"content_type\":\"json\",\"url\":\"test/url\"},\"events\":[\"push\"]}"
-            )
+            "Webhook %s doesn't exist".formatted(webhook),
+            new ExistsWebhook(
+                url.substring(0, url.length() - 1),
+                "user/repo",
+                "token",
+                webhook
+            ).value(),
+            new IsEqual<>(true)
         );
+        container.stop();
     }
 
 }
