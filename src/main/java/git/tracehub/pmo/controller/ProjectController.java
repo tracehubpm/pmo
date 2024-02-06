@@ -135,12 +135,13 @@ public class ProjectController {
                 new ListOf<>(
                     new Label("new", Color.PINK)
                 )
-             ).exec();
+            ).exec();
             new CreateWebhook(
                 this.host,
                 token,
                 location,
-                "url"
+                "url",
+                new ListOf<>("push")
             ).exec();
         }
         return created;
