@@ -17,18 +17,25 @@
 
 package git.tracehub.pmo.platforms.github;
 
+import com.jcabi.github.Labels;
 import com.jcabi.github.Repo;
 import git.tracehub.pmo.platforms.Action;
+import git.tracehub.pmo.platforms.ColorInHex;
+import git.tracehub.pmo.platforms.Label;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.StreamSupport;
+import lombok.Lombok;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 /**
- * Invite collaborator.
+ * Create labels in Github.
  *
+ * @checkstyle IllegalTokenCheck (40 lines)
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class InviteCollaborator implements Action {
+public final class CreateLabels implements Action {
 
     /**
      * Github repository.
@@ -36,15 +43,31 @@ public final class InviteCollaborator implements Action {
     private final Repo repo;
 
     /**
-     * Username.
+     * List of labels.
      */
-    private final String username;
+    private final List<Label> labels;
 
     @Override
-    @SneakyThrows
     public void exec() {
-        this.repo.collaborators()
-            .add(this.username);
+        final Labels items = this.repo.labels();
+        this.labels.forEach(
+            label -> {
+                final boolean absent = StreamSupport.stream(
+                    items.iterate().spliterator(),
+                    false
+                ).noneMatch(item -> item.name().equals(label.getName()));
+                if (absent) {
+                    try {
+                        items.create(
+                            label.getName(),
+                            new ColorInHex(label.getColor()).value()
+                        );
+                    } catch (final IOException ex) {
+                        throw Lombok.sneakyThrow(ex);
+                    }
+                }
+            }
+        );
     }
 
 }

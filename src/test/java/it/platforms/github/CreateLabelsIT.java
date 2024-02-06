@@ -15,32 +15,41 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
+package it.platforms.github;
 
+import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
-import java.io.IOException;
+import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.Label;
+import git.tracehub.pmo.platforms.github.CreateLabels;
+import java.awt.Color;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Integration tests for {@link CreateLabels}.
  *
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
+final class CreateLabelsIT {
 
     @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
-        final Repo repo = new MkGithub("user").randomRepo();
-        new InviteCollaborator(repo, collaborator).exec();
+    void createsLabelSuccessfully() {
+        final String label = "new";
+        final Repo repo = new RtGithub(
+            System.getProperty("GithubToken")
+        ).repos()
+            .get(
+                new Coordinates.Simple("hizmailovich/draft")
+            );
+        new CreateLabels(repo, new ListOf<>(new Label(label, Color.RED)))
+            .exec();
         MatcherAssert.assertThat(
-            "Collaborator %s isn't invited as expected"
-                .formatted(collaborator),
-            repo.collaborators().isCollaborator(collaborator),
-            new IsEqual<>(true)
+            "Label %s isn't created".formatted(label),
+            repo.labels().get(label).name(),
+            new IsEqual<>(label)
         );
     }
 

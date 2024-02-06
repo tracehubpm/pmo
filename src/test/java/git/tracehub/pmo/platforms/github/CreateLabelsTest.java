@@ -19,28 +19,31 @@ package git.tracehub.pmo.platforms.github;
 
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.pmo.platforms.Label;
+import java.awt.Color;
 import java.io.IOException;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Test suite for {@link CreateLabels}.
  *
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
+final class CreateLabelsTest {
 
     @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
+    void createsLabelSuccessfully() throws IOException {
+        final String label = "new";
         final Repo repo = new MkGithub("user").randomRepo();
-        new InviteCollaborator(repo, collaborator).exec();
+        new CreateLabels(repo, new ListOf<>(new Label(label, Color.BLUE)))
+            .exec();
         MatcherAssert.assertThat(
-            "Collaborator %s isn't invited as expected"
-                .formatted(collaborator),
-            repo.collaborators().isCollaborator(collaborator),
-            new IsEqual<>(true)
+            "Label %s isn't created".formatted(label),
+            repo.labels().get(label).name(),
+            new IsEqual<>(label)
         );
     }
 

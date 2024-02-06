@@ -17,17 +17,23 @@
 
 package git.tracehub.pmo.controller;
 
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.Label;
 import git.tracehub.pmo.platforms.RepoPath;
+import git.tracehub.pmo.platforms.github.CreateLabels;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
 import git.tracehub.pmo.security.ExistsRole;
 import git.tracehub.pmo.security.IdpToken;
+import java.awt.Color;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.cactoos.list.ListOf;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -107,11 +113,22 @@ public class ProjectController {
          *   corresponding implementation to invite collaborators here.
          */
         if (new ExistsRole(jwt, "user_github").value()) {
+            final Repo repo = new RtGithub(
+                new IdpToken(jwt, "github", this.url).value()
+            ).repos()
+                .get(
+                    new Coordinates.Simple(
+                        new RepoPath(created.getLocation()).value()
+                    )
+                );
             new InviteCollaborator(
-                new RepoPath(created.getLocation()).value(),
-                "tracehubgit",
-                new RtGithub(
-                    new IdpToken(jwt, "github", this.url).value()
+                repo,
+                "tracehubgit"
+            ).exec();
+            new CreateLabels(
+                repo,
+                new ListOf<>(
+                    new Label("new", Color.PINK)
                 )
             ).exec();
         }

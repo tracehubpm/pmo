@@ -15,33 +15,9 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
-
-import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
-import java.io.IOException;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Github Integration Tests.
  *
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
-
-    @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
-        final Repo repo = new MkGithub("user").randomRepo();
-        new InviteCollaborator(repo, collaborator).exec();
-        MatcherAssert.assertThat(
-            "Collaborator %s isn't invited as expected"
-                .formatted(collaborator),
-            repo.collaborators().isCollaborator(collaborator),
-            new IsEqual<>(true)
-        );
-    }
-
-}
+package it.platforms.github;
