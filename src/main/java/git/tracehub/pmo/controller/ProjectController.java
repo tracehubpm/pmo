@@ -141,7 +141,7 @@ public class ProjectController {
                 token,
                 location,
                 "url",
-                new ListOf<>("push")
+                new ListOf<>("push", "issues")
             ).exec();
         }
         return created;

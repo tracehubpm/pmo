@@ -36,13 +36,13 @@ final class CreateWebhookIT {
         final String host = "https://api.github.com";
         final String url = "http://it/webhook";
         final String location = "hizmailovich/draft";
-        final String token = System.getProperty("GithubToken");
+        final String token = "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";
         new CreateWebhook(
             "https://api.github.com",
             token,
             location,
             url,
-            new ListOf<>("push")
+            new ListOf<>("push", "issues")
         ).exec();
         MatcherAssert.assertThat(
             "Webhook %s isn't created as expected".formatted(url),
