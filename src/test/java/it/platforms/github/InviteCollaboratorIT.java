@@ -15,26 +15,33 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.platforms.github;
+package it.platforms.github;
 
+import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
+import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.platforms.github.InviteCollaborator;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link InviteCollaborator}.
+ * Integration tests for {@link InviteCollaborator}.
  *
  * @since 0.0.0
  */
-final class InviteCollaboratorTest {
+final class InviteCollaboratorIT {
 
     @Test
-    void invitesCollaboratorSuccessfully() throws IOException {
-        final String collaborator = "name";
-        final Repo repo = new MkGithub("user").randomRepo();
+    void createsLabelSuccessfully() throws IOException {
+        final String collaborator = "tracehubgit";
+        final Repo repo = new RtGithub(
+            System.getProperty("GithubToken")
+        ).repos()
+            .get(
+                new Coordinates.Simple("hizmailovich/draft")
+            );
         new InviteCollaborator(repo, collaborator).exec();
         MatcherAssert.assertThat(
             "Collaborator %s isn't invited as expected"

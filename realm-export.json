@@ -27,8 +27,8 @@
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": false,
-  "registrationEmailAsUsername": false,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
   "rememberMe": false,
   "verifyEmail": false,
   "loginWithEmailAllowed": true,
@@ -56,6 +56,9 @@
             "uma_authorization"
           ],
           "client": {
+            "broker": [
+              "read-token"
+            ],
             "account": [
               "view-profile",
               "manage-account"
@@ -88,6 +91,15 @@
         "id": "afb79c93-03f6-404f-96c8-080c7803d2a1",
         "name": "offline_access",
         "description": "${role_offline-access}",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "458b384c-be7e-4622-b38c-739cc99fcdec",
+        "attributes": {}
+      },
+      {
+        "id": "d6258175-81e1-4185-956f-19be7552950e",
+        "name": "read-token",
+        "description": "",
         "composite": false,
         "clientRole": false,
         "containerId": "458b384c-be7e-4622-b38c-739cc99fcdec",
@@ -449,7 +461,13 @@
       ]
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "c0dde556-f6b3-4025-8de2-55e42319e1d3",
+      "name": "broker",
+      "path": "/broker"
+    }
+  ],
   "defaultRole": {
     "id": "5b9a10ca-eb05-480b-b300-d6304d3c9383",
     "name": "default-roles-pmo",
@@ -458,6 +476,9 @@
     "clientRole": false,
     "containerId": "458b384c-be7e-4622-b38c-739cc99fcdec"
   },
+  "defaultGroups": [
+    "/broker"
+  ],
   "requiredCredentials": [
     "password"
   ],
@@ -501,6 +522,14 @@
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "scopeMappings": [
+    {
+      "clientScope": "broker",
+      "roles": [
+        "default-roles-pmo",
+        "user_github",
+        "user"
+      ]
+    },
     {
       "clientScope": "offline_access",
       "roles": [
@@ -639,7 +668,9 @@
       "publicClient": true,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
-      "attributes": {},
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
@@ -677,7 +708,9 @@
       "publicClient": false,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
-      "attributes": {},
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
@@ -715,7 +748,9 @@
       "publicClient": false,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
-      "attributes": {},
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
@@ -832,6 +867,7 @@
         "oidc.ciba.grant.enabled": "false",
         "client.secret.creation.time": "1705571311",
         "backchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "+",
         "oauth2.device.authorization.grant.enabled": "false",
         "display.on.consent.screen": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
@@ -844,6 +880,7 @@
         "acr",
         "profile",
         "roles",
+        "broker",
         "email"
       ],
       "optionalClientScopes": [
@@ -1090,6 +1127,31 @@
       ]
     },
     {
+      "id": "0f64b664-d5a9-4f30-b551-32c26d7f93d4",
+      "name": "broker",
+      "description": "",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "gui.order": "",
+        "consent.screen.text": ""
+      },
+      "protocolMappers": [
+        {
+          "id": "32055c55-3dc9-4089-a159-3974adf3e239",
+          "name": "read-token",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-claims-param-token-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
       "id": "750a5109-7aba-474f-b99c-a583c5cb648d",
       "name": "address",
       "description": "OpenID Connect built-in scope: address",
@@ -1166,6 +1228,7 @@
           "config": {
             "introspection.token.claim": "true",
             "multivalued": "true",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -1317,7 +1380,8 @@
           "config": {
             "id.token.claim": "true",
             "introspection.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
           }
         }
       ]
@@ -1398,7 +1462,8 @@
     "email",
     "web-origins",
     "acr",
-    "roles"
+    "roles",
+    "broker"
   ],
   "defaultOptionalClientScopes": [
     "offline_access",
@@ -1451,16 +1516,18 @@
   ],
   "identityProviderMappers": [
     {
-      "id": "065ac658-7dca-4bf1-95f8-586daf8f5ba5",
+      "id": "f4175660-fec2-4438-85c3-b8e98583b129",
       "name": "read-token",
       "identityProviderAlias": "github",
       "identityProviderMapper": "github-user-attribute-mapper",
       "config": {
-        "syncMode": "INHERIT"
+        "syncMode": "INHERIT",
+        "jsonField": "resource_access.${client_id}.roles.${role_read-token}",
+        "userAttribute": "read-token"
       }
     },
     {
-      "id": "4025541b-ece8-463f-9d2c-6395f62ea837",
+      "id": "a98d2b6a-c98b-4223-be0f-3af541f6c514",
       "name": "Github role",
       "identityProviderAlias": "github",
       "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
@@ -1547,14 +1614,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-usermodel-attribute-mapper",
             "oidc-usermodel-property-mapper",
-            "saml-user-attribute-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "saml-role-list-mapper",
             "saml-user-property-mapper",
             "oidc-full-name-mapper",
-            "oidc-address-mapper"
+            "oidc-address-mapper",
+            "saml-user-attribute-mapper",
+            "saml-role-list-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-usermodel-attribute-mapper"
           ]
         }
       },
@@ -1566,14 +1633,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "oidc-full-name-mapper",
+            "oidc-address-mapper",
             "saml-user-attribute-mapper",
             "saml-user-property-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "oidc-address-mapper",
-            "oidc-usermodel-property-mapper",
             "saml-role-list-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-full-name-mapper"
+            "oidc-usermodel-property-mapper",
+            "oidc-sha256-pairwise-sub-mapper"
           ]
         }
       }
@@ -2256,12 +2323,16 @@
     "cibaExpiresIn": "120",
     "cibaAuthRequestedUserHint": "login_hint",
     "oauth2DeviceCodeLifespan": "600",
+    "clientOfflineSessionMaxLifespan": "0",
     "oauth2DevicePollingInterval": "5",
+    "clientSessionIdleTimeout": "0",
     "parRequestUriLifespan": "60",
+    "clientSessionMaxLifespan": "0",
+    "clientOfflineSessionIdleTimeout": "0",
     "cibaInterval": "5",
     "realmReusableOtpCode": "false"
   },
-  "keycloakVersion": "23.0.4",
+  "keycloakVersion": "23.0.2",
   "userManagedAccessAllowed": false,
   "clientProfiles": {
     "profiles": []
