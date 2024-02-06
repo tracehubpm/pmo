@@ -17,11 +17,11 @@
 
 package git.tracehub.pmo.platforms.github.webhook;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import com.jcabi.http.Request;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
+import com.nimbusds.jose.shaded.gson.Gson;
 import java.net.HttpURLConnection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,21 +55,20 @@ public final class Webhooks implements Scalar<List<Webhook>> {
     @Override
     @SneakyThrows
     public List<Webhook> value() {
-        return new ObjectMapper()
-            .readValue(
-                new JdkRequest(
-                    "%s/repos/%s/hooks".formatted(this.host, this.location)
-                ).method(Request.GET)
-                    .header(
-                        HttpHeaders.AUTHORIZATION,
-                        "Bearer %s".formatted(this.token)
-                    ).fetch()
-                    .as(RestResponse.class)
-                    .assertStatus(HttpURLConnection.HTTP_OK)
-                    .body(),
-                new TypeReference<>() {
-                }
-            );
+        return new Gson().fromJson(
+            new JdkRequest(
+                "%s/repos/%s/hooks".formatted(this.host, this.location)
+            ).method(Request.GET)
+                .header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer %s".formatted(this.token)
+                ).fetch()
+                .as(RestResponse.class)
+                .assertStatus(HttpURLConnection.HTTP_OK)
+                .body(),
+            new TypeToken<List<Webhook>>() {
+            }.getType()
+        );
     }
 
 }

@@ -17,7 +17,6 @@
 
 package git.tracehub.pmo.platforms.github.webhook;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nimbusds.jose.shaded.gson.Gson;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ import org.cactoos.Text;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Webhook implements Text {
 
     /**
