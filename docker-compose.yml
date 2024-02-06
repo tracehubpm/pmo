@@ -11,6 +11,8 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    networks:
+      - pmo
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.2
     container_name: keycloak
@@ -21,13 +23,31 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: password
     ports:
-      - '8090:8080'
+      - '8090:8090'
+    networks:
+      - pmo
     depends_on:
       - db
-    command: start-dev --import-realm
+    command: start-dev --import-realm --http-port=8090
     volumes:
       - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+  app:
+    container_name: tracehub-pmo
+    build: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+      - keycloak
+    networks:
+      - pmo
+    env_file:
+      - ./.env
 
 volumes:
   pgdata:
     driver: local
+
+networks:
+  pmo:
+    driver: bridge
