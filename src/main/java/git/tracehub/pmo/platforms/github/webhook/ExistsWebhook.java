@@ -18,7 +18,6 @@
 package git.tracehub.pmo.platforms.github.webhook;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 
 /**
@@ -54,7 +53,6 @@ public final class ExistsWebhook implements Scalar<Boolean> {
     private final String url;
 
     @Override
-    @SneakyThrows
     public Boolean value() {
         return new Webhooks(this.host, this.location, this.token)
             .value()
