@@ -62,7 +62,7 @@ public class DefaultTickets implements Tickets {
 
     @Override
     @SneakyThrows
-    public Ticket byNumber(final Long number, final String repo) {
+    public Ticket byNumber(final int number, final String repo) {
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("select-ticket-by-job-and-repo.sql").asString()

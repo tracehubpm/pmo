@@ -45,7 +45,7 @@ public class Ticket {
     /**
      * Issue number.
      */
-    private Long number;
+    private int number;
 
     /**
      * Repository.

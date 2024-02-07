@@ -22,4 +22,4 @@ SELECT id,
        job,
        status
 FROM projects.tickets
-WHERE job = ? AND  repo = ?'';
+WHERE job = ? AND  repo = ?;

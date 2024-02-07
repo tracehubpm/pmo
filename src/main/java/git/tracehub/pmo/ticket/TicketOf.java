@@ -42,7 +42,7 @@ public final class TicketOf implements Scalar<Ticket> {
         return new Ticket(
             UUID.fromString(this.set.getString("id")),
             UUID.fromString(this.set.getString("project")),
-            this.set.getLong("number"),
+            this.set.getInt("number"),
             this.set.getString("repo"),
             this.set.getString("job"),
             Ticket.Status.valueOf(this.set.getString("status"))

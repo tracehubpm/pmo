@@ -40,7 +40,7 @@ public interface Tickets {
      * @param repo Repository name
      * @return Ticket
      */
-    Ticket byNumber(Long number, String repo);
+    Ticket byNumber(int number, String repo);
 
     /**
      * Create ticket.
