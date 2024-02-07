@@ -15,49 +15,62 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.security;
+package git.tracehub.pmo.platforms.github.webhook;
 
 import com.jcabi.http.mock.MkAnswer;
 import com.jcabi.http.mock.MkContainer;
 import com.jcabi.http.mock.MkGrizzlyContainer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
+import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.llorllale.cactoos.matchers.Assertion;
 import org.llorllale.cactoos.matchers.Throws;
-import org.mockito.Mockito;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Test suite for {@link IdpToken}.
+ * Test suite for {@link Webhooks}.
  *
  * @since 0.0.0
  */
-final class IpdTokenTest {
+final class WebhooksTest {
 
     @Test
-    void retrievesTokenSuccessfully() throws IOException {
-        final String expected = "token";
+    void returnsListOfWebhooks() throws IOException {
+        final Webhook webhook = new Webhook(
+            new MapOf<String, String>(
+                new MapEntry<>("url", "test/url"),
+                new MapEntry<>("content_type", "json")
+            ),
+            new ListOf<>("push")
+        );
         final MkContainer container = new MkGrizzlyContainer()
             .next(
                 new MkAnswer.Simple(
                     HttpURLConnection.HTTP_OK,
-                    "access_token=%s&expires_in=3600&token_type=bearer"
-                        .formatted(expected)
+                    "[%s]".formatted(webhook.asString())
                 )
             ).start();
         final String url = container.home().toString();
-        final String token = new IdpToken(
-            Mockito.mock(Jwt.class),
-            "provider",
-            url.substring(0, url.length() - 1)
-        ).value();
+        final List<Webhook> webhooks =
+            new Webhooks(
+                url.substring(0, url.length() - 1),
+                "user/repo",
+                "token"
+            ).value();
         MatcherAssert.assertThat(
-            "Access token %s isn't correct".formatted(token),
-            token,
-            new IsEqual<>(expected)
+            "List of webhooks is equal to null",
+            webhooks,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "List of webhooks doesn't contain %s".formatted(webhook),
+            webhooks,
+            Matchers.contains(webhook)
         );
         container.stop();
     }
@@ -66,16 +79,16 @@ final class IpdTokenTest {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidHost() {
         final String url = "http://localhost:1000";
-        final String provider = "provider";
+        final String location = "user/repo";
         new Assertion<>(
             "Exception is not thrown or valid",
-            () -> new IdpToken(
-                Mockito.mock(Jwt.class),
-                provider,
-                url
+            () -> new Webhooks(
+                url,
+                location,
+                "token"
             ).value(),
             new Throws<>(
-                "Failed GET request to %s/broker/%s/token".formatted(url, provider),
+                "Failed GET request to %s/repos/%s/hooks".formatted(url, location),
                 IOException.class
             )
         ).affirm();

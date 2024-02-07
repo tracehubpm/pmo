@@ -8,3 +8,5 @@ spring:
   liquibase:
     user: test
     password: test
+platforms:
+  github: host

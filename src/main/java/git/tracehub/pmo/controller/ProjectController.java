@@ -24,6 +24,7 @@ import git.tracehub.pmo.platforms.Label;
 import git.tracehub.pmo.platforms.RepoPath;
 import git.tracehub.pmo.platforms.github.CreateLabels;
 import git.tracehub.pmo.platforms.github.InviteCollaborator;
+import git.tracehub.pmo.platforms.github.webhook.CreateWebhook;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
@@ -65,6 +66,12 @@ public class ProjectController {
      */
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String url;
+
+    /**
+     * Github host.
+     */
+    @Value("${platforms.github}")
+    private String host;
 
     /**
      * Projects by user.
@@ -113,13 +120,11 @@ public class ProjectController {
          *   corresponding implementation to invite collaborators here.
          */
         if (new ExistsRole(jwt, "user_github").value()) {
-            final Repo repo = new RtGithub(
-                new IdpToken(jwt, "github", this.url).value()
-            ).repos()
+            final String location = new RepoPath(created.getLocation()).value();
+            final String token = new IdpToken(jwt, "github", this.url).value();
+            final Repo repo = new RtGithub(token).repos()
                 .get(
-                    new Coordinates.Simple(
-                        new RepoPath(created.getLocation()).value()
-                    )
+                    new Coordinates.Simple(location)
                 );
             new InviteCollaborator(
                 repo,
@@ -130,6 +135,13 @@ public class ProjectController {
                 new ListOf<>(
                     new Label("new", Color.PINK)
                 )
+            ).exec();
+            new CreateWebhook(
+                this.host,
+                token,
+                location,
+                "url",
+                new ListOf<>("push", "issues")
             ).exec();
         }
         return created;

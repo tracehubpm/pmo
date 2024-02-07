@@ -15,7 +15,7 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.security;
+package git.tracehub.pmo.platforms.github.webhook;
 
 import com.jcabi.http.mock.MkAnswer;
 import com.jcabi.http.mock.MkContainer;
@@ -25,60 +25,36 @@ import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.llorllale.cactoos.matchers.Assertion;
-import org.llorllale.cactoos.matchers.Throws;
-import org.mockito.Mockito;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Test suite for {@link IdpToken}.
+ * Test suite for {@link ExistsWebhook}.
  *
  * @since 0.0.0
  */
-final class IpdTokenTest {
+final class ExistsWebhookTest {
 
     @Test
-    void retrievesTokenSuccessfully() throws IOException {
-        final String expected = "token";
+    void checksIfWebhookExists() throws IOException {
         final MkContainer container = new MkGrizzlyContainer()
             .next(
                 new MkAnswer.Simple(
                     HttpURLConnection.HTTP_OK,
-                    "access_token=%s&expires_in=3600&token_type=bearer"
-                        .formatted(expected)
+                    "[{\"config\":{\"content_type\":\"json\",\"url\":\"url\"},\"events\":[\"push\"]}]"
                 )
             ).start();
         final String url = container.home().toString();
-        final String token = new IdpToken(
-            Mockito.mock(Jwt.class),
-            "provider",
-            url.substring(0, url.length() - 1)
-        ).value();
+        final String webhook = "url";
         MatcherAssert.assertThat(
-            "Access token %s isn't correct".formatted(token),
-            token,
-            new IsEqual<>(expected)
+            "Webhook %s doesn't exist".formatted(webhook),
+            new ExistsWebhook(
+                url.substring(0, url.length() - 1),
+                "user/repo",
+                "token",
+                webhook
+            ).value(),
+            new IsEqual<>(true)
         );
         container.stop();
-    }
-
-    @Test
-    @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnInvalidHost() {
-        final String url = "http://localhost:1000";
-        final String provider = "provider";
-        new Assertion<>(
-            "Exception is not thrown or valid",
-            () -> new IdpToken(
-                Mockito.mock(Jwt.class),
-                provider,
-                url
-            ).value(),
-            new Throws<>(
-                "Failed GET request to %s/broker/%s/token".formatted(url, provider),
-                IOException.class
-            )
-        ).affirm();
     }
 
 }
