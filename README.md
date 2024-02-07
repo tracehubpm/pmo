@@ -23,7 +23,7 @@ it can be found here: `/swagger-ui/index.html`.
 * It allows to create a project.
 
 After project creation bot [@tracehubgit](https://github.com/tracehubgit) will be invited
-to the repository and a `new` label for issues will be added. Moreover, a webhook for `push` events will be 
+to the repository and a `new` label for issues will be added. Moreover, a webhook for `push` events will be
 created to notify PMO about changes in the repository.
 
 ### How to run?
@@ -33,6 +33,14 @@ Before you start the app locally, you need to run Keycloak and PostgreSQL using 
 ```bash
 $ docker-compose up -d
 ```
+
+Then you should update client secrets for identity providers in Keycloak using following steps:
+
+1. Open Keycloak admin console.
+2. Choose `pmo` realm.
+3. Go to Identity Providers.
+4. Choose appropriate identity provider and update client secret.
+5. Save changes.
 
 ### How to contribute?
 
