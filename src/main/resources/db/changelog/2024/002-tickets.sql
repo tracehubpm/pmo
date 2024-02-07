@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS projects.tickets
 (
     id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     project uuid                  NOT NULL REFERENCES projects.projects,
-    number  BIGINT                NOT NULL,
+    number  int                   NOT NULL,
     repo    CHARACTER VARYING(64) NOT NULL,
     job     CHARACTER VARYING(64) NOT NULL,
     status  CHARACTER VARYING(16) NOT NULL
