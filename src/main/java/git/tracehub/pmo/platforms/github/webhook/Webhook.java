@@ -37,12 +37,12 @@ public final class Webhook implements Text {
     /**
      * Configurations.
      */
-    private Map<String, String> config;
+    private final Map<String, String> config;
 
     /**
      * List of events.
      */
-    private List<String> events;
+    private final List<String> events;
 
     @Override
     public String asString() {
