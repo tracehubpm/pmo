@@ -21,20 +21,26 @@ import com.jcabi.http.Request;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
+import git.tracehub.pmo.controller.TicketController;
+import io.github.eocqrs.eokson.Jocument;
+import io.github.eocqrs.eokson.JsonOf;
+import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 /**
- * Integration Test Case for Retrieving Project by User
- * from {@link git.tracehub.pmo.controller.ProjectController}.
+ * Integration Test Case for Creating Ticket
+ * from {@link TicketController}.
  *
  * @since 0.0.0
  */
@@ -44,13 +50,13 @@ import org.springframework.test.context.jdbc.Sql;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class RetrieveProjectsByUserITCase
+final class CreateTicketITCase
     implements KeycloakIntegration, PostgresIntegration {
 
     /**
      * Raw Endpoint.
      */
-    private static final String RAW = "http://localhost:%s/projects";
+    private static final String RAW = "http://localhost:%s/tickets";
 
     /**
      * Application Port.
@@ -60,10 +66,19 @@ final class RetrieveProjectsByUserITCase
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void retrievesProjectByIdSuccessfully() throws Exception {
+    void createsTicketSuccessfully() throws Exception {
         final Response response = new JdkRequest(
-            RetrieveProjectsByUserITCase.RAW.formatted(this.port)
-        ).method(Request.GET)
+            CreateTicketITCase.RAW.formatted(this.port)
+        ).method(Request.POST)
+            .body()
+            .set(
+                new Jocument(
+                    new JsonOf(
+                        new ResourceOf("data/ticket.json").stream()
+                    )
+                ).toString()
+            ).back()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .header(
                 HttpHeaders.AUTHORIZATION,
                 "Bearer %s".formatted(
@@ -77,7 +92,47 @@ final class RetrieveProjectsByUserITCase
                 response.status()
             ),
             response.status(),
-            new IsEqual<>(200)
+            new IsEqual<>(201)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidRequestBody() throws Exception {
+        final Response response = new JdkRequest(
+            CreateTicketITCase.RAW.formatted(this.port)
+        ).method(Request.POST)
+            .body()
+            .set(
+                new Jocument(
+                    new JsonOf(
+                        new ResourceOf("data/no-issue-ticket.json").stream()
+                    )
+                ).toString()
+            ).back()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(400)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with("message", "Issue number can't be null")
+                    .toString()
+            )
         );
     }
 

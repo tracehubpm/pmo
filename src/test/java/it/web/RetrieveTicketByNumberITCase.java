@@ -21,6 +21,7 @@ import com.jcabi.http.Request;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
+import git.tracehub.pmo.controller.TicketController;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
 import org.hamcrest.MatcherAssert;
@@ -33,8 +34,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 /**
- * Integration Test Case for Retrieving Project by User
- * from {@link git.tracehub.pmo.controller.ProjectController}.
+ * Integration Test Case for Retrieving Ticket by Number and Repository
+ * from {@link TicketController}.
  *
  * @since 0.0.0
  */
@@ -44,13 +45,13 @@ import org.springframework.test.context.jdbc.Sql;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class RetrieveProjectsByUserITCase
+final class RetrieveTicketByNumberITCase
     implements KeycloakIntegration, PostgresIntegration {
 
     /**
      * Raw Endpoint.
      */
-    private static final String RAW = "http://localhost:%s/projects";
+    private static final String RAW = "http://localhost:%s/tickets/number";
 
     /**
      * Application Port.
@@ -60,10 +61,14 @@ final class RetrieveProjectsByUserITCase
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void retrievesProjectByIdSuccessfully() throws Exception {
+    void retrievesTicketByJobSuccessfully() throws Exception {
         final Response response = new JdkRequest(
-            RetrieveProjectsByUserITCase.RAW.formatted(this.port)
-        ).method(Request.GET)
+            RetrieveTicketByNumberITCase.RAW.formatted(this.port)
+        ).uri()
+            .queryParam("number", 1)
+            .queryParam("repo", "user/test")
+            .back()
+            .method(Request.GET)
             .header(
                 HttpHeaders.AUTHORIZATION,
                 "Bearer %s".formatted(

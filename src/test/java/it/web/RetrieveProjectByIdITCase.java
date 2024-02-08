@@ -21,6 +21,7 @@ import com.jcabi.http.Request;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
+import git.tracehub.pmo.controller.ProjectController;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
 import org.hamcrest.MatcherAssert;
@@ -34,7 +35,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 /**
  * Integration Test Case for Retrieving Project by Id
- * from {@link git.tracehub.pmo.controller.ProjectController}.
+ * from {@link ProjectController}.
  *
  * @since 0.0.0
  */
@@ -50,7 +51,8 @@ final class RetrieveProjectByIdITCase
     /**
      * Raw Endpoint.
      */
-    private static final String RAW = "http://localhost:%s/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d";
+    private static final String RAW =
+        "http://localhost:%s/projects/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d";
 
     /**
      * Application Port.
