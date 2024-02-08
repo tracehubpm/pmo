@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 /**
  * Default tickets.
  *
+ * @checkstyle DesignForExtensionCheck (70 lines)
  * @since 0.0.0
  */
 @Component
@@ -65,7 +66,7 @@ public class DefaultTickets implements Tickets {
     public Ticket byNumber(final int number, final String repo) {
         return new JdbcSession(this.source)
             .sql(
-                new SqlStatement("select-ticket-by-job-and-repo.sql").asString()
+                new SqlStatement("select-ticket-by-number-and-repo.sql").asString()
             ).set(number)
             .set(repo)
             .select(

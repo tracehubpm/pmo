@@ -36,6 +36,14 @@ import org.mockito.Mockito;
 public class JdbcTest {
 
     /**
+     * Result set.
+     *
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     */
+    @Mock
+    protected ResultSet set;
+
+    /**
      * Datasource.
      */
     @Mock
@@ -54,25 +62,12 @@ public class JdbcTest {
     private PreparedStatement statement;
 
     /**
-     * Result set.
+     * Mock result set.
+     *
+     * @param ticket Ticket
+     * @throws SQLException If something goes wrong
      */
-    @Mock
-    protected ResultSet set;
-
-    @BeforeEach
-    void setConnection() throws SQLException {
-        Mockito.when(this.source.getConnection()).thenReturn(this.connection);
-        Mockito.doNothing().when(this.connection).setAutoCommit(true);
-        Mockito.lenient().when(this.connection.prepareStatement(Mockito.anyString()))
-            .thenReturn(this.statement);
-        Mockito.lenient().when(this.connection.prepareStatement(Mockito.anyString(), Mockito.anyInt()))
-            .thenReturn(this.statement);
-        Mockito.doNothing().when(this.statement).close();
-        Mockito.lenient().when(this.statement.executeQuery()).thenReturn(this.set);
-        Mockito.lenient().when(this.statement.getGeneratedKeys()).thenReturn(this.set);
-    }
-
-    protected void setTicket(Ticket ticket) throws SQLException {
+    protected void mockResultSet(final Ticket ticket) throws SQLException {
         Mockito.when(this.set.next()).thenReturn(true);
         Mockito.when(this.set.getString("id"))
             .thenReturn(ticket.getId().toString());
@@ -88,7 +83,13 @@ public class JdbcTest {
             .thenReturn(ticket.getStatus().name());
     }
 
-    protected void setProject(Project project) throws SQLException {
+    /**
+     * Mock result set.
+     *
+     * @param project Project
+     * @throws SQLException If something goes wrong
+     */
+    protected void mockResultSet(final Project project) throws SQLException {
         Mockito.when(this.set.getString("id"))
             .thenReturn(project.getId().toString());
         Mockito.when(this.set.getString("name"))
@@ -99,6 +100,25 @@ public class JdbcTest {
             .thenReturn(project.getDescription());
         Mockito.when(this.set.getBoolean("active"))
             .thenReturn(project.isActive());
+    }
+
+    /**
+     * Set datasource and connection.
+     *
+     * @throws SQLException If something goes wrong
+     */
+    @BeforeEach
+    void setConnection() throws SQLException {
+        Mockito.when(this.source.getConnection()).thenReturn(this.connection);
+        Mockito.doNothing().when(this.connection).setAutoCommit(true);
+        Mockito.lenient().when(this.connection.prepareStatement(Mockito.anyString()))
+            .thenReturn(this.statement);
+        Mockito.lenient()
+            .when(this.connection.prepareStatement(Mockito.anyString(), Mockito.anyInt()))
+            .thenReturn(this.statement);
+        Mockito.doNothing().when(this.statement).close();
+        Mockito.lenient().when(this.statement.executeQuery()).thenReturn(this.set);
+        Mockito.lenient().when(this.statement.getGeneratedKeys()).thenReturn(this.set);
     }
 
 }

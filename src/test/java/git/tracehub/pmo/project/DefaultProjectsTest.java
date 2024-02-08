@@ -56,7 +56,7 @@ final class DefaultProjectsTest extends JdbcTest {
             "Description",
             true
         );
-        super.setProject(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true);
         final Project project = this.projects.byId(expected.getId());
         MatcherAssert.assertThat(
@@ -81,7 +81,7 @@ final class DefaultProjectsTest extends JdbcTest {
             "Description",
             true
         );
-        super.setProject(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true, false);
         final List<Project> actual = this.projects.byUser(email);
         MatcherAssert.assertThat(
@@ -105,7 +105,7 @@ final class DefaultProjectsTest extends JdbcTest {
             "Description",
             true
         );
-        super.setProject(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true);
         final Project project = this.projects.employ(expected);
         MatcherAssert.assertThat(

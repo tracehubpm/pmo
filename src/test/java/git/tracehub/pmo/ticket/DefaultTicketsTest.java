@@ -56,7 +56,7 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.setTicket(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byJob(
             expected.getJob(),
@@ -84,7 +84,7 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.setTicket(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byNumber(
             expected.getNumber(),
@@ -112,7 +112,7 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.setTicket(expected);
+        super.mockResultSet(expected);
         Mockito.when(super.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.create(expected);
         MatcherAssert.assertThat(
@@ -131,7 +131,7 @@ final class DefaultTicketsTest extends JdbcTest {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidJob() throws SQLException {
         final String job = "path/to/job";
-        final String repo = "user/repo";
+        final String repo = "repo";
         Mockito.when(super.set.next()).thenReturn(false);
         new Assertion<>(
             "Exception is not thrown or valid",
@@ -147,7 +147,7 @@ final class DefaultTicketsTest extends JdbcTest {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidIssueNumber() throws SQLException {
         final int number = 35;
-        final String repo = "user/repo";
+        final String repo = "repo";
         Mockito.when(super.set.next()).thenReturn(false);
         new Assertion<>(
             "Exception is not thrown or valid",
