@@ -18,18 +18,16 @@
 package git.tracehub.pmo.project;
 
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Project.
  *
+ * @checkstyle ParameterNumberCheck (70 lines)
  * @since 0.0.0
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public class Project {
 
     /**
@@ -40,21 +38,63 @@ public class Project {
     /**
      * Name.
      */
-    private String name;
+    private final String name;
 
     /**
      * Location.
      */
-    private String location;
+    private final String location;
 
     /**
      * Description.
      */
-    private String description;
+    private final String description;
 
     /**
-     * Visibility.
+     * Is active.
      */
-    private boolean active;
+    private final boolean active;
 
+    /**
+     * Constructor.
+     *
+     * @param id Id
+     * @param name Name
+     * @param location Location
+     * @param description Description
+     * @param active Is active
+     */
+    public Project(
+        final UUID id,
+        final String name,
+        final String location,
+        final String description,
+        final boolean active
+    ) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.description = description;
+        this.active = active;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name Name
+     * @param location Location
+     * @param description Description
+     * @param active Is active
+     */
+    public Project(
+        final String name,
+        final String location,
+        final String description,
+        final boolean active
+    ) {
+        this.name = name;
+        this.location = location;
+        this.description = description;
+        this.active = active;
+    }
 }

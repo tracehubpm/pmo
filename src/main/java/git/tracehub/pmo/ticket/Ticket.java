@@ -18,18 +18,16 @@
 package git.tracehub.pmo.ticket;
 
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Ticket.
  *
+ * @checkstyle ParameterNumberCheck (90 lines)
  * @since 0.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public class Ticket {
 
     /**
@@ -40,27 +38,27 @@ public class Ticket {
     /**
      * Project id.
      */
-    private UUID project;
+    private final UUID project;
 
     /**
      * Issue number.
      */
-    private int number;
+    private final int number;
 
     /**
      * Repository.
      */
-    private String repo;
+    private final String repo;
 
     /**
      * Job.
      */
-    private String job;
+    private final String job;
 
     /**
      * Status.
      */
-    private Status status;
+    private final Status status;
 
     /**
      * Status of the ticket.
@@ -77,6 +75,55 @@ public class Ticket {
          */
         CLOSED
 
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id Id
+     * @param project Project id
+     * @param number Issue number
+     * @param repo Repository
+     * @param job Job
+     * @param status Status
+     */
+    public Ticket(
+        final UUID id,
+        final UUID project,
+        final int number,
+        final String repo,
+        final String job,
+        final Status status
+    ) {
+        this.id = id;
+        this.project = project;
+        this.number = number;
+        this.repo = repo;
+        this.job = job;
+        this.status = status;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param project Project id
+     * @param number Issue number
+     * @param repo Repository
+     * @param job Job
+     * @param status Status
+     */
+    public Ticket(
+        final UUID project,
+        final int number,
+        final String repo,
+        final String job,
+        final Status status
+    ) {
+        this.project = project;
+        this.number = number;
+        this.repo = repo;
+        this.job = job;
+        this.status = status;
     }
 
 }

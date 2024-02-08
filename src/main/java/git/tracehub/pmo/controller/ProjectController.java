@@ -20,6 +20,8 @@ package git.tracehub.pmo.controller;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
+import git.tracehub.pmo.controller.request.ProjectFromReq;
+import git.tracehub.pmo.controller.request.RqProject;
 import git.tracehub.pmo.platforms.Label;
 import git.tracehub.pmo.platforms.RepoPath;
 import git.tracehub.pmo.platforms.github.CreateLabels;
@@ -30,6 +32,7 @@ import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
 import git.tracehub.pmo.security.ExistsRole;
 import git.tracehub.pmo.security.IdpToken;
+import jakarta.validation.Valid;
 import java.awt.Color;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +47,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,6 +58,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/projects")
 public class ProjectController {
 
     /**
@@ -106,14 +111,16 @@ public class ProjectController {
      * @return Project
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasAuthority('user_github')")
     @ResponseStatus(HttpStatus.CREATED)
     public Project employ(
-        @RequestBody final Project project,
+        @RequestBody @Valid final RqProject project,
         @AuthenticationPrincipal final Jwt jwt
     ) {
-        final Project created = this.projects.employ(project);
+        final Project created = this.projects.employ(
+            new ProjectFromReq(project).value()
+        );
         /*
          * @todo #1:45min/DEV define appropriate agent according to location
          *   of the project. We need to define appropriate agent and call
