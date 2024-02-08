@@ -111,6 +111,11 @@ final class DefaultProjectsIT implements PostgresIntegration {
             true,
             Matchers.notNullValue()
         );
+        MatcherAssert.assertThat(
+            "Project %s isn't correct".formatted(project),
+            project,
+            Matchers.samePropertyValuesAs(expected, "id")
+        );
     }
 
 }

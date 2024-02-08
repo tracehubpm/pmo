@@ -119,6 +119,11 @@ final class DefaultTicketsIT implements PostgresIntegration {
             true,
             Matchers.notNullValue()
         );
+        MatcherAssert.assertThat(
+            "Ticket name %s isn't correct".formatted(ticket),
+            ticket,
+            Matchers.samePropertyValuesAs(expected, "id")
+        );
     }
 
 }
