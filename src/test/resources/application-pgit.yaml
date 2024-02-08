@@ -8,5 +8,10 @@ spring:
   liquibase:
     user: test
     password: test
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: url
 platforms:
   github: host
