@@ -17,7 +17,7 @@
 
 package git.tracehub.pmo.controller;
 
-import git.tracehub.pmo.project.Projects;
+import git.tracehub.pmo.ticket.Tickets;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
@@ -36,14 +36,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * Test suite for {@link ProjectController}.
+ * Test suite for {@link TicketController}.
  *
  * @since 0.0.0
  */
 @ActiveProfiles("web")
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = ProjectController.class)
-final class ProjectControllerTest {
+@WebMvcTest(controllers = TicketController.class)
+final class TicketControllerTest {
 
     /**
      * Mocked mvc.
@@ -52,48 +52,52 @@ final class ProjectControllerTest {
     private MockMvc mvc;
 
     /**
-     * Projects.
+     * Tickets.
      */
     @MockBean
     @SuppressWarnings("PMD.UnusedPrivateField")
-    private Projects projects;
+    private Tickets tickets;
 
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post("/tickets/job")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
-    void returnsProjectByUser() throws Exception {
+    void returnsTicketByJob() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/projects")
+            MockMvcRequestBuilders.get("/tickets/job")
+                .param("job", "path/to/job")
+                .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void returnsProjectById() throws Exception {
+    void returnsTicketByIssueNumber() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/projects/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d")
+            MockMvcRequestBuilders.get("/tickets/number")
+                .param("number", "1")
+                .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void createsNewProject() throws Exception {
+    void createsNewTicket() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post("/tickets")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     new Jocument(
                         new JsonOf(
-                            new ResourceOf("data/project.json").stream()
+                            new ResourceOf("data/ticket.json").stream()
                         )
                     ).toString()
                 )
@@ -103,21 +107,21 @@ final class ProjectControllerTest {
     @Test
     void throwsOnInvalidRequestBody() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post("/tickets")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     new Jocument(
                         new JsonOf(
-                            new ResourceOf("data/no-name-project.json").stream()
+                            new ResourceOf("data/no-issue-ticket.json").stream()
                         )
                     ).toString()
                 )
-            ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest())
             .andExpect(
                 MockMvcResultMatchers.content().string(
                     new MutableJson()
-                        .with("message", "Name can't be blank")
+                        .with("message", "Issue number can't be null")
                         .toString()
             )
         );
