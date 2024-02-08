@@ -53,10 +53,7 @@ public class DefaultProjects implements Projects {
                 (rs, stmt) -> {
                     if (!rs.next()) {
                         throw new ResourceNotFoundException(
-                            String.format(
-                                "Project %s not found",
-                                id
-                            )
+                            "Project %s not found".formatted(id)
                         );
                     }
                     return new ProjectOf(rs).value();
