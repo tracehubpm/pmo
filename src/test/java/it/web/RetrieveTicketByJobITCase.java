@@ -22,6 +22,7 @@ import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
 import git.tracehub.pmo.controller.TicketController;
+import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
 import org.hamcrest.MatcherAssert;
@@ -83,6 +84,46 @@ final class RetrieveTicketByJobITCase
             ),
             response.status(),
             new IsEqual<>(200)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidJob() throws Exception {
+        final String job = "invalid/path/to/job";
+        final String repo = "user/test";
+        final Response response = new JdkRequest(
+            RetrieveTicketByJobITCase.RAW.formatted(this.port)
+        ).uri()
+            .queryParam("job", job)
+            .queryParam("repo", repo)
+            .back()
+            .method(Request.GET)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(404)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with(
+                        "message",
+                        "Ticket with job = %s and repo = %s not found"
+                            .formatted(job, repo)
+                    ).toString()
+            )
         );
     }
 

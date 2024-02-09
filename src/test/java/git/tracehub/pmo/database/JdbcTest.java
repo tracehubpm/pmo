@@ -68,7 +68,6 @@ public class JdbcTest {
      * @throws SQLException If something goes wrong
      */
     protected void mockResultSet(final Ticket ticket) throws SQLException {
-        Mockito.when(this.set.next()).thenReturn(true);
         Mockito.when(this.set.getString("id"))
             .thenReturn(ticket.getId().toString());
         Mockito.when(this.set.getString("project"))

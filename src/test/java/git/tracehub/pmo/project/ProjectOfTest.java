@@ -25,6 +25,8 @@ import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -73,6 +75,17 @@ final class ProjectOfTest {
             project,
             new IsEqual<>(expected)
         );
+    }
+
+    @Test
+    void throwsOnInvalidResultSet() throws SQLException {
+        Mockito.when(this.set.getString("id"))
+            .thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () ->  new ProjectOf(this.set).value(),
+            new Throws<>(SQLException.class)
+        ).affirm();
     }
 
 }

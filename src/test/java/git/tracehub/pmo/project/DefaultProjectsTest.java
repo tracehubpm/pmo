@@ -135,4 +135,22 @@ final class DefaultProjectsTest extends JdbcTest {
         ).affirm();
     }
 
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnCreatingInvalidProject() throws SQLException {
+        Mockito.when(super.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.projects.employ(
+                new Project(
+                    "Test Project",
+                    "Location",
+                    "Description",
+                    true
+                )
+            ),
+            new Throws<>(SQLException.class)
+        ).affirm();
+    }
+
 }

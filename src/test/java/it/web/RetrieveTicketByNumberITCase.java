@@ -22,6 +22,7 @@ import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
 import git.tracehub.pmo.controller.TicketController;
+import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
 import org.hamcrest.MatcherAssert;
@@ -83,6 +84,46 @@ final class RetrieveTicketByNumberITCase
             ),
             response.status(),
             new IsEqual<>(200)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidNumber() throws Exception {
+        final int number = 0;
+        final String repo = "user/test";
+        final Response response = new JdkRequest(
+            RetrieveTicketByNumberITCase.RAW.formatted(this.port)
+        ).uri()
+            .queryParam("number", number)
+            .queryParam("repo", repo)
+            .back()
+            .method(Request.GET)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(404)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with(
+                        "message",
+                        "Ticket with issue = %s and repo = %s not found"
+                            .formatted(number, repo)
+                    ).toString()
+            )
         );
     }
 

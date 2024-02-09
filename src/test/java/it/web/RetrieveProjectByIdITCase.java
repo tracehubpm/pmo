@@ -22,6 +22,7 @@ import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import git.tracehub.pmo.PmoApplication;
 import git.tracehub.pmo.controller.ProjectController;
+import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
 import org.hamcrest.MatcherAssert;
@@ -51,8 +52,7 @@ final class RetrieveProjectByIdITCase
     /**
      * Raw Endpoint.
      */
-    private static final String RAW =
-        "http://localhost:%s/projects/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d";
+    private static final String RAW = "http://localhost:%s/projects/%s";
 
     /**
      * Application Port.
@@ -64,7 +64,10 @@ final class RetrieveProjectByIdITCase
     @Sql("classpath:pre/sql/projects.sql")
     void retrievesProjectByIdSuccessfully() throws Exception {
         final Response response = new JdkRequest(
-            RetrieveProjectByIdITCase.RAW.formatted(this.port)
+            RetrieveProjectByIdITCase.RAW.formatted(
+                this.port,
+                "74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"
+            )
         ).method(Request.GET)
             .header(
                 HttpHeaders.AUTHORIZATION,
@@ -80,6 +83,40 @@ final class RetrieveProjectByIdITCase
             ),
             response.status(),
             new IsEqual<>(200)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidProjectId() throws Exception {
+        final Response response = new JdkRequest(
+            RetrieveProjectByIdITCase.RAW.formatted(
+                this.port,
+                "22bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"
+            )
+        ).method(Request.GET)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(403)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with("message", "Access Denied")
+                    .toString()
+            )
         );
     }
 

@@ -130,7 +130,7 @@ final class DefaultTicketsTest extends JdbcTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidJob() throws SQLException {
-        final String job = "path/to/job";
+        final String job = "invalid/path/to/job";
         final String repo = "repo";
         Mockito.when(super.set.next()).thenReturn(false);
         new Assertion<>(
@@ -156,6 +156,25 @@ final class DefaultTicketsTest extends JdbcTest {
                 "Ticket with issue = %s and repo = %s not found".formatted(number, repo),
                 ResourceNotFoundException.class
             )
+        ).affirm();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnCreatingInvalidTicket() throws SQLException {
+        Mockito.when(super.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.tickets.create(
+                new Ticket(
+                    UUID.randomUUID(),
+                    35,
+                    "user/repo",
+                    "invalid/path/to/job",
+                    Ticket.Status.OPENED
+                )
+            ),
+            new Throws<>(SQLException.class)
         ).affirm();
     }
 
