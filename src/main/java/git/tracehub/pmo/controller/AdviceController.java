@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,8 +34,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * Exception handler.
  *
+ * @checkstyle NonStaticMethodCheck (90 lines)
  * @since 0.0.0
- * @checkstyle NonStaticMethodCheck (70 lines)
  */
 @Slf4j
 @RestControllerAdvice
@@ -85,6 +86,27 @@ public class AdviceController {
                     .with("message", exception.getMessage())
             ).byteArray(),
             HttpStatus.NOT_FOUND
+        );
+    }
+
+    /**
+     * Handle AccessDeniedException.
+     *
+     * @param exception Exception
+     * @return ResponseEntity
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<byte[]> handle(
+        final AccessDeniedException exception
+    ) {
+        log.warn(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+            new Jocument(
+                new MutableJson()
+                    .with("message", exception.getMessage())
+            ).byteArray(),
+            HttpStatus.FORBIDDEN
         );
     }
 
