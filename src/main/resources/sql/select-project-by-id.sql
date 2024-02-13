@@ -20,5 +20,5 @@ SELECT id,
        location,
        description,
        active
-FROM projects.projects
+FROM projects.project
 WHERE id = ?;

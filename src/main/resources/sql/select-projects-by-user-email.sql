@@ -20,6 +20,6 @@ SELECT p.id,
        p.location,
        p.description,
        p.active
-FROM projects.projects p
-         INNER JOIN projects.performers on p.id = performers.project
-WHERE performers.email = ?;
+FROM projects.project p
+         INNER JOIN projects.performer on p.id = performer.project
+WHERE performer.email = ?;

@@ -15,11 +15,11 @@
  * SOFTWARE.
  */
 
-INSERT INTO projects.tickets (project,
-                              number,
-                              repo,
-                              job,
-                              status)
+INSERT INTO projects.ticket (project,
+                             number,
+                             repo,
+                             job,
+                             status)
 VALUES (?, ?, ?, ?, ?)
 RETURNING id,
     project,

@@ -21,5 +21,5 @@ SELECT id,
        repo,
        job,
        status
-FROM projects.tickets
+FROM projects.ticket
 WHERE number = ? AND  repo = ?;

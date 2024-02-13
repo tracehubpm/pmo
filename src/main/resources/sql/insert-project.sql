@@ -15,10 +15,10 @@
  * SOFTWARE.
  */
 
-INSERT INTO projects.projects (name,
-                               location,
-                               description,
-                               active)
+INSERT INTO projects.project (name,
+                              location,
+                              description,
+                              active)
 VALUES (?, ?, ?, ?)
 RETURNING id,
     name,
