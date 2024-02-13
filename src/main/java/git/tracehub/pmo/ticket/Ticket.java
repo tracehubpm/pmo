@@ -27,7 +27,6 @@ import lombok.Data;
  * @since 0.0.0
  */
 @Data
-@SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public class Ticket {
 
     /**
@@ -119,11 +118,7 @@ public class Ticket {
         final String job,
         final Status status
     ) {
-        this.project = project;
-        this.number = number;
-        this.repo = repo;
-        this.job = job;
-        this.status = status;
+        this(null, project, number, repo, job, status);
     }
 
 }

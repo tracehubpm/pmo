@@ -27,7 +27,6 @@ import lombok.Data;
  * @since 0.0.0
  */
 @Data
-@SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public class Project {
 
     /**
@@ -92,9 +91,6 @@ public class Project {
         final String description,
         final boolean active
     ) {
-        this.name = name;
-        this.location = location;
-        this.description = description;
-        this.active = active;
+        this(null, name, location, description, active);
     }
 }
