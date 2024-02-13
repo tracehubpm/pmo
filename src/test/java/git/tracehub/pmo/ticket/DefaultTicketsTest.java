@@ -17,18 +17,23 @@
 
 package git.tracehub.pmo.ticket;
 
-import git.tracehub.pmo.database.JdbcTest;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import javax.sql.DataSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.llorllale.cactoos.matchers.Assertion;
 import org.llorllale.cactoos.matchers.Throws;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -38,13 +43,56 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @since 0.0.0
  */
 @ExtendWith(MockitoExtension.class)
-final class DefaultTicketsTest extends JdbcTest {
+final class DefaultTicketsTest {
+
+    /**
+     * Result set.
+     */
+    @Mock
+    private ResultSet set;
+
+    /**
+     * Datasource.
+     */
+    @Mock
+    private DataSource source;
+
+    /**
+     * Connection.
+     */
+    @Mock
+    private Connection connection;
+
+    /**
+     * Statement.
+     */
+    @Mock
+    private PreparedStatement statement;
 
     /**
      * Default tickets.
      */
     @InjectMocks
     private DefaultTickets tickets;
+
+    /**
+     * Set datasource and connection.
+     *
+     * @throws SQLException If something goes wrong
+     */
+    @BeforeEach
+    void setConnection() throws SQLException {
+        Mockito.when(this.source.getConnection()).thenReturn(this.connection);
+        Mockito.doNothing().when(this.connection).setAutoCommit(true);
+        Mockito.lenient().when(this.connection.prepareStatement(Mockito.anyString()))
+            .thenReturn(this.statement);
+        Mockito.lenient()
+            .when(this.connection.prepareStatement(Mockito.anyString(), Mockito.anyInt()))
+            .thenReturn(this.statement);
+        Mockito.doNothing().when(this.statement).close();
+        Mockito.lenient().when(this.statement.executeQuery()).thenReturn(this.set);
+        Mockito.lenient().when(this.statement.getGeneratedKeys()).thenReturn(this.set);
+    }
 
     @Test
     void returnsTicketByJob() throws SQLException {
@@ -56,8 +104,8 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.mockResultSet(expected);
-        Mockito.when(super.set.next()).thenReturn(true);
+        this.mock(expected);
+        Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byJob(
             expected.getJob(),
             expected.getRepo()
@@ -84,8 +132,8 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.mockResultSet(expected);
-        Mockito.when(super.set.next()).thenReturn(true);
+        this.mock(expected);
+        Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byNumber(
             expected.getNumber(),
             expected.getRepo()
@@ -112,8 +160,8 @@ final class DefaultTicketsTest extends JdbcTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        super.mockResultSet(expected);
-        Mockito.when(super.set.next()).thenReturn(true);
+        this.mock(expected);
+        Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.create(expected);
         MatcherAssert.assertThat(
             "Ticket %s isn't created".formatted(ticket),
@@ -132,7 +180,7 @@ final class DefaultTicketsTest extends JdbcTest {
     void throwsOnInvalidJob() throws SQLException {
         final String job = "invalid/path/to/job";
         final String repo = "repo";
-        Mockito.when(super.set.next()).thenReturn(false);
+        Mockito.when(this.set.next()).thenReturn(false);
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> this.tickets.byJob(job, repo),
@@ -148,7 +196,7 @@ final class DefaultTicketsTest extends JdbcTest {
     void throwsOnInvalidIssueNumber() throws SQLException {
         final int number = 35;
         final String repo = "repo";
-        Mockito.when(super.set.next()).thenReturn(false);
+        Mockito.when(this.set.next()).thenReturn(false);
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> this.tickets.byNumber(number, repo),
@@ -162,7 +210,7 @@ final class DefaultTicketsTest extends JdbcTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnCreatingInvalidTicket() throws SQLException {
-        Mockito.when(super.set.next()).thenThrow(SQLException.class);
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> this.tickets.create(
@@ -176,6 +224,21 @@ final class DefaultTicketsTest extends JdbcTest {
             ),
             new Throws<>(SQLException.class)
         ).affirm();
+    }
+
+    private void mock(final Ticket ticket) throws SQLException {
+        Mockito.when(this.set.getString("id"))
+            .thenReturn(ticket.getId().toString());
+        Mockito.when(this.set.getString("project"))
+            .thenReturn(ticket.getProject().toString());
+        Mockito.when(this.set.getInt("number"))
+            .thenReturn(ticket.getNumber());
+        Mockito.when(this.set.getString("repo"))
+            .thenReturn(ticket.getRepo());
+        Mockito.when(this.set.getString("job"))
+            .thenReturn(ticket.getJob());
+        Mockito.when(this.set.getString("status"))
+            .thenReturn(ticket.getStatus().name());
     }
 
 }
