@@ -17,27 +17,21 @@
 
 package git.tracehub.pmo.controller;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Repo;
-import com.jcabi.github.RtGithub;
 import git.tracehub.pmo.controller.request.ProjectFromReq;
 import git.tracehub.pmo.controller.request.RqProject;
-import git.tracehub.pmo.platforms.Label;
+import git.tracehub.pmo.platforms.Platform;
 import git.tracehub.pmo.platforms.RepoPath;
-import git.tracehub.pmo.platforms.github.CreateLabels;
-import git.tracehub.pmo.platforms.github.InviteCollaborator;
-import git.tracehub.pmo.platforms.github.webhook.CreateWebhook;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
-import git.tracehub.pmo.security.ExistsRole;
+import git.tracehub.pmo.security.IdProvider;
 import git.tracehub.pmo.security.IdpToken;
 import jakarta.validation.Valid;
-import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.cactoos.list.ListOf;
+import org.cactoos.Scalar;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,16 +61,15 @@ public class ProjectController {
     private final Projects projects;
 
     /**
+     * Platforms.
+     */
+    private final Map<String, Platform> platforms;
+
+    /**
      * Issuer url.
      */
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String url;
-
-    /**
-     * Github host.
-     */
-    @Value("${platforms.github}")
-    private String host;
 
     /**
      * Projects by user.
@@ -112,7 +105,7 @@ public class ProjectController {
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('user_github')")
+    @PreAuthorize("hasAuthority('user_github') || hasAuthority('user_gitlab')")
     @ResponseStatus(HttpStatus.CREATED)
     public Project employ(
         @RequestBody @Valid final RqProject project,
@@ -121,36 +114,13 @@ public class ProjectController {
         final Project created = this.projects.employ(
             new ProjectFromReq(project).value()
         );
-        /*
-         * @todo #1:45min/DEV define appropriate agent according to location
-         *   of the project. We need to define appropriate agent and call
-         *   corresponding implementation to invite collaborators here.
-         */
-        if (new ExistsRole(jwt, "user_github").value()) {
-            final String location = new RepoPath(created.getLocation()).value();
-            final String token = new IdpToken(jwt, "github", this.url).value();
-            final Repo repo = new RtGithub(token).repos()
-                .get(
-                    new Coordinates.Simple(location)
-                );
-            new InviteCollaborator(
-                repo,
-                "tracehubgit"
-            ).exec();
-            new CreateLabels(
-                repo,
-                new ListOf<>(
-                    new Label("new", Color.PINK)
-                )
-            ).exec();
-            new CreateWebhook(
-                this.host,
-                token,
-                location,
-                "url",
-                new ListOf<>("push", "issues")
-            ).exec();
-        }
+        final String provider = new IdProvider(jwt).value();
+        final Scalar<String> token = new IdpToken(jwt, provider, this.url);
+        final Scalar<String> location = new RepoPath(created.getLocation());
+        final Platform platform = this.platforms.get(provider);
+        platform.inviteCollaborator(token, location);
+        platform.createLabel(token, location);
+        platform.createWebhook(token, location);
         return created;
     }
 

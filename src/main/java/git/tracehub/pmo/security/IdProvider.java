@@ -17,33 +17,35 @@
 
 package git.tracehub.pmo.security;
 
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Does the user have provided role from token.
+ * Identity provider.
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class ExistsRole implements Scalar<Boolean> {
+public final class IdProvider implements Scalar<String> {
 
     /**
      * JWT.
      */
     private final Jwt jwt;
 
-    /**
-     * Role.
-     */
-    private final String role;
-
     @Override
-    public Boolean value() {
-        return new AuthoritiesConverter().convert(this.jwt).getAuthorities()
-            .contains(new SimpleGrantedAuthority(this.role));
+    public String value() {
+        String provider = "gitlab";
+        final Collection<GrantedAuthority> roles = new AuthoritiesConverter()
+            .convert(this.jwt).getAuthorities();
+        if (roles.contains(new SimpleGrantedAuthority("user_github"))) {
+            provider = "github";
+        }
+        return provider;
     }
 
 }
