@@ -17,13 +17,18 @@
 
 package git.tracehub.pmo.controller;
 
+import git.tracehub.pmo.platforms.Platform;
+import git.tracehub.pmo.platforms.github.GithubPlatform;
+import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -58,6 +63,13 @@ final class ProjectControllerTest {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private Projects projects;
 
+    /**
+     * Platforms.
+     */
+    @MockBean
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private Map<String, Platform> platforms;
+
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
@@ -86,6 +98,21 @@ final class ProjectControllerTest {
 
     @Test
     void createsNewProject() throws Exception {
+        final Platform platform = Mockito.mock(GithubPlatform.class);
+        Mockito.when(this.platforms.get(Mockito.any()))
+            .thenReturn(platform);
+        Mockito.when(this.projects.employ(Mockito.any(Project.class)))
+            .thenReturn(
+                new Project(
+                    "74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d",
+                    "Location",
+                    "Description",
+                    true
+                )
+            );
+        Mockito.doNothing().when(platform).createWebhook(Mockito.any(), Mockito.any());
+        Mockito.doNothing().when(platform).createLabel(Mockito.any(), Mockito.any());
+        Mockito.doNothing().when(platform).inviteCollaborator(Mockito.any(), Mockito.any());
         this.mvc.perform(
             MockMvcRequestBuilders.post("/projects")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())

@@ -30,12 +30,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
- * Test suite for {@link ExistsRole}.
+ * Test suite for {@link IdProvider}.
  *
  * @since 0.0.0
  */
 @ExtendWith(MockitoExtension.class)
-final class ExistsRoleTest {
+final class IdProviderTest {
 
     /**
      * JWT.
@@ -44,30 +44,32 @@ final class ExistsRoleTest {
     private Jwt jwt;
 
     @Test
-    void returnsTrueIfRoleExists() {
+    void returnsGithubAsProvider() {
+        final String provider = "github";
         Mockito.when(this.jwt.getClaimAsMap("realm_access")).thenReturn(
             new MapOf<>(
-                new MapEntry<>("roles", new ListOf<>("role"))
+                new MapEntry<>("roles", new ListOf<>("user_github"))
             )
         );
         MatcherAssert.assertThat(
-            "Role doesn't exist",
-            new ExistsRole(this.jwt, "role").value(),
-            new IsEqual<>(true)
+            "Provider %s doesn't exist".formatted(provider),
+            new IdProvider(this.jwt).value(),
+            new IsEqual<>(provider)
         );
     }
 
     @Test
-    void returnsFalseIfRoleDoesNotExist() {
+    void returnsGitlabAsProvider() {
+        final String provider = "gitlab";
         Mockito.when(this.jwt.getClaimAsMap("realm_access")).thenReturn(
             new MapOf<>(
-                new MapEntry<>("roles", new ListOf<>())
+                new MapEntry<>("roles", new ListOf<>("user_gitlab"))
             )
         );
         MatcherAssert.assertThat(
-            "Role exists",
-            new ExistsRole(this.jwt, "role").value(),
-            new IsEqual<>(false)
+            "Provider %s doesn't exist".formatted(provider),
+            new IdProvider(this.jwt).value(),
+            new IsEqual<>(provider)
         );
     }
 
