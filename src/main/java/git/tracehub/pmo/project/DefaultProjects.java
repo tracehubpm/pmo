@@ -63,12 +63,12 @@ public class DefaultProjects implements Projects {
 
     @Override
     @SneakyThrows
-    public List<Project> byUser(final String email) {
+    public List<Project> byUser(final String login) {
         return new JdbcSession(this.source)
             .sql(
-                new SqlStatement("select-projects-by-user-email.sql")
+                new SqlStatement("select-projects-by-user-login.sql")
                     .asString()
-            ).set(email)
+            ).set(login)
             .select(
                 (rs, stmt) -> {
                     final List<Project> projects = new ArrayList<>(5);

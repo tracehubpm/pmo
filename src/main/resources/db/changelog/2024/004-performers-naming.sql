@@ -15,39 +15,7 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.project;
+--liquibase formatted sql
 
-import java.util.List;
-import java.util.UUID;
-
-/**
- * Projects.
- *
- * @since 0.0.0
- */
-public interface Projects {
-
-    /**
-     * Project by id.
-     *
-     * @param id Project ID
-     * @return Project
-     */
-    Project byId(UUID id);
-
-    /**
-     * Projects by user login.
-     *
-     * @param login User login
-     * @return List of projects
-     */
-    List<Project> byUser(String login);
-
-    /**
-     * Employ new project.
-     *
-     * @param project Project to Employ
-     * @return Project
-     */
-    Project employ(Project project);
-}
+--changeset hizmailovich:1
+ALTER TABLE  projects.performer RENAME COLUMN email TO login;

@@ -10,7 +10,7 @@ VALUES ('74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d',
         true)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO projects.performer (email,
+INSERT INTO projects.performer (login,
                                 project,
                                 permission)
 VALUES ('user',

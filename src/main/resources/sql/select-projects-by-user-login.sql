@@ -22,4 +22,4 @@ SELECT p.id,
        p.active
 FROM projects.project p
          INNER JOIN projects.performer on p.id = performer.project
-WHERE performer.email = ?;
+WHERE performer.login = ?;
