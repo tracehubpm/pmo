@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.cactoos.Scalar;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -115,12 +114,10 @@ public class ProjectController {
             new ProjectFromReq(project)
         );
         final String provider = new IdProvider(jwt).value();
-        final Scalar<String> token = new IdpToken(jwt, provider, this.url);
-        final Scalar<String> location = new RepoPath(created.getLocation());
-        final Platform platform = this.platforms.get(provider);
-        platform.inviteCollaborator(token, location);
-        platform.createLabel(token, location);
-        platform.createWebhook(token, location);
+        this.platforms.get(provider).prepare(
+            new IdpToken(jwt, provider, this.url),
+            new RepoPath(created.getLocation())
+        );
         return created;
     }
 

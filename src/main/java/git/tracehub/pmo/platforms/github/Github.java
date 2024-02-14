@@ -27,63 +27,44 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * Github platform.
  *
- * @checkstyle DesignForExtensionCheck (70 lines)
  * @since 0.0.0
  */
-@Component("github")
 @RequiredArgsConstructor
-public class GithubPlatform implements Platform {
+public final class Github implements Platform {
 
     /**
-     * Github host.
+     * Host.
      */
-    @Value("${platforms.github}")
-    private String host;
+    private final String host;
 
     @Override
     @SneakyThrows
-    public void createWebhook(
+    public void prepare(
         final Scalar<String> token,
         final Scalar<String> location
     ) {
-        new CreateWebhook(
-            this.host,
-            token.value(),
-            location.value(),
-            "http://it/webhook",
-            new ListOf<>("push", "issues")
+        final String tkn = token.value();
+        final String loc = location.value();
+        new InviteCollaborator(
+            new RtGithub(tkn).repos()
+                .get(new Coordinates.Simple(loc)),
+            "tracehubgit"
         ).exec();
-    }
-
-    @Override
-    @SneakyThrows
-    public void createLabel(
-        final Scalar<String> token,
-        final Scalar<String> location
-    ) {
         new CreateLabels(
-            new RtGithub(token.value()).repos()
-                .get(new Coordinates.Simple(location.value())),
+            new RtGithub(tkn).repos()
+                .get(new Coordinates.Simple(loc)),
             new ListOf<>(new Label("new", Color.PINK))
         ).exec();
-    }
-
-    @Override
-    @SneakyThrows
-    public void inviteCollaborator(
-        final Scalar<String> token,
-        final Scalar<String> location
-    ) {
-        new InviteCollaborator(
-            new RtGithub(token.value()).repos()
-                .get(new Coordinates.Simple(location.value())),
-            "tracehubgit"
+        new CreateWebhook(
+            this.host,
+            tkn,
+            loc,
+            "http://it/webhook",
+            new ListOf<>("push", "issues")
         ).exec();
     }
 }

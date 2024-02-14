@@ -17,6 +17,8 @@
 
 package git.tracehub.pmo.security;
 
+import git.tracehub.pmo.platforms.Platform;
+import git.tracehub.pmo.platforms.github.Github;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -25,7 +27,10 @@ import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import java.util.Map;
 import lombok.SneakyThrows;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,6 +62,12 @@ public class WebConfig {
      */
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String url;
+
+    /**
+     * Github host.
+     */
+    @Value("${platforms.github}")
+    private String github;
 
     /**
      * Filter.
@@ -138,6 +149,18 @@ public class WebConfig {
                     .title("PMO API")
                     .version(this.version)
             );
+    }
+
+    /**
+     * Platforms.
+     *
+     * @return Map of implemented platforms
+     */
+    @Bean
+    public Map<String, Platform> platforms() {
+        return new MapOf<>(
+            new MapEntry<>("github", new Github(this.github))
+        );
     }
 
 }

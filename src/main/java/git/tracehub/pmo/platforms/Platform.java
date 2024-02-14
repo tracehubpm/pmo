@@ -27,27 +27,11 @@ import org.cactoos.Scalar;
 public interface Platform {
 
     /**
-     * Create webhook.
+     * Prepare.
      *
      * @param token Token
      * @param location Repository location
      */
-    void createWebhook(Scalar<String> token, Scalar<String> location);
-
-    /**
-     * Create label.
-     *
-     * @param token Token
-     * @param location Repository location
-     */
-    void createLabel(Scalar<String> token, Scalar<String> location);
-
-    /**
-     * Invite collaborator.
-     *
-     * @param token Token
-     * @param location Repository location
-     */
-    void inviteCollaborator(Scalar<String> token, Scalar<String> location);
+    void prepare(Scalar<String> token, Scalar<String> location);
 
 }
