@@ -17,5 +17,5 @@
 
 --liquibase formatted sql
 
---changeset hizmailovich:1
+--changeset hizmailovich:8
 ALTER TABLE  projects.performer RENAME COLUMN email TO login;

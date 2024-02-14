@@ -17,7 +17,7 @@
 
 --liquibase formatted sql
 
---changeset hizmailovich:1
+--changeset hizmailovich:7
 ALTER TABLE  projects.projects RENAME TO project;
 ALTER TABLE  projects.performers RENAME TO performer;
 ALTER TABLE  projects.tickets RENAME TO ticket;

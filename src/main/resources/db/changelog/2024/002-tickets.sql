@@ -17,13 +17,13 @@
 
 --liquibase formatted sql
 
---changeset hizmailovich:1
+--changeset hizmailovich:4
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
---changeset hizmailovich:2
+--changeset hizmailovich:5
 CREATE SCHEMA IF NOT EXISTS projects;
 
---changeset hizmailovich:3
+--changeset hizmailovich:6
 CREATE TABLE IF NOT EXISTS projects.tickets
 (
     id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
