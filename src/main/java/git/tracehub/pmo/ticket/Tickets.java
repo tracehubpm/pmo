@@ -17,6 +17,8 @@
 
 package git.tracehub.pmo.ticket;
 
+import org.cactoos.Scalar;
+
 /**
  * Tickets.
  *
@@ -48,6 +50,6 @@ public interface Tickets {
      * @param ticket Ticket
      * @return Ticket
      */
-    Ticket create(Ticket ticket);
+    Ticket create(Scalar<Ticket> ticket);
 
 }

@@ -112,7 +112,7 @@ public class ProjectController {
         @AuthenticationPrincipal final Jwt jwt
     ) {
         final Project created = this.projects.employ(
-            new ProjectFromReq(project).value()
+            new ProjectFromReq(project)
         );
         final String provider = new IdProvider(jwt).value();
         final Scalar<String> token = new IdpToken(jwt, provider, this.url);

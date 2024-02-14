@@ -25,6 +25,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 import org.springframework.stereotype.Component;
 
 /**
@@ -82,14 +83,15 @@ public class DefaultProjects implements Projects {
 
     @Override
     @SneakyThrows
-    public Project employ(final Project project) {
+    public Project employ(final Scalar<Project> project) {
+        final Project value = project.value();
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("insert-project.sql").asString()
-            ).set(project.getName())
-            .set(project.getLocation())
-            .set(project.getDescription())
-            .set(project.isActive())
+            ).set(value.getName())
+            .set(value.getLocation())
+            .set(value.getDescription())
+            .set(value.isActive())
             .update(
                 (rs, stmt) -> {
                     rs.next();

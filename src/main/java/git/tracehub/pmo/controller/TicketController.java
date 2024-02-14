@@ -87,7 +87,7 @@ public class TicketController {
     @ResponseStatus(HttpStatus.CREATED)
     public Ticket create(@RequestBody @Valid final RqTicket ticket) {
         return this.tickets.create(
-            new TicketFromReq(ticket).value()
+            new TicketFromReq(ticket)
         );
     }
 

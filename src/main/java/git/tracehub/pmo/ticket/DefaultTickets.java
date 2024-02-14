@@ -23,6 +23,7 @@ import git.tracehub.pmo.project.SqlStatement;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 import org.springframework.stereotype.Component;
 
 /**
@@ -84,15 +85,16 @@ public class DefaultTickets implements Tickets {
 
     @Override
     @SneakyThrows
-    public Ticket create(final Ticket ticket) {
+    public Ticket create(final Scalar<Ticket> ticket) {
+        final Ticket value = ticket.value();
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("insert-ticket.sql").asString()
-            ).set(ticket.getProject())
-            .set(ticket.getNumber())
-            .set(ticket.getRepo())
-            .set(ticket.getJob())
-            .set(ticket.getStatus().name())
+            ).set(value.getProject())
+            .set(value.getNumber())
+            .set(value.getRepo())
+            .set(value.getJob())
+            .set(value.getStatus().name())
             .update(
                 (rs, stmt) -> {
                     rs.next();

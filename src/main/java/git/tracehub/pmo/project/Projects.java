@@ -19,6 +19,7 @@ package git.tracehub.pmo.project;
 
 import java.util.List;
 import java.util.UUID;
+import org.cactoos.Scalar;
 
 /**
  * Projects.
@@ -49,5 +50,5 @@ public interface Projects {
      * @param project Project to Employ
      * @return Project
      */
-    Project employ(Project project);
+    Project employ(Scalar<Project> project);
 }
