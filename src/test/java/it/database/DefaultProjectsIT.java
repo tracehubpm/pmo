@@ -105,7 +105,7 @@ final class DefaultProjectsIT implements PostgresIntegration {
             "Description",
             true
         );
-        final Project project = this.projects.employ(expected);
+        final Project project = this.projects.employ(() -> expected);
         MatcherAssert.assertThat(
             "Project %s is null".formatted(project),
             true,

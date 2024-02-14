@@ -25,6 +25,7 @@ import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
 import java.util.Map;
+import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,7 +102,7 @@ final class ProjectControllerTest {
         final Platform platform = Mockito.mock(GithubPlatform.class);
         Mockito.when(this.platforms.get(Mockito.any()))
             .thenReturn(platform);
-        Mockito.when(this.projects.employ(Mockito.any(Project.class)))
+        Mockito.when(this.projects.employ(Mockito.any(Scalar.class)))
             .thenReturn(
                 new Project(
                     "74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d",

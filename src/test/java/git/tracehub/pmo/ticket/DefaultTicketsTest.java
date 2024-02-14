@@ -162,7 +162,7 @@ final class DefaultTicketsTest {
         );
         this.mock(expected);
         Mockito.when(this.set.next()).thenReturn(true);
-        final Ticket ticket = this.tickets.create(expected);
+        final Ticket ticket = this.tickets.create(() -> expected);
         MatcherAssert.assertThat(
             "Ticket %s isn't created".formatted(ticket),
             true,
@@ -214,7 +214,7 @@ final class DefaultTicketsTest {
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> this.tickets.create(
-                new Ticket(
+                () -> new Ticket(
                     UUID.randomUUID(),
                     35,
                     "user/repo",

@@ -155,7 +155,7 @@ final class DefaultProjectsTest {
         );
         this.mock(expected);
         Mockito.when(this.set.next()).thenReturn(true);
-        final Project project = this.projects.employ(expected);
+        final Project project = this.projects.employ(() -> expected);
         MatcherAssert.assertThat(
             "Project %s is null".formatted(project),
             true,
@@ -190,7 +190,7 @@ final class DefaultProjectsTest {
         new Assertion<>(
             "Exception is not thrown or valid",
             () -> this.projects.employ(
-                new Project(
+                () -> new Project(
                     "Test Project",
                     "Location",
                     "Description",

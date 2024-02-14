@@ -113,7 +113,7 @@ final class DefaultTicketsIT implements PostgresIntegration {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        final Ticket ticket = this.tickets.create(expected);
+        final Ticket ticket = this.tickets.create(() -> expected);
         MatcherAssert.assertThat(
             "Ticket %s is null".formatted(ticket),
             true,
