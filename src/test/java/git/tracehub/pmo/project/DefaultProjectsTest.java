@@ -104,7 +104,7 @@ final class DefaultProjectsTest {
             "Description",
             true
         );
-        this.mock(expected);
+        new MockProject(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
         final Project project = this.projects.byId(expected.getId());
         MatcherAssert.assertThat(
@@ -129,7 +129,7 @@ final class DefaultProjectsTest {
             "Description",
             true
         );
-        this.mock(expected);
+        new MockProject(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true, false);
         final List<Project> actual = this.projects.byUser(email);
         MatcherAssert.assertThat(
@@ -153,7 +153,7 @@ final class DefaultProjectsTest {
             "Description",
             true
         );
-        this.mock(expected);
+        new MockProject(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
         final Project project = this.projects.employ(() -> expected);
         MatcherAssert.assertThat(
@@ -199,19 +199,6 @@ final class DefaultProjectsTest {
             ),
             new Throws<>(SQLException.class)
         ).affirm();
-    }
-
-    private void mock(final Project project) throws SQLException {
-        Mockito.when(this.set.getString("id"))
-            .thenReturn(project.getId().toString());
-        Mockito.when(this.set.getString("name"))
-            .thenReturn(project.getName());
-        Mockito.when(this.set.getString("location"))
-            .thenReturn(project.getLocation());
-        Mockito.when(this.set.getString("description"))
-            .thenReturn(project.getDescription());
-        Mockito.when(this.set.getBoolean("active"))
-            .thenReturn(project.isActive());
     }
 
 }

@@ -18,7 +18,7 @@
 package git.tracehub.pmo.controller;
 
 import git.tracehub.pmo.platforms.Platform;
-import git.tracehub.pmo.platforms.github.GithubPlatform;
+import git.tracehub.pmo.platforms.github.Github;
 import git.tracehub.pmo.project.Project;
 import git.tracehub.pmo.project.Projects;
 import io.github.eocqrs.eokson.Jocument;
@@ -99,7 +99,7 @@ final class ProjectControllerTest {
 
     @Test
     void createsNewProject() throws Exception {
-        final Platform platform = Mockito.mock(GithubPlatform.class);
+        final Platform platform = Mockito.mock(Github.class);
         Mockito.when(this.platforms.get(Mockito.any()))
             .thenReturn(platform);
         Mockito.when(this.projects.employ(Mockito.any(Scalar.class)))
@@ -111,9 +111,7 @@ final class ProjectControllerTest {
                     true
                 )
             );
-        Mockito.doNothing().when(platform).createWebhook(Mockito.any(), Mockito.any());
-        Mockito.doNothing().when(platform).createLabel(Mockito.any(), Mockito.any());
-        Mockito.doNothing().when(platform).inviteCollaborator(Mockito.any(), Mockito.any());
+        Mockito.doNothing().when(platform).prepare(Mockito.any(), Mockito.any());
         this.mvc.perform(
             MockMvcRequestBuilders.post("/projects")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())

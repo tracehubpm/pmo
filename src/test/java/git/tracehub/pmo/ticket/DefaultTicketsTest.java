@@ -104,7 +104,7 @@ final class DefaultTicketsTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        this.mock(expected);
+        new MockTicket(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byJob(
             expected.getJob(),
@@ -132,7 +132,7 @@ final class DefaultTicketsTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        this.mock(expected);
+        new MockTicket(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.byNumber(
             expected.getNumber(),
@@ -160,7 +160,7 @@ final class DefaultTicketsTest {
             "path/to/job",
             Ticket.Status.OPENED
         );
-        this.mock(expected);
+        new MockTicket(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
         final Ticket ticket = this.tickets.create(() -> expected);
         MatcherAssert.assertThat(
@@ -224,21 +224,6 @@ final class DefaultTicketsTest {
             ),
             new Throws<>(SQLException.class)
         ).affirm();
-    }
-
-    private void mock(final Ticket ticket) throws SQLException {
-        Mockito.when(this.set.getString("id"))
-            .thenReturn(ticket.getId().toString());
-        Mockito.when(this.set.getString("project"))
-            .thenReturn(ticket.getProject().toString());
-        Mockito.when(this.set.getInt("number"))
-            .thenReturn(ticket.getNumber());
-        Mockito.when(this.set.getString("repo"))
-            .thenReturn(ticket.getRepo());
-        Mockito.when(this.set.getString("job"))
-            .thenReturn(ticket.getJob());
-        Mockito.when(this.set.getString("status"))
-            .thenReturn(ticket.getStatus().name());
     }
 
 }
