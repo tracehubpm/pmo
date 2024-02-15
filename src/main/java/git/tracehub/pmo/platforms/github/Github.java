@@ -27,19 +27,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Github platform.
  *
  * @since 0.0.0
  */
+@Component
 @RequiredArgsConstructor
 public final class Github implements Platform {
 
     /**
-     * Host.
+     * Github host.
      */
-    private final String host;
+    @Value("${platforms.github}")
+    private String host;
 
     @Override
     @SneakyThrows
