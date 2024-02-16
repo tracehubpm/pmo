@@ -15,48 +15,48 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.request;
+package git.tracehub.pmo.controller.request;
 
-import git.tracehub.pmo.controller.request.ProjectFromReq;
-import git.tracehub.pmo.controller.request.RqProject;
-import git.tracehub.pmo.project.Project;
+import git.tracehub.pmo.ticket.Ticket;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test suite for {@link ProjectFromReq}.
+ * Test suite for {@link TicketFromReq}.
  *
  * @since 0.0.0
  */
-final class ProjectFromReqTest {
+final class TicketFromReqTest {
 
     @Test
-    void createsProjectFromRequest() {
-        final Project expected = new Project(
+    void createsTicketFromRequest() {
+        final Ticket expected = new Ticket(
             UUID.randomUUID(),
-            "Test Project",
-            "Location",
-            "Description",
-            true
+            UUID.randomUUID(),
+            1,
+            "user/test",
+            "path/to/job",
+            Ticket.Status.OPENED
         );
-        final Project project = new ProjectFromReq(
-            new RqProject(
-                expected.getName(),
-                expected.getLocation(),
-                expected.getDescription(),
-                expected.isActive()
+        final Ticket ticket = new TicketFromReq(
+            new RqTicket(
+                expected.getProject(),
+                expected.getNumber(),
+                expected.getRepo(),
+                expected.getJob(),
+                expected.getStatus()
             )
         ).value();
         MatcherAssert.assertThat(
-            "Project %s is null".formatted(project),
+            "Ticket %s is null".formatted(ticket),
             true,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
-            "Project %s isn't correct".formatted(project),
-            project,
+            "Ticket %s isn't correct".formatted(ticket),
+            ticket,
             Matchers.samePropertyValuesAs(expected, "id")
         );
     }

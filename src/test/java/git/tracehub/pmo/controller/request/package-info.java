@@ -20,4 +20,4 @@
  *
  * @since 0.0.0
  */
-package git.tracehub.pmo.request;
+package git.tracehub.pmo.controller.request;
