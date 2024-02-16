@@ -23,6 +23,7 @@ import lombok.Data;
 /**
  * Key and value pair.
  *
+ * @checkstyle ParameterNumberCheck (90 lines)
  * @since 0.0.0
  */
 @Data
@@ -51,10 +52,10 @@ public class Secret {
     /**
      * Constructor.
      *
-     * @param id      Id
+     * @param id Id
      * @param project Project id
-     * @param key     Key
-     * @param value   Value
+     * @param key Key
+     * @param value Value
      */
     public Secret(
         final UUID id,
@@ -72,8 +73,8 @@ public class Secret {
      * Constructor.
      *
      * @param project Project id
-     * @param key     Key
-     * @param value   Value
+     * @param key Key
+     * @param value Value
      */
     public Secret(
         final UUID project,

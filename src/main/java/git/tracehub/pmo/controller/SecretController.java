@@ -17,10 +17,10 @@
 
 package git.tracehub.pmo.controller;
 
-import git.tracehub.pmo.controller.request.RqTicket;
-import git.tracehub.pmo.controller.request.TicketFromReq;
-import git.tracehub.pmo.ticket.Ticket;
-import git.tracehub.pmo.ticket.Tickets;
+import git.tracehub.pmo.controller.request.RqSecret;
+import git.tracehub.pmo.controller.request.SecretFromReq;
+import git.tracehub.pmo.secret.Secret;
+import git.tracehub.pmo.secret.Secrets;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,60 +33,41 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Ticket Controller.
+ * Secret Controller.
  *
  * @since 0.0.0
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tickets")
-public class TicketController {
+@RequestMapping("/secrets")
+public class SecretController {
 
     /**
      * Tickets.
      */
-    private final Tickets tickets;
+    private final Secrets secrets;
 
     /**
-     * Ticket by path to job and repository.
+     * Secret value by key.
      *
-     * @param job Path to job
-     * @param repo Repository name
-     * @return Ticket
+     * @param key Key
+     * @return Secret
      */
-    @GetMapping("/job")
-    public Ticket byJob(
-        @RequestParam final String job,
-        @RequestParam final String repo
-    ) {
-        return this.tickets.byJob(job, repo);
+    @GetMapping
+    public Secret secret(@RequestParam final String key) {
+        return this.secrets.value(key);
     }
 
     /**
-     * Ticket by issue number and repository.
+     * Create secret.
      *
-     * @param number Issue number
-     * @param repo Repository name
-     * @return Ticket
-     */
-    @GetMapping("/number")
-    public Ticket byNumber(
-        @RequestParam final Integer number,
-        @RequestParam final String repo
-    ) {
-        return this.tickets.byNumber(number, repo);
-    }
-
-    /**
-     * Create ticket.
-     *
-     * @param ticket Ticket
-     * @return Ticket
+     * @param secret Secret
+     * @return Secret
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Ticket create(@RequestBody @Valid final RqTicket ticket) {
-        return this.tickets.create(new TicketFromReq(ticket));
+    public Secret create(@RequestBody @Valid final RqSecret secret) {
+        return this.secrets.create(new SecretFromReq(secret));
     }
 
 }

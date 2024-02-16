@@ -15,36 +15,27 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.secret;
+package git.tracehub.pmo.controller.request;
 
-import java.sql.ResultSet;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.cactoos.Scalar;
 
 /**
- * Secret from result set.
+ * Request Secret.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class SecretOf implements Scalar<Secret> {
+public record RqSecret(
 
-    /**
-     * Result set.
-     */
-    private final ResultSet set;
+    @NotNull(message = "Project id can't be null")
+    UUID project,
 
-    @Override
-    @SneakyThrows
-    public Secret value() {
-        return new Secret(
-            UUID.fromString(this.set.getString("id")),
-            UUID.fromString(this.set.getString("project")),
-            this.set.getString("key"),
-            this.set.getString("value")
-        );
-    }
+    @NotBlank(message = "Key can't be blank")
+    String key,
+
+    @NotBlank(message = "Value can't be blank")
+    String value
+) {
 
 }

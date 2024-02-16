@@ -15,35 +15,31 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.secret;
+package git.tracehub.pmo.controller.request;
 
-import java.sql.ResultSet;
-import java.util.UUID;
+import git.tracehub.pmo.secret.Secret;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 
 /**
- * Secret from result set.
+ * Secret from request.
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class SecretOf implements Scalar<Secret> {
+public final class SecretFromReq implements Scalar<Secret> {
 
     /**
-     * Result set.
+     * Request secret.
      */
-    private final ResultSet set;
+    private final RqSecret secret;
 
     @Override
-    @SneakyThrows
     public Secret value() {
         return new Secret(
-            UUID.fromString(this.set.getString("id")),
-            UUID.fromString(this.set.getString("project")),
-            this.set.getString("key"),
-            this.set.getString("value")
+            this.secret.project(),
+            this.secret.key(),
+            this.secret.value()
         );
     }
 
