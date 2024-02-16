@@ -155,4 +155,21 @@ final class DefaultSecretsTest {
         ).affirm();
     }
 
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnCreatingInvalidSecret() throws SQLException {
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.create(
+                () -> new Secret(
+                    UUID.randomUUID(),
+                    "key",
+                    "value"
+                )
+            ),
+            new Throws<>(SQLException.class)
+        ).affirm();
+    }
+
 }
