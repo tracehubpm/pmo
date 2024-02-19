@@ -57,7 +57,10 @@ final class DefaultSecretsIT implements PostgresIntegration {
             "key",
             "value"
         );
-        final Secret secret = this.secrets.value(expected.getKey());
+        final Secret secret = this.secrets.value(
+            expected.getProject(),
+            expected.getKey()
+        );
         MatcherAssert.assertThat(
             "Secret %s is null".formatted(secret),
             true,

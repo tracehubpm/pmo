@@ -21,6 +21,7 @@ import git.tracehub.pmo.secret.Secrets;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
+import java.util.UUID;
 import org.cactoos.io.ResourceOf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,6 +71,7 @@ final class SecretControllerTest {
     void returnsSecretByKey() throws Exception {
         this.mvc.perform(
             MockMvcRequestBuilders.get("/secrets")
+                .param("project", UUID.randomUUID().toString())
                 .param("key", "key")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)

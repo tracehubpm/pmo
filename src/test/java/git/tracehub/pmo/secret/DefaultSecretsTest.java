@@ -104,7 +104,10 @@ final class DefaultSecretsTest {
         );
         new MockSecret(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
-        final Secret secret = this.secrets.value(expected.getKey());
+        final Secret secret = this.secrets.value(
+            expected.getProject(),
+            expected.getKey()
+        );
         MatcherAssert.assertThat(
             "Secret %s is null".formatted(secret),
             true,
@@ -143,13 +146,15 @@ final class DefaultSecretsTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsOnInvalidKey() throws SQLException {
+        final UUID project = UUID.randomUUID();
         final String key = "invalid";
         Mockito.when(this.set.next()).thenReturn(false);
         new Assertion<>(
             "Exception is not thrown or valid",
-            () -> this.secrets.value(key),
+            () -> this.secrets.value(project, key),
             new Throws<>(
-                "Secret with key = %s not found".formatted(key),
+                "Secret with project = %s and key = %s not found"
+                    .formatted(project, key),
                 ResourceNotFoundException.class
             )
         ).affirm();

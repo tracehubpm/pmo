@@ -25,6 +25,7 @@ import git.tracehub.pmo.controller.SecretController;
 import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,7 @@ final class RetrieveSecretByKeyITCase
         final Response response = new JdkRequest(
             RetrieveSecretByKeyITCase.RAW.formatted(this.port)
         ).uri()
+            .queryParam("project", UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"))
             .queryParam("key", "key")
             .back()
             .method(Request.GET)
@@ -88,10 +90,12 @@ final class RetrieveSecretByKeyITCase
 
     @Test
     void throwsOnInvalidKey() throws Exception {
+        final UUID project = UUID.randomUUID();
         final String key = "key";
         final Response response = new JdkRequest(
             RetrieveSecretByKeyITCase.RAW.formatted(this.port)
         ).uri()
+            .queryParam("project", project)
             .queryParam("key", key)
             .back()
             .method(Request.GET)
@@ -117,7 +121,8 @@ final class RetrieveSecretByKeyITCase
                 new MutableJson()
                     .with(
                         "message",
-                        "Secret with key = %s not found".formatted(key)
+                        "Secret with project = %s and key = %s not found"
+                            .formatted(project, key)
                     ).toString()
             )
         );
