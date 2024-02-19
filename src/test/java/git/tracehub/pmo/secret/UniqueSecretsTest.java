@@ -15,49 +15,51 @@
  * SOFTWARE.
  */
 
-package it.database;
+package git.tracehub.pmo.secret;
 
-import git.tracehub.pmo.PmoApplication;
-import git.tracehub.pmo.secret.DefaultSecrets;
-import git.tracehub.pmo.secret.Secret;
-import git.tracehub.pmo.secret.Secrets;
-import it.PostgresIntegration;
+import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Integration tests for {@link DefaultSecrets}.
+ * Test suite for {@link UniqueSecrets}.
  *
  * @since 0.0.0
  */
-@ActiveProfiles("pgit")
-@SpringBootTest(classes = PmoApplication.class)
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class DefaultSecretsIT implements PostgresIntegration {
+@ExtendWith(MockitoExtension.class)
+final class UniqueSecretsTest {
 
     /**
      * Secrets.
      */
-    @Autowired
-    @Qualifier("uniqueSecrets")
-    private Secrets secrets;
+    @Mock
+    private Secrets origin;
+
+    /**
+     * Unique secrets.
+     */
+    @InjectMocks
+    private UniqueSecrets secrets;
 
     @Test
-    @Sql("classpath:pre/sql/projects.sql")
-    void returnsTicketByJob() {
+    void returnsValueByKey() {
         final Secret expected = new Secret(
-            UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
+            UUID.randomUUID(),
             "key",
             "value"
         );
+        Mockito.when(this.origin.value(expected.getProject(), expected.getKey()))
+            .thenReturn(expected);
         final Secret secret = this.secrets.value(
             expected.getProject(),
             expected.getKey()
@@ -75,39 +77,61 @@ final class DefaultSecretsIT implements PostgresIntegration {
     }
 
     @Test
-    @Sql("classpath:pre/sql/projects.sql")
     void createsSecret() {
         final Secret expected = new Secret(
-            UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
-            "new key",
+            UUID.randomUUID(),
+            "key",
             "value"
         );
+        Mockito.when(this.origin.create(Mockito.any())).thenReturn(expected);
         final Secret secret = this.secrets.create(() -> expected);
         MatcherAssert.assertThat(
-            "Secret %s is null".formatted(secret),
-            true,
+            "Secret %s isn't created".formatted(secret),
+            secret,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
             "Secret %s isn't correct".formatted(secret),
             secret,
-            Matchers.samePropertyValuesAs(expected, "id")
+            new IsEqual<>(expected)
         );
     }
 
     @Test
-    @Sql("classpath:pre/sql/projects.sql")
     void existsSecret() {
         final Secret expected = new Secret(
-            UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
+            UUID.randomUUID(),
             "key",
             "value"
         );
+        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
+            .thenReturn(false);
         MatcherAssert.assertThat(
-            "Secret %s doesn't exist".formatted(expected),
+            "Secret %s exists".formatted(expected),
             this.secrets.exists(expected.getProject(), expected.getKey()),
-            new IsEqual<>(true)
+            new IsEqual<>(false)
         );
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnIDuplicate() {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
+            .thenReturn(true);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.create(() -> expected),
+            new Throws<>(
+                "Secret with project = %s and key = %s already exists"
+                    .formatted(expected.getProject(), expected.getKey()),
+                ResourceAlreadyExistsException.class
+            )
+        ).affirm();
     }
 
 }

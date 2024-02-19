@@ -27,6 +27,7 @@ import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
 import it.KeycloakIntegration;
 import it.PostgresIntegration;
+import java.util.UUID;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -131,6 +132,53 @@ final class CreateSecretITCase
             new IsEqual<>(
                 new MutableJson()
                     .with("message", "Key can't be blank")
+                    .toString()
+            )
+        );
+    }
+
+    @Test
+    @Sql("classpath:pre/sql/projects.sql")
+    void throwsOnDuplicate() throws Exception {
+        final UUID project = UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d");
+        final String key = "key";
+        final Response response = new JdkRequest(
+            CreateSecretITCase.RAW.formatted(this.port)
+        ).method(Request.POST)
+            .body()
+            .set(
+                new Jocument(
+                    new JsonOf(
+                        new ResourceOf("data/duplicate-secret.json").stream()
+                    )
+                ).toString()
+            ).back()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(400)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with(
+                        "message",
+                        "Secret with project = %s and key = %s already exists"
+                            .formatted(project, key)
+                    )
                     .toString()
             )
         );

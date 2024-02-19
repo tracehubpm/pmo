@@ -98,7 +98,6 @@ final class DefaultSecretsTest {
     void returnsValueByKey() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            UUID.randomUUID(),
             "key",
             "value"
         );
@@ -124,7 +123,6 @@ final class DefaultSecretsTest {
     void createsSecret() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            UUID.randomUUID(),
             "key",
             "value"
         );
@@ -140,6 +138,21 @@ final class DefaultSecretsTest {
             "Secret %s isn't correct".formatted(secret),
             secret,
             new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void existsSecret() throws SQLException {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        Mockito.when(this.set.next()).thenReturn(true);
+        MatcherAssert.assertThat(
+            "Secret %s exists".formatted(expected),
+            this.secrets.exists(expected.getProject(), expected.getKey()),
+            new IsEqual<>(false)
         );
     }
 

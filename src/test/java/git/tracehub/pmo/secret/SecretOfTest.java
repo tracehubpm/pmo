@@ -49,12 +49,9 @@ final class SecretOfTest {
     void returnsSecretWithAllFields() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            UUID.randomUUID(),
             "key",
             "value"
         );
-        Mockito.when(this.set.getString("id"))
-            .thenReturn(expected.getId().toString());
         Mockito.when(this.set.getString("project"))
             .thenReturn(expected.getProject().toString());
         Mockito.when(this.set.getString("key"))
@@ -76,7 +73,7 @@ final class SecretOfTest {
 
     @Test
     void throwsOnInvalidResultSet() throws SQLException {
-        Mockito.when(this.set.getString("id"))
+        Mockito.when(this.set.getString("project"))
             .thenThrow(SQLException.class);
         new Assertion<>(
             "Exception is not thrown or valid",

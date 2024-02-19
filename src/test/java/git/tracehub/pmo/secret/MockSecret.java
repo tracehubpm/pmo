@@ -43,8 +43,6 @@ final class MockSecret implements Proc<Secret> {
     @Override
     @SneakyThrows
     public void exec(final Secret secret) {
-        Mockito.when(this.set.getString("id"))
-            .thenReturn(secret.getId().toString());
         Mockito.when(this.set.getString("project"))
             .thenReturn(secret.getProject().toString());
         Mockito.when(this.set.getString("key"))

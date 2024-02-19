@@ -55,7 +55,7 @@ final class SecretControllerTest {
     /**
      * Secrets.
      */
-    @MockBean
+    @MockBean(name = "uniqueSecrets")
     @SuppressWarnings("PMD.UnusedPrivateField")
     private Secrets secrets;
 
