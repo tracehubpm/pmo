@@ -18,12 +18,9 @@
 --liquibase formatted sql
 
 --changeset hizmailovich:9
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
---changeset hizmailovich:10
 CREATE SCHEMA IF NOT EXISTS projects;
 
---changeset hizmailovich:11
+--changeset hizmailovich:10
 CREATE TABLE IF NOT EXISTS projects.secret
 (
     id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
