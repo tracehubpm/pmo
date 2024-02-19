@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.secret;
 
+import java.util.UUID;
 import org.cactoos.Scalar;
 
 /**
@@ -29,10 +30,11 @@ public interface Secrets {
     /**
      * Value by key.
      *
+     * @param project Project id
      * @param key Key
      * @return Secret
      */
-    Secret value(String key);
+    Secret value(UUID project, String key);
 
     /**
      * Create a secret.

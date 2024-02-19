@@ -20,4 +20,5 @@ SELECT id,
        key,
        value
 FROM projects.secret
-WHERE key = ?
+WHERE project = ?
+  AND key = ?

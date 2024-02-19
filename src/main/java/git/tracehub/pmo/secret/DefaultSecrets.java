@@ -20,6 +20,7 @@ package git.tracehub.pmo.secret;
 import com.jcabi.jdbc.JdbcSession;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.project.SqlStatement;
+import java.util.UUID;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -43,16 +44,18 @@ public class DefaultSecrets implements Secrets {
 
     @Override
     @SneakyThrows
-    public Secret value(final String key) {
+    public Secret value(final UUID project, final String key) {
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("select-secret-by-key.sql").asString()
-            ).set(key)
+            ).set(project)
+            .set(key)
             .select(
                 (rs, stmt) -> {
                     if (!rs.next()) {
                         throw new ResourceNotFoundException(
-                            "Secret with key = %s not found".formatted(key)
+                            "Secret with project = %s and key = %s not found"
+                                .formatted(project, key)
                         );
                     }
                     return new SecretOf(rs).value();

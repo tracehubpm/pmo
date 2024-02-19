@@ -22,6 +22,7 @@ import git.tracehub.pmo.controller.request.SecretFromReq;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,12 +51,16 @@ public class SecretController {
     /**
      * Secret value by key.
      *
+     * @param project Project id
      * @param key Key
      * @return Secret
      */
     @GetMapping
-    public Secret secret(@RequestParam final String key) {
-        return this.secrets.value(key);
+    public Secret secret(
+        @RequestParam final UUID project,
+        @RequestParam final String key
+    ) {
+        return this.secrets.value(project, key);
     }
 
     /**
