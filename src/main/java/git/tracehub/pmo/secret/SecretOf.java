@@ -40,7 +40,6 @@ public final class SecretOf implements Scalar<Secret> {
     @SneakyThrows
     public Secret value() {
         return new Secret(
-            UUID.fromString(this.set.getString("id")),
             UUID.fromString(this.set.getString("project")),
             this.set.getString("key"),
             this.set.getString("value")

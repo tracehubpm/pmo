@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.controller;
 
+import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.MutableJson;
@@ -34,11 +35,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * Exception handler.
  *
- * @checkstyle NonStaticMethodCheck (90 lines)
+ * @checkstyle NonStaticMethodCheck (120 lines)
  * @since 0.0.0
  */
 @Slf4j
 @RestControllerAdvice
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class AdviceController {
 
     /**
@@ -63,6 +65,27 @@ public class AdviceController {
                             .map(DefaultMessageSourceResolvable::getDefaultMessage)
                             .collect(Collectors.joining(", "))
                     )
+            ).byteArray(),
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
+    /**
+     * Handle ResourceAlreadyExistsException.
+     *
+     * @param exception Exception
+     * @return ResponseEntity
+     */
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<byte[]> handle(
+        final ResourceAlreadyExistsException exception
+    ) {
+        log.warn(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+            new Jocument(
+                new MutableJson()
+                    .with("message", exception.getMessage())
             ).byteArray(),
             HttpStatus.BAD_REQUEST
         );

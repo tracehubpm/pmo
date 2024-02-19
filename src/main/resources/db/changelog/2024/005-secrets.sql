@@ -23,8 +23,8 @@ CREATE SCHEMA IF NOT EXISTS projects;
 --changeset hizmailovich:10
 CREATE TABLE IF NOT EXISTS projects.secret
 (
-    id      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     project uuid                         NOT NULL REFERENCES projects.project,
     key     CHARACTER VARYING(64) UNIQUE NOT NULL,
-    value   CHARACTER VARYING(64)        NOT NULL
+    value   CHARACTER VARYING(64)        NOT NULL,
+    PRIMARY KEY (project, key)
 );

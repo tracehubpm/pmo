@@ -15,9 +15,21 @@
  * SOFTWARE.
  */
 
-SELECT project,
-       key,
-       value
-FROM projects.secret
-WHERE project = ?
-  AND key = ?
+package git.tracehub.pmo.exception;
+
+/**
+ * ResourceAlreadyExistsException.
+ *
+ * @since 0.0.0
+ */
+public class ResourceAlreadyExistsException extends RuntimeException {
+
+    /**
+     * Constructor.
+     *
+     * @param message Message
+     */
+    public ResourceAlreadyExistsException(final String message) {
+        super(message);
+    }
+}

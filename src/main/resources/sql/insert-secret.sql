@@ -19,7 +19,6 @@ INSERT INTO projects.secret (project,
                              key,
                              value)
 VALUES (?, ?, ?)
-RETURNING id,
-    project,
+RETURNING project,
     key,
     value;

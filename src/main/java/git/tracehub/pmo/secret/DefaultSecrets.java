@@ -18,6 +18,7 @@
 package git.tracehub.pmo.secret;
 
 import com.jcabi.jdbc.JdbcSession;
+import com.jcabi.jdbc.SingleOutcome;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.project.SqlStatement;
 import java.util.UUID;
@@ -80,4 +81,15 @@ public class DefaultSecrets implements Secrets {
                 }
             );
     }
+
+    @Override
+    @SneakyThrows
+    public boolean exists(final UUID project, final String key) {
+        return new JdbcSession(this.source)
+            .sql(new SqlStatement("exists-secret.sql").asString())
+            .set(project)
+            .set(key)
+            .select(new SingleOutcome<>(Boolean.class));
+    }
+
 }

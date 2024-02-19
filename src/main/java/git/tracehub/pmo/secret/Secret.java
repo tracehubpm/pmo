@@ -18,21 +18,20 @@
 package git.tracehub.pmo.secret;
 
 import java.util.UUID;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * Key and value pair.
  *
- * @checkstyle ParameterNumberCheck (90 lines)
+ * @checkstyle ConstantUsageCheck (30 lines)
  * @since 0.0.0
  */
-@Data
+@Getter
+@EqualsAndHashCode
+@AllArgsConstructor
 public class Secret {
-
-    /**
-     * Id.
-     */
-    private UUID id;
 
     /**
      * Project id.
@@ -48,40 +47,5 @@ public class Secret {
      * Value.
      */
     private final String value;
-
-    /**
-     * Constructor.
-     *
-     * @param id Id
-     * @param project Project id
-     * @param key Key
-     * @param value Value
-     */
-    public Secret(
-        final UUID id,
-        final UUID project,
-        final String key,
-        final String value
-    ) {
-        this.id = id;
-        this.project = project;
-        this.key = key;
-        this.value = value;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param project Project id
-     * @param key Key
-     * @param value Value
-     */
-    public Secret(
-        final UUID project,
-        final String key,
-        final String value
-    ) {
-        this(null, project, key, value);
-    }
 
 }

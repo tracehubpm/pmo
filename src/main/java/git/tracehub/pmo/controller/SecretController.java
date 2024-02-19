@@ -23,7 +23,7 @@ import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import jakarta.validation.Valid;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 0.0.0
  */
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/secrets")
 public class SecretController {
 
@@ -47,6 +46,15 @@ public class SecretController {
      * Tickets.
      */
     private final Secrets secrets;
+
+    /**
+     * Constructor.
+     *
+     * @param secrets Secrets
+     */
+    public SecretController(@Qualifier("uniqueSecrets") final Secrets secrets) {
+        this.secrets = secrets;
+    }
 
     /**
      * Secret value by key.

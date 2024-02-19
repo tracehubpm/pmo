@@ -44,4 +44,13 @@ public interface Secrets {
      */
     Secret create(Scalar<Secret> secret);
 
+    /**
+     * Is secret exists.
+     *
+     * @param project Project id
+     * @param key Key
+     * @return Result
+     */
+    boolean exists(UUID project, String key);
+
 }
