@@ -16,8 +16,6 @@
  */
 
 SELECT project,
-       key,
-       value
+       key
 FROM projects.secret
-WHERE project = ?
-  AND key = ?;
+WHERE project = ?;

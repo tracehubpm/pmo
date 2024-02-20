@@ -15,9 +15,35 @@
  * SOFTWARE.
  */
 
-SELECT project,
-       key,
-       value
-FROM projects.secret
-WHERE project = ?
-  AND key = ?;
+package git.tracehub.pmo.secret;
+
+import java.sql.ResultSet;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.cactoos.Scalar;
+
+/**
+ * Key from result set.
+ *
+ * @since 0.0.0
+ */
+@RequiredArgsConstructor
+public final class KeyOf implements Scalar<Secret> {
+
+    /**
+     * Result set.
+     */
+    private final ResultSet set;
+
+    @Override
+    @SneakyThrows
+    public Secret value() {
+        return new Secret(
+            UUID.fromString(this.set.getString("project")),
+            this.set.getString("key"),
+            ""
+        );
+    }
+
+}

@@ -22,6 +22,7 @@ import git.tracehub.pmo.controller.request.SecretFromReq;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Secret Controller.
  *
- * @todo #44:30min create an endpoint to list all keys from the project.
- * This endpoint should return a list of keys using project id.
  * @since 0.0.0
  */
 @RestController
@@ -57,6 +56,17 @@ public class SecretController {
      */
     public SecretController(@Qualifier("validatedSecrets") final Secrets secrets) {
         this.secrets = secrets;
+    }
+
+    /**
+     * Keys by project.
+     *
+     * @param project Project id
+     * @return Secret
+     */
+    @GetMapping("/keys")
+    public List<Secret> keys(@RequestParam final UUID project) {
+        return this.secrets.keys(project);
     }
 
     /**

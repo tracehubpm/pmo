@@ -19,6 +19,7 @@ package git.tracehub.pmo.secret;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
+import java.util.List;
 import java.util.UUID;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
@@ -46,6 +47,11 @@ public class ValidatedSecrets implements Secrets {
      */
     public ValidatedSecrets(@Qualifier("defaultSecrets") final Secrets secrets) {
         this.secrets = secrets;
+    }
+
+    @Override
+    public List<Secret> keys(final UUID project) {
+        return this.secrets.keys(project);
     }
 
     @Override

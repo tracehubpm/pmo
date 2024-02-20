@@ -21,6 +21,8 @@ import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.SingleOutcome;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.project.SqlStatement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,26 @@ public class DefaultSecrets implements Secrets {
      * Datasource.
      */
     private final DataSource source;
+
+    @Override
+    @SneakyThrows
+    public List<Secret> keys(final UUID project) {
+        return new JdbcSession(this.source)
+            .sql(
+                new SqlStatement("select-secrets-by-project.sql").asString()
+            ).set(project)
+            .select(
+                (rs, stmt) -> {
+                    final List<Secret> secrets = new ArrayList<>(5);
+                    while (rs.next()) {
+                        secrets.add(
+                            new KeyOf(rs).value()
+                        );
+                    }
+                    return secrets;
+                }
+            );
+    }
 
     @Override
     @SneakyThrows
