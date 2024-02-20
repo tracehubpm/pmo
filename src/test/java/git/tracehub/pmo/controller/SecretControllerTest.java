@@ -79,6 +79,16 @@ final class SecretControllerTest {
     }
 
     @Test
+    void returnsKeysByProject() throws Exception {
+        this.mvc.perform(
+            MockMvcRequestBuilders.get("/secrets/keys")
+                .param("project", UUID.randomUUID().toString())
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
     void createsNewSecret() throws Exception {
         this.mvc.perform(
             MockMvcRequestBuilders.post("/secrets")

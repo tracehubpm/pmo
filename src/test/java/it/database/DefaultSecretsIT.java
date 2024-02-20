@@ -22,6 +22,7 @@ import git.tracehub.pmo.secret.DefaultSecrets;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import it.PostgresIntegration;
+import java.util.List;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,7 +53,7 @@ final class DefaultSecretsIT implements PostgresIntegration {
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void returnsTicketByJob() {
+    void returnsValueByKey() {
         final Secret expected = new Secret(
             UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
             "key",
@@ -71,6 +72,27 @@ final class DefaultSecretsIT implements PostgresIntegration {
             "Secret %s isn't correct".formatted(secret),
             secret,
             new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @Sql("classpath:pre/sql/projects.sql")
+    void returnsKeysByProject() {
+        final Secret expected = new Secret(
+            UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
+            "key",
+            ""
+        );
+        final List<Secret> actual = this.secrets.keys(expected.getProject());
+        MatcherAssert.assertThat(
+            "List of keys %s is null".formatted(actual),
+            actual,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "List of secrets %s isn't correct".formatted(actual),
+            actual,
+            Matchers.contains(expected)
         );
     }
 

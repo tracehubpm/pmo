@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.hamcrest.MatcherAssert;
@@ -120,6 +121,28 @@ final class DefaultSecretsTest {
     }
 
     @Test
+    void returnsKeysByProject() throws SQLException {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        new MockSecret(this.set).exec(expected);
+        Mockito.when(this.set.next()).thenReturn(true, false);
+        final List<Secret> actual = this.secrets.keys(expected.getProject());
+        MatcherAssert.assertThat(
+            "List of keys %s is null".formatted(actual),
+            actual,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "List of secrets %s isn't correct".formatted(actual),
+            actual,
+            Matchers.contains(expected)
+        );
+    }
+
+    @Test
     void updatesSecret() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
@@ -176,6 +199,17 @@ final class DefaultSecretsTest {
             this.secrets.exists(expected.getProject(), expected.getKey()),
             new IsEqual<>(false)
         );
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidProject() throws SQLException {
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.keys(UUID.randomUUID()),
+            new Throws<>(SQLException.class)
+        ).affirm();
     }
 
     @Test

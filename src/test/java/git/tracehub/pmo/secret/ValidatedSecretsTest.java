@@ -19,7 +19,9 @@ package git.tracehub.pmo.secret;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
+import java.util.List;
 import java.util.UUID;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -74,6 +76,28 @@ final class ValidatedSecretsTest {
             "Secret %s isn't correct".formatted(secret),
             secret,
             new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void returnsKeysByProject() {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            ""
+        );
+        Mockito.when(this.origin.keys(expected.getProject()))
+            .thenReturn(new ListOf<>(expected));
+        final List<Secret> actual = this.secrets.keys(expected.getProject());
+        MatcherAssert.assertThat(
+            "List of keys %s is null".formatted(actual),
+            actual,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "List of secrets %s isn't correct".formatted(actual),
+            actual,
+            Matchers.contains(expected)
         );
     }
 
