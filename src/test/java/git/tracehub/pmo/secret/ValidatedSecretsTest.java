@@ -18,6 +18,7 @@
 package git.tracehub.pmo.secret;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
+import git.tracehub.pmo.exception.ResourceNotFoundException;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,12 +33,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Test suite for {@link UniqueSecrets}.
+ * Test suite for {@link ValidatedSecrets}.
  *
  * @since 0.0.0
  */
 @ExtendWith(MockitoExtension.class)
-final class UniqueSecretsTest {
+final class ValidatedSecretsTest {
 
     /**
      * Secrets.
@@ -49,7 +50,7 @@ final class UniqueSecretsTest {
      * Unique secrets.
      */
     @InjectMocks
-    private UniqueSecrets secrets;
+    private ValidatedSecrets secrets;
 
     @Test
     void returnsValueByKey() {
@@ -66,7 +67,7 @@ final class UniqueSecretsTest {
         );
         MatcherAssert.assertThat(
             "Secret %s is null".formatted(secret),
-            true,
+            secret,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
@@ -98,6 +99,29 @@ final class UniqueSecretsTest {
     }
 
     @Test
+    void updatesSecret() {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
+            .thenReturn(true);
+        Mockito.when(this.origin.update(Mockito.any())).thenReturn(expected);
+        final Secret secret = this.secrets.update(() -> expected);
+        MatcherAssert.assertThat(
+            "Secret %s isn't updated".formatted(secret),
+            secret,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "Secret %s isn't correct".formatted(secret),
+            secret,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
     void existsSecret() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
@@ -115,7 +139,7 @@ final class UniqueSecretsTest {
 
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnIDuplicate() {
+    void throwsOnDuplicate() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
             "key",
@@ -130,6 +154,27 @@ final class UniqueSecretsTest {
                 "Secret with project = %s and key = %s already exists"
                     .formatted(expected.getProject(), expected.getKey()),
                 ResourceAlreadyExistsException.class
+            )
+        ).affirm();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnNonExistentSecret() {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
+            .thenReturn(false);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.update(() -> expected),
+            new Throws<>(
+                "Secret with project = %s and key = %s not found"
+                    .formatted(expected.getProject(), expected.getKey()),
+                ResourceNotFoundException.class
             )
         ).affirm();
     }

@@ -55,7 +55,7 @@ final class SecretControllerTest {
     /**
      * Secrets.
      */
-    @MockBean(name = "uniqueSecrets")
+    @MockBean(name = "validatedSecrets")
     @SuppressWarnings("PMD.UnusedPrivateField")
     private Secrets secrets;
 
@@ -92,6 +92,22 @@ final class SecretControllerTest {
                     ).toString()
                 )
         ).andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    void updatesSecret() throws Exception {
+        this.mvc.perform(
+            MockMvcRequestBuilders.put("/secrets")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf("data/secret.json").stream()
+                        )
+                    ).toString()
+                )
+        ).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test

@@ -109,7 +109,29 @@ final class DefaultSecretsTest {
         );
         MatcherAssert.assertThat(
             "Secret %s is null".formatted(secret),
-            true,
+            secret,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            "Secret %s isn't correct".formatted(secret),
+            secret,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void updatesSecret() throws SQLException {
+        final Secret expected = new Secret(
+            UUID.randomUUID(),
+            "key",
+            "value"
+        );
+        new MockSecret(this.set).exec(expected);
+        Mockito.when(this.set.next()).thenReturn(true);
+        final Secret secret = this.secrets.update(() -> expected);
+        MatcherAssert.assertThat(
+            "Secret %s isn't updated".formatted(secret),
+            secret,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
@@ -131,7 +153,7 @@ final class DefaultSecretsTest {
         final Secret secret = this.secrets.create(() -> expected);
         MatcherAssert.assertThat(
             "Secret %s isn't created".formatted(secret),
-            true,
+            secret,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
@@ -186,6 +208,34 @@ final class DefaultSecretsTest {
                     "value"
                 )
             ),
+            new Throws<>(SQLException.class)
+        ).affirm();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnUpdatingInvalidSecret() throws SQLException {
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.update(
+                () -> new Secret(
+                    UUID.randomUUID(),
+                    "key",
+                    "value"
+                )
+            ),
+            new Throws<>(SQLException.class)
+        ).affirm();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnNonExistentSecret() throws SQLException {
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.secrets.exists(UUID.randomUUID(), "key"),
             new Throws<>(SQLException.class)
         ).affirm();
     }

@@ -47,7 +47,7 @@ final class DefaultSecretsIT implements PostgresIntegration {
      * Secrets.
      */
     @Autowired
-    @Qualifier("uniqueSecrets")
+    @Qualifier("defaultSecrets")
     private Secrets secrets;
 
     @Test
