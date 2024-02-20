@@ -36,8 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Secret Controller.
  *
- * @todo #44:30min create an endpoint to list all secrets from the project.
- * This endpoint should return a list of secrets using project id.
+ * @todo #44:30min create an endpoint to list all keys from the project.
+ * This endpoint should return a list of keys using project id.
+ * @todo #44:30min create an endpoint to update a secret. This endpoint
+ * should receive a secret id and a new value to update the secret.
  * @since 0.0.0
  */
 @RestController
