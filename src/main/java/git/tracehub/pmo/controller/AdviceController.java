@@ -17,12 +17,11 @@
 
 package git.tracehub.pmo.controller;
 
+import git.tracehub.pmo.exception.Logged;
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.MutableJson;
+import git.tracehub.pmo.exception.RestError;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +37,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @checkstyle NonStaticMethodCheck (120 lines)
  * @since 0.0.0
  */
-@Slf4j
 @RestControllerAdvice
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class AdviceController {
 
     /**
@@ -54,20 +51,16 @@ public class AdviceController {
     public ResponseEntity<byte[]> handle(
         final MethodArgumentNotValidException exception
     ) {
-        log.warn(exception.getMessage(), exception);
-        return new ResponseEntity<>(
-            new Jocument(
-                new MutableJson()
-                    .with(
-                        "message",
-                        exception.getBindingResult().getFieldErrors()
-                            .stream()
-                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                            .collect(Collectors.joining(", "))
-                    )
-            ).byteArray(),
-            HttpStatus.BAD_REQUEST
-        );
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getBindingResult().getFieldErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining(", ")),
+                HttpStatus.BAD_REQUEST
+            )
+        ).value();
     }
 
     /**
@@ -81,14 +74,13 @@ public class AdviceController {
     public ResponseEntity<byte[]> handle(
         final ResourceAlreadyExistsException exception
     ) {
-        log.warn(exception.getMessage(), exception);
-        return new ResponseEntity<>(
-            new Jocument(
-                new MutableJson()
-                    .with("message", exception.getMessage())
-            ).byteArray(),
-            HttpStatus.BAD_REQUEST
-        );
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST
+            )
+        ).value();
     }
 
     /**
@@ -102,14 +94,13 @@ public class AdviceController {
     public ResponseEntity<byte[]> handle(
         final ResourceNotFoundException exception
     ) {
-        log.warn(exception.getMessage(), exception);
-        return new ResponseEntity<>(
-            new Jocument(
-                new MutableJson()
-                    .with("message", exception.getMessage())
-            ).byteArray(),
-            HttpStatus.NOT_FOUND
-        );
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND
+            )
+        ).value();
     }
 
     /**
@@ -123,14 +114,13 @@ public class AdviceController {
     public ResponseEntity<byte[]> handle(
         final AccessDeniedException exception
     ) {
-        log.warn(exception.getMessage(), exception);
-        return new ResponseEntity<>(
-            new Jocument(
-                new MutableJson()
-                    .with("message", exception.getMessage())
-            ).byteArray(),
-            HttpStatus.FORBIDDEN
-        );
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getMessage(),
+                HttpStatus.FORBIDDEN
+            )
+        ).value();
     }
 
     /**
@@ -142,14 +132,13 @@ public class AdviceController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<byte[]> handle(final Exception exception) {
-        log.warn(exception.getMessage(), exception);
-        return new ResponseEntity<>(
-            new Jocument(
-                new MutableJson()
-                    .with("message", exception.getMessage())
-            ).byteArray(),
-            HttpStatus.INTERNAL_SERVER_ERROR
-        );
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        ).value();
     }
 
 }
