@@ -47,7 +47,7 @@ final class MockSecret implements Proc<Secret> {
             .thenReturn(secret.getProject().toString());
         Mockito.when(this.set.getString("key"))
             .thenReturn(secret.getKey());
-        Mockito.when(this.set.getString("value"))
+        Mockito.lenient().when(this.set.getString("value"))
             .thenReturn(secret.getValue());
     }
 

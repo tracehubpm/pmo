@@ -23,6 +23,7 @@ import io.github.eocqrs.eokson.JsonOf;
 import io.github.eocqrs.eokson.MutableJson;
 import java.util.UUID;
 import org.cactoos.io.ResourceOf;
+import org.jasypt.util.text.TextEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,15 @@ final class SecretControllerTest {
     /**
      * Secrets.
      */
-    @MockBean(name = "validatedSecrets")
+    @MockBean(name = "encryptedSecrets")
     @SuppressWarnings("PMD.UnusedPrivateField")
     private Secrets secrets;
+
+    /**
+     * Encryptor.
+     */
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private TextEncryptor encryptor;
 
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {

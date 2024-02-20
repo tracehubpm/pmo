@@ -125,7 +125,7 @@ final class DefaultSecretsTest {
         final Secret expected = new Secret(
             UUID.randomUUID(),
             "key",
-            "value"
+            ""
         );
         new MockSecret(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true, false);

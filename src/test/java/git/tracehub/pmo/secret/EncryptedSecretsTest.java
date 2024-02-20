@@ -17,18 +17,15 @@
 
 package git.tracehub.pmo.secret;
 
-import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
-import git.tracehub.pmo.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.UUID;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
+import org.jasypt.util.text.TextEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.llorllale.cactoos.matchers.Assertion;
-import org.llorllale.cactoos.matchers.Throws;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -40,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @since 0.0.0
  */
 @ExtendWith(MockitoExtension.class)
-final class ValidatedSecretsTest {
+final class EncryptedSecretsTest {
 
     /**
      * Secrets.
@@ -49,10 +46,16 @@ final class ValidatedSecretsTest {
     private Secrets origin;
 
     /**
-     * Validated secrets.
+     * Encryptor.
+     */
+    @Mock
+    private TextEncryptor encryptor;
+
+    /**
+     * Encrypted secrets.
      */
     @InjectMocks
-    private ValidatedSecrets secrets;
+    private EncryptedSecrets secrets;
 
     @Test
     void returnsValueByKey() {
@@ -63,6 +66,8 @@ final class ValidatedSecretsTest {
         );
         Mockito.when(this.origin.value(expected.getProject(), expected.getKey()))
             .thenReturn(expected);
+        Mockito.when(this.encryptor.decrypt(expected.getValue()))
+            .thenReturn(expected.getValue());
         final Secret secret = this.secrets.value(
             expected.getProject(),
             expected.getKey()
@@ -129,8 +134,6 @@ final class ValidatedSecretsTest {
             "key",
             "value"
         );
-        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
-            .thenReturn(true);
         Mockito.when(this.origin.update(Mockito.any())).thenReturn(expected);
         final Secret secret = this.secrets.update(() -> expected);
         MatcherAssert.assertThat(
@@ -159,48 +162,6 @@ final class ValidatedSecretsTest {
             this.secrets.exists(expected.getProject(), expected.getKey()),
             new IsEqual<>(false)
         );
-    }
-
-    @Test
-    @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnDuplicate() {
-        final Secret expected = new Secret(
-            UUID.randomUUID(),
-            "key",
-            "value"
-        );
-        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
-            .thenReturn(true);
-        new Assertion<>(
-            "Exception is not thrown or valid",
-            () -> this.secrets.create(() -> expected),
-            new Throws<>(
-                "Secret with project = %s and key = %s already exists"
-                    .formatted(expected.getProject(), expected.getKey()),
-                ResourceAlreadyExistsException.class
-            )
-        ).affirm();
-    }
-
-    @Test
-    @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnNonExistentSecret() {
-        final Secret expected = new Secret(
-            UUID.randomUUID(),
-            "key",
-            "value"
-        );
-        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
-            .thenReturn(false);
-        new Assertion<>(
-            "Exception is not thrown or valid",
-            () -> this.secrets.update(() -> expected),
-            new Throws<>(
-                "Secret with project = %s and key = %s not found"
-                    .formatted(expected.getProject(), expected.getKey()),
-                ResourceNotFoundException.class
-            )
-        ).affirm();
     }
 
 }
