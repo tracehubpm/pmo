@@ -85,6 +85,24 @@ public class DefaultSecrets implements Secrets {
 
     @Override
     @SneakyThrows
+    public Secret update(final Scalar<Secret> secret) {
+        final Secret value = secret.value();
+        return new JdbcSession(this.source)
+            .sql(
+                new SqlStatement("update-secret.sql").asString()
+            ).set(value.getValue())
+            .set(value.getProject())
+            .set(value.getKey())
+            .update(
+                (rs, stmt) -> {
+                    rs.next();
+                    return new SecretOf(rs).value();
+                }
+            );
+    }
+
+    @Override
+    @SneakyThrows
     public boolean exists(final UUID project, final String key) {
         return new JdbcSession(this.source)
             .sql(new SqlStatement("exists-secret.sql").asString())

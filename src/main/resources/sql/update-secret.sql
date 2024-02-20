@@ -15,50 +15,10 @@
  * SOFTWARE.
  */
 
-package git.tracehub.pmo.secret;
-
-import java.util.UUID;
-import org.cactoos.Scalar;
-
-/**
- * Secrets.
- *
- * @since 0.0.0
- */
-public interface Secrets {
-
-    /**
-     * Value by key.
-     *
-     * @param project Project id
-     * @param key Key
-     * @return Secret
-     */
-    Secret value(UUID project, String key);
-
-    /**
-     * Create a secret.
-     *
-     * @param secret Secret
-     * @return Secret
-     */
-    Secret create(Scalar<Secret> secret);
-
-    /**
-     * Update secret.
-     *
-     * @param secret Secret
-     * @return Secret
-     */
-    Secret update(Scalar<Secret> secret);
-
-    /**
-     * Is secret exists.
-     *
-     * @param project Project id
-     * @param key Key
-     * @return Result
-     */
-    boolean exists(UUID project, String key);
-
-}
+UPDATE projects.secret
+SET value = ?
+WHERE project = ?
+  AND key = ?
+RETURNING project,
+    key,
+    value;

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @todo #44:30min create an endpoint to list all keys from the project.
  * This endpoint should return a list of keys using project id.
- * @todo #44:30min create an endpoint to update a secret. This endpoint
- * should receive a secret id and a new value to update the secret.
  * @since 0.0.0
  */
 @RestController
@@ -56,7 +55,7 @@ public class SecretController {
      *
      * @param secrets Secrets
      */
-    public SecretController(@Qualifier("uniqueSecrets") final Secrets secrets) {
+    public SecretController(@Qualifier("validatedSecrets") final Secrets secrets) {
         this.secrets = secrets;
     }
 
@@ -73,6 +72,17 @@ public class SecretController {
         @RequestParam final String key
     ) {
         return this.secrets.value(project, key);
+    }
+
+    /**
+     * Update secret.
+     *
+     * @param secret Secret
+     * @return Secret
+     */
+    @PutMapping
+    public Secret update(@RequestBody @Valid final RqSecret secret) {
+        return this.secrets.update(new SecretFromReq(secret));
     }
 
     /**

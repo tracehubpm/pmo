@@ -18,6 +18,7 @@
 package git.tracehub.pmo.secret;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
+import git.tracehub.pmo.exception.ResourceNotFoundException;
 import java.util.UUID;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
@@ -25,13 +26,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Unique secrets.
+ * Validated secrets.
  *
  * @checkstyle DesignForExtensionCheck (70 lines)
  * @since 0.0.0
  */
 @Component
-public class UniqueSecrets implements Secrets {
+public class ValidatedSecrets implements Secrets {
 
     /**
      * Secrets.
@@ -43,7 +44,7 @@ public class UniqueSecrets implements Secrets {
      *
      * @param secrets Secrets
      */
-    public UniqueSecrets(@Qualifier("defaultSecrets") final Secrets secrets) {
+    public ValidatedSecrets(@Qualifier("defaultSecrets") final Secrets secrets) {
         this.secrets = secrets;
     }
 
@@ -63,6 +64,19 @@ public class UniqueSecrets implements Secrets {
             );
         }
         return this.secrets.create(secret);
+    }
+
+    @Override
+    @SneakyThrows
+    public Secret update(final Scalar<Secret> secret) {
+        final Secret content = secret.value();
+        if (!this.secrets.exists(content.getProject(), content.getKey())) {
+            throw new ResourceNotFoundException(
+                "Secret with project = %s and key = %s not found"
+                    .formatted(secret.value().getProject(), secret.value().getKey())
+            );
+        }
+        return this.secrets.update(secret);
     }
 
     @Override
