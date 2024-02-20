@@ -57,7 +57,7 @@ final class DefaultSecretsIT implements PostgresIntegration {
         final Secret expected = new Secret(
             UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
             "key",
-            "value"
+            "Iohe7UjU5MjHcxqsKk9vMLTlYHFCXHCLl4q0EjfBbfzmiYtXI1Vfw3KRUQEmbeVh"
         );
         final Secret secret = this.secrets.value(
             expected.getProject(),
