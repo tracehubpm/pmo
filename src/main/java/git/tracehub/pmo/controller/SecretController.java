@@ -54,7 +54,7 @@ public class SecretController {
      *
      * @param secrets Secrets
      */
-    public SecretController(@Qualifier("validatedSecrets") final Secrets secrets) {
+    public SecretController(@Qualifier("encryptedSecrets") final Secrets secrets) {
         this.secrets = secrets;
     }
 

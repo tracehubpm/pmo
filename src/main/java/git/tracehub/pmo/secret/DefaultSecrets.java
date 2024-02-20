@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 /**
  * Default secrets.
  *
- * @todo #44:30min encrypt the secret value before saving it in the database.
  * @checkstyle DesignForExtensionCheck (70 lines)
  * @since 0.0.0
  */

@@ -22,3 +22,5 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:5432/postgres
 platforms:
   github: ${GITHUB_HOST}
+encryptor:
+  key: ${ENCRYPTOR_KEY}

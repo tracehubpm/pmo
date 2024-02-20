@@ -26,6 +26,8 @@ import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.SneakyThrows;
+import org.jasypt.util.text.AES256TextEncryptor;
+import org.jasypt.util.text.TextEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,6 +59,12 @@ public class WebConfig {
      */
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String url;
+
+    /**
+     * Key.
+     */
+    @Value("${encryptor.key}")
+    private String key;
 
     /**
      * Filter.
@@ -138,6 +146,18 @@ public class WebConfig {
                     .title("PMO API")
                     .version(this.version)
             );
+    }
+
+    /**
+     * AES Encryptor.
+     *
+     * @return TextEncryptor
+     */
+    @Bean
+    public TextEncryptor encryptor() {
+        final AES256TextEncryptor encryptor = new AES256TextEncryptor();
+        encryptor.setPassword(this.key);
+        return encryptor;
     }
 
 }
