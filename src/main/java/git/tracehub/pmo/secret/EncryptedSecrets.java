@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 /**
  * Encrypted secrets.
  *
- * @checkstyle DesignForExtensionCheck (70 lines)
+ * @checkstyle DesignForExtensionCheck (80 lines)
  * @since 0.0.0
  */
 @Component

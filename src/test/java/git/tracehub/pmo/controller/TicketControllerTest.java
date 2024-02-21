@@ -46,6 +46,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 final class TicketControllerTest {
 
     /**
+     * Base url.
+     */
+    private static final String URL = "/tickets";
+
+    /**
      * Mocked mvc.
      */
     @Autowired
@@ -61,7 +66,7 @@ final class TicketControllerTest {
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/tickets/job")
+            MockMvcRequestBuilders.post("%s/job".formatted(TicketControllerTest.URL))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isForbidden());
     }
@@ -69,7 +74,7 @@ final class TicketControllerTest {
     @Test
     void returnsTicketByJob() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/tickets/job")
+            MockMvcRequestBuilders.get("%s/job".formatted(TicketControllerTest.URL))
                 .param("job", "path/to/job")
                 .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -80,7 +85,7 @@ final class TicketControllerTest {
     @Test
     void returnsTicketByIssueNumber() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/tickets/number")
+            MockMvcRequestBuilders.get("%s/number".formatted(TicketControllerTest.URL))
                 .param("number", "1")
                 .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -91,7 +96,7 @@ final class TicketControllerTest {
     @Test
     void createsNewTicket() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/tickets")
+            MockMvcRequestBuilders.post(TicketControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -107,7 +112,7 @@ final class TicketControllerTest {
     @Test
     void throwsOnInvalidRequestBody() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/tickets")
+            MockMvcRequestBuilders.post(TicketControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

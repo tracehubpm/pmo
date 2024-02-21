@@ -48,6 +48,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 final class SecretControllerTest {
 
     /**
+     * Base url.
+     */
+    private static final String URL = "/secrets";
+
+    /**
      * Mocked mvc.
      */
     @Autowired
@@ -69,7 +74,7 @@ final class SecretControllerTest {
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/secrets")
+            MockMvcRequestBuilders.post(SecretControllerTest.URL)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isForbidden());
     }
@@ -77,7 +82,7 @@ final class SecretControllerTest {
     @Test
     void returnsSecretByKey() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/secrets")
+            MockMvcRequestBuilders.get(SecretControllerTest.URL)
                 .param("project", UUID.randomUUID().toString())
                 .param("key", "key")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -88,7 +93,7 @@ final class SecretControllerTest {
     @Test
     void returnsKeysByProject() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/secrets/keys")
+            MockMvcRequestBuilders.get("%s/keys".formatted(SecretControllerTest.URL))
                 .param("project", UUID.randomUUID().toString())
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +103,7 @@ final class SecretControllerTest {
     @Test
     void createsNewSecret() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/secrets")
+            MockMvcRequestBuilders.post(SecretControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -114,7 +119,7 @@ final class SecretControllerTest {
     @Test
     void updatesSecret() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.put("/secrets")
+            MockMvcRequestBuilders.put(SecretControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -130,7 +135,7 @@ final class SecretControllerTest {
     @Test
     void throwsOnInvalidRequestBody() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/secrets")
+            MockMvcRequestBuilders.post(SecretControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

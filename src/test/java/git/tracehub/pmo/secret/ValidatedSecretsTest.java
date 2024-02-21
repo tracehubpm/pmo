@@ -83,7 +83,7 @@ final class ValidatedSecretsTest {
     void returnsKeysByProject() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
+            "unique key",
             ""
         );
         Mockito.when(this.origin.keys(expected.getProject()))
@@ -105,8 +105,8 @@ final class ValidatedSecretsTest {
     void createsSecret() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "unique key",
+            "unique value"
         );
         Mockito.when(this.origin.create(Mockito.any())).thenReturn(expected);
         final Secret secret = this.secrets.create(() -> expected);
@@ -166,8 +166,8 @@ final class ValidatedSecretsTest {
     void throwsOnDuplicate() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "test key",
+            "test value"
         );
         Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
             .thenReturn(true);
@@ -187,8 +187,8 @@ final class ValidatedSecretsTest {
     void throwsOnNonExistentSecret() {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "test key",
+            "test value"
         );
         Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
             .thenReturn(false);

@@ -146,8 +146,8 @@ final class DefaultSecretsTest {
     void updatesSecret() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "unique key",
+            "unique value"
         );
         new MockSecret(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
@@ -190,8 +190,8 @@ final class DefaultSecretsTest {
     void existsSecret() throws SQLException {
         final Secret expected = new Secret(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "unique key",
+            "unique value"
         );
         Mockito.when(this.set.next()).thenReturn(true);
         MatcherAssert.assertThat(
@@ -206,7 +206,7 @@ final class DefaultSecretsTest {
     void throwsOnInvalidProject() throws SQLException {
         Mockito.when(this.set.next()).thenThrow(SQLException.class);
         new Assertion<>(
-            "Exception is not thrown or valid",
+            "Exception is not thrown",
             () -> this.secrets.keys(UUID.randomUUID()),
             new Throws<>(SQLException.class)
         ).affirm();
@@ -219,7 +219,7 @@ final class DefaultSecretsTest {
         final String key = "invalid";
         Mockito.when(this.set.next()).thenReturn(false);
         new Assertion<>(
-            "Exception is not thrown or valid",
+            "Exception is not thrown",
             () -> this.secrets.value(project, key),
             new Throws<>(
                 "Secret with project = %s and key = %s not found"
@@ -238,8 +238,8 @@ final class DefaultSecretsTest {
             () -> this.secrets.create(
                 () -> new Secret(
                     UUID.randomUUID(),
-                    "key",
-                    "value"
+                    "test key",
+                    "test value"
                 )
             ),
             new Throws<>(SQLException.class)
@@ -255,8 +255,8 @@ final class DefaultSecretsTest {
             () -> this.secrets.update(
                 () -> new Secret(
                     UUID.randomUUID(),
-                    "key",
-                    "value"
+                    "test key",
+                    "test value"
                 )
             ),
             new Throws<>(SQLException.class)

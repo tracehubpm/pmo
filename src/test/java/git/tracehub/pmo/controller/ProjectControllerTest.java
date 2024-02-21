@@ -52,6 +52,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 final class ProjectControllerTest {
 
     /**
+     * Base url.
+     */
+    private static final String URL = "/projects";
+
+    /**
      * Mocked mvc.
      */
     @Autowired
@@ -74,7 +79,7 @@ final class ProjectControllerTest {
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post(ProjectControllerTest.URL)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isForbidden());
     }
@@ -82,7 +87,7 @@ final class ProjectControllerTest {
     @Test
     void returnsProjectByUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/projects")
+            MockMvcRequestBuilders.get(ProjectControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -91,8 +96,10 @@ final class ProjectControllerTest {
     @Test
     void returnsProjectById() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("/projects/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d")
-                .with(SecurityMockMvcRequestPostProcessors.jwt())
+            MockMvcRequestBuilders.get(
+                "%s/74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"
+                    .formatted(ProjectControllerTest.URL)
+                ).with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -113,7 +120,7 @@ final class ProjectControllerTest {
             );
         Mockito.doNothing().when(platform).prepare(Mockito.any(), Mockito.any());
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post(ProjectControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -129,7 +136,7 @@ final class ProjectControllerTest {
     @Test
     void throwsOnInvalidRequestBody() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("/projects")
+            MockMvcRequestBuilders.post(ProjectControllerTest.URL)
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

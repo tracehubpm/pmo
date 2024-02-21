@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 /**
  * Default secrets.
  *
- * @checkstyle DesignForExtensionCheck (70 lines)
+ * @checkstyle DesignForExtensionCheck (100 lines)
  * @since 0.0.0
  */
 @Component
