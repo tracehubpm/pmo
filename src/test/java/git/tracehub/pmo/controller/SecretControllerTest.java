@@ -17,6 +17,7 @@
 
 package git.tracehub.pmo.controller;
 
+import git.tracehub.pmo.secret.Keys;
 import git.tracehub.pmo.secret.Secrets;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
@@ -66,8 +67,16 @@ final class SecretControllerTest {
     private Secrets secrets;
 
     /**
+     * Keys.
+     */
+    @MockBean
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private Keys keys;
+
+    /**
      * Encryptor.
      */
+    @MockBean
     @SuppressWarnings("PMD.UnusedPrivateField")
     private TextEncryptor encryptor;
 

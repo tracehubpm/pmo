@@ -17,11 +17,11 @@
 
 package git.tracehub.pmo.secret;
 
-import git.tracehub.pmo.exception.ResourceNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.hamcrest.MatcherAssert;
@@ -38,12 +38,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Test suite for {@link DefaultSecrets}.
+ * Test suite for {@link DefaultKeys}.
  *
  * @since 0.0.0
  */
 @ExtendWith(MockitoExtension.class)
-final class DefaultSecretsTest {
+final class DefaultKeysTest {
 
     /**
      * Result set.
@@ -73,7 +73,7 @@ final class DefaultSecretsTest {
      * Default secrets.
      */
     @InjectMocks
-    private DefaultSecrets secrets;
+    private DefaultKeys keys;
 
     /**
      * Set datasource and connection.
@@ -95,122 +95,64 @@ final class DefaultSecretsTest {
     }
 
     @Test
-    void returnsValueByKey() throws SQLException {
-        final Secret expected = new Secret(
+    void returnsKeysByProject() throws SQLException {
+        final Key expected = new Key(
             UUID.randomUUID(),
-            "key",
-            "value"
+            "key"
         );
-        new MockSecret(this.set).exec(expected);
-        Mockito.when(this.set.next()).thenReturn(true);
-        final Secret secret = this.secrets.value(
-            new Key(
+        new MockSecret(this.set).exec(
+            new Secret(
                 expected.getProject(),
-                expected.getKey()
+                expected.getKey(),
+                ""
             )
         );
+        Mockito.when(this.set.next()).thenReturn(true, false);
+        final List<Key> actual = this.keys.byProject(expected.getProject());
         MatcherAssert.assertThat(
-            "Secret %s is null".formatted(secret),
-            secret,
+            "List of keys %s is null".formatted(actual),
+            actual,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
-            new IsEqual<>(expected)
+            "List of keys %s isn't correct".formatted(actual),
+            actual,
+            Matchers.contains(expected)
         );
     }
 
     @Test
-    void updatesSecret() throws SQLException {
-        final Secret expected = new Secret(
+    void existsKey() throws SQLException {
+        final Key expected = new Key(
             UUID.randomUUID(),
-            "unique key",
-            "unique value"
+            "unique key"
         );
-        new MockSecret(this.set).exec(expected);
         Mockito.when(this.set.next()).thenReturn(true);
-        final Secret secret = this.secrets.update(() -> expected);
         MatcherAssert.assertThat(
-            "Secret %s isn't updated".formatted(secret),
-            secret,
-            Matchers.notNullValue()
-        );
-        MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
-            new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void createsSecret() throws SQLException {
-        final Secret expected = new Secret(
-            UUID.randomUUID(),
-            "key",
-            "value"
-        );
-        new MockSecret(this.set).exec(expected);
-        Mockito.when(this.set.next()).thenReturn(true);
-        final Secret secret = this.secrets.create(() -> expected);
-        MatcherAssert.assertThat(
-            "Secret %s isn't created".formatted(secret),
-            secret,
-            Matchers.notNullValue()
-        );
-        MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
-            new IsEqual<>(expected)
+            "Key %s exists".formatted(expected),
+            this.keys.exists(expected),
+            new IsEqual<>(false)
         );
     }
 
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnInvalidKey() throws SQLException {
-        final Key key = new Key(UUID.randomUUID(), "invalid");
-        Mockito.when(this.set.next()).thenReturn(false);
-        new Assertion<>(
-            "Exception is not thrown",
-            () -> this.secrets.value(key),
-            new Throws<>(
-                "Secret with project = %s and key = %s not found"
-                    .formatted(key.getProject(), key.getKey()),
-                ResourceNotFoundException.class
-            )
-        ).affirm();
-    }
-
-    @Test
-    @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnCreatingInvalidSecret() throws SQLException {
+    void throwsOnInvalidProject() throws SQLException {
         Mockito.when(this.set.next()).thenThrow(SQLException.class);
         new Assertion<>(
-            "Exception is not thrown or valid",
-            () -> this.secrets.create(
-                () -> new Secret(
-                    UUID.randomUUID(),
-                    "test key",
-                    "test value"
-                )
-            ),
+            "Exception is not thrown",
+            () -> this.keys.byProject(UUID.randomUUID()),
             new Throws<>(SQLException.class)
         ).affirm();
     }
 
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void throwsOnUpdatingInvalidSecret() throws SQLException {
+    void throwsOnNonExistentSecret() throws SQLException {
         Mockito.when(this.set.next()).thenThrow(SQLException.class);
         new Assertion<>(
             "Exception is not thrown or valid",
-            () -> this.secrets.update(
-                () -> new Secret(
-                    UUID.randomUUID(),
-                    "test key",
-                    "test value"
-                )
-            ),
+            () -> this.keys.exists(new Key(UUID.randomUUID(), "key")),
             new Throws<>(SQLException.class)
         ).affirm();
     }

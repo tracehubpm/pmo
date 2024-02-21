@@ -47,24 +47,23 @@ final class KeyOfTest {
 
     @Test
     void returnsKeyWithAllFields() throws SQLException {
-        final Secret expected = new Secret(
+        final Key expected = new Key(
             UUID.randomUUID(),
-            "key",
-            ""
+            "key"
         );
         Mockito.when(this.set.getString("project"))
             .thenReturn(expected.getProject().toString());
         Mockito.when(this.set.getString("key"))
             .thenReturn(expected.getKey());
-        final Secret secret = new KeyOf(this.set).value();
+        final Key key = new KeyOf(this.set).value();
         MatcherAssert.assertThat(
-            "Secret %s is null".formatted(secret),
+            "Key %s is null".formatted(key),
             true,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
+            "Key %s isn't correct".formatted(key),
+            key,
             new IsEqual<>(expected)
         );
     }

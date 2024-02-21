@@ -18,10 +18,8 @@
 package git.tracehub.pmo.secret;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 import org.cactoos.Scalar;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -63,19 +61,17 @@ final class EncryptedSecretsTest {
 
     @Test
     void returnsValueByKey() {
+        final Key key = new Key(UUID.randomUUID(), "key");
         final Secret expected = new Secret(
             UUID.randomUUID(),
             "key",
             "value"
         );
-        Mockito.when(this.origin.value(expected.getProject(), expected.getKey()))
+        Mockito.when(this.origin.value(key))
             .thenReturn(expected);
         Mockito.when(this.encryptor.decrypt(expected.getValue()))
             .thenReturn(expected.getValue());
-        final Secret secret = this.secrets.value(
-            expected.getProject(),
-            expected.getKey()
-        );
+        final Secret secret = this.secrets.value(key);
         MatcherAssert.assertThat(
             "Secret %s is null".formatted(secret),
             secret,
@@ -85,28 +81,6 @@ final class EncryptedSecretsTest {
             "Secret %s isn't correct".formatted(secret),
             secret,
             new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void returnsKeysByProject() {
-        final Secret expected = new Secret(
-            UUID.randomUUID(),
-            "unique key",
-            ""
-        );
-        Mockito.when(this.origin.keys(expected.getProject()))
-            .thenReturn(new ListOf<>(expected));
-        final List<Secret> actual = this.secrets.keys(expected.getProject());
-        MatcherAssert.assertThat(
-            "List of keys %s is null".formatted(actual),
-            actual,
-            Matchers.notNullValue()
-        );
-        MatcherAssert.assertThat(
-            "List of secrets %s isn't correct".formatted(actual),
-            actual,
-            Matchers.contains(expected)
         );
     }
 
@@ -151,22 +125,6 @@ final class EncryptedSecretsTest {
             "Secret %s isn't correct".formatted(secret),
             secret,
             new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void existsSecret() {
-        final Secret expected = new Secret(
-            UUID.randomUUID(),
-            "key",
-            "value"
-        );
-        Mockito.when(this.origin.exists(expected.getProject(), expected.getKey()))
-            .thenReturn(false);
-        MatcherAssert.assertThat(
-            "Secret %s exists".formatted(expected),
-            this.secrets.exists(expected.getProject(), expected.getKey()),
-            new IsEqual<>(false)
         );
     }
 

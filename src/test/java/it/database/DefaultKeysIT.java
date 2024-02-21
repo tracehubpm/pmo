@@ -19,82 +19,67 @@ package it.database;
 
 import git.tracehub.pmo.PmoApplication;
 import git.tracehub.pmo.secret.Key;
-import git.tracehub.pmo.secret.DefaultSecrets;
-import git.tracehub.pmo.secret.Secret;
-import git.tracehub.pmo.secret.Secrets;
+import git.tracehub.pmo.secret.Keys;
+import git.tracehub.pmo.secret.DefaultKeys;
 import it.PostgresIntegration;
+import java.util.List;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 /**
- * Integration tests for {@link DefaultSecrets}.
+ * Integration tests for {@link DefaultKeys}.
  *
  * @since 0.0.0
  */
 @ActiveProfiles("pgit")
 @SpringBootTest(classes = PmoApplication.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class DefaultSecretsIT implements PostgresIntegration {
+final class DefaultKeysIT implements PostgresIntegration {
 
     /**
-     * Secrets.
+     * Keys.
      */
     @Autowired
-    @Qualifier("defaultSecrets")
-    private Secrets secrets;
+    private Keys keys;
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void returnsValueByKey() {
-        final Secret expected = new Secret(
+    void returnsKeysByProject() {
+        final Key expected = new Key(
             UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
-            "key",
-            "Iohe7UjU5MjHcxqsKk9vMLTlYHFCXHCLl4q0EjfBbfzmiYtXI1Vfw3KRUQEmbeVh"
+            "key"
         );
-        final Secret secret = this.secrets.value(
-            new Key(
-                UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
-                "key"
-            )
-        );
+        final List<Key> actual = this.keys.byProject(expected.getProject());
         MatcherAssert.assertThat(
-            "Secret %s is null".formatted(secret),
-            true,
+            "List of keys %s is null".formatted(actual),
+            actual,
             Matchers.notNullValue()
         );
         MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
-            new IsEqual<>(expected)
+            "List of secrets %s isn't correct".formatted(actual),
+            actual,
+            Matchers.contains(expected)
         );
     }
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void createsSecret() {
-        final Secret expected = new Secret(
+    void existsSecret() {
+        final Key expected = new Key(
             UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"),
-            "new key",
-            "value"
-        );
-        final Secret secret = this.secrets.create(() -> expected);
-        MatcherAssert.assertThat(
-            "Secret %s is null".formatted(secret),
-            true,
-            Matchers.notNullValue()
+            "key"
         );
         MatcherAssert.assertThat(
-            "Secret %s isn't correct".formatted(secret),
-            secret,
-            Matchers.samePropertyValuesAs(expected, "id")
+            "Key %s doesn't exist".formatted(expected),
+            this.keys.exists(expected),
+            new IsEqual<>(true)
         );
     }
 
