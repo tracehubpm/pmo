@@ -150,6 +150,8 @@ public class WebConfig {
 
     /**
      * AES Encryptor.
+     * Algorithm: PBEWithHMACSHA512AndAES_256.
+     * Key obtention iterations: 1000.
      *
      * @return TextEncryptor
      */

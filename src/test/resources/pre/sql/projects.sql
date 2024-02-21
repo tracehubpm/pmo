@@ -31,6 +31,7 @@ VALUES ('04986038-6e38-4928-b12e-644c99f9cadc',
         'OPENED')
 ON CONFLICT (id) DO NOTHING;
 
+-- value encrypted using algorithm PBEWithHMACSHA512AndAES_256
 INSERT INTO projects.secret(project,
                             key,
                             value)
