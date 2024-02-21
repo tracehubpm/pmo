@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 /**
  * Default keys.
  *
+ * @checkstyle DesignForExtensionCheck (50 lines)
  * @since 0.0.0
  */
 @Component
@@ -68,7 +69,7 @@ public class DefaultKeys implements Keys {
         return new JdbcSession(this.source)
             .sql(new SqlStatement("exists-key.sql").asString())
             .set(key.getProject())
-            .set(key.getKey())
+            .set(key.getName())
             .select(new SingleOutcome<>(Boolean.class));
     }
 

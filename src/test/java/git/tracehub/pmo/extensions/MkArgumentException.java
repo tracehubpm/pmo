@@ -35,21 +35,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @SuppressWarnings(
     {"JTCOP.RuleCorrectTestName", "JTCOP.RuleAllTestsHaveProductionClass"}
 )
-public class MkArgumentException implements ParameterResolver {
+public final class MkArgumentException implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(
-        final ParameterContext parameterContext,
-        final ExtensionContext extensionContext
+        final ParameterContext parameter,
+        final ExtensionContext extension
     ) throws ParameterResolutionException {
         return MethodArgumentNotValidException.class
-            .isAssignableFrom(parameterContext.getParameter().getType());
+            .isAssignableFrom(parameter.getParameter().getType());
     }
 
     @Override
     public Object resolveParameter(
-        final ParameterContext parameterContext,
-        final ExtensionContext extensionContext
+        final ParameterContext parameter,
+        final ExtensionContext extension
     ) throws ParameterResolutionException {
         final MethodArgumentNotValidException exception =
             Mockito.mock(MethodArgumentNotValidException.class);
@@ -60,7 +60,8 @@ public class MkArgumentException implements ParameterResolver {
                 new FieldError(
                     "object",
                     "field",
-                    "Message")
+                    "Message"
+                )
             )
         );
         return exception;

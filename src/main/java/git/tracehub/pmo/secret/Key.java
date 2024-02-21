@@ -39,8 +39,8 @@ public class Key {
     private final UUID project;
 
     /**
-     * Key.
+     * Name of the key.
      */
-    private final String key;
+    private final String name;
 
 }

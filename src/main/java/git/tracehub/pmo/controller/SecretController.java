@@ -77,7 +77,7 @@ public class SecretController {
      * @return List of keys
      */
     @GetMapping("/keys")
-    public List<Key> keys(@RequestParam final UUID project) {
+    public List<Key> byProject(@RequestParam final UUID project) {
         return this.keys.byProject(project);
     }
 
@@ -88,7 +88,7 @@ public class SecretController {
      * @return Secret
      */
     @GetMapping
-    public Secret secret(final Key key) {
+    public Secret byValue(final Key key) {
         return this.secrets.value(key);
     }
 

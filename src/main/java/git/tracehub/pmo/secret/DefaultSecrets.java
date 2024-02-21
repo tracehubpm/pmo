@@ -48,13 +48,13 @@ public class DefaultSecrets implements Secrets {
             .sql(
                 new SqlStatement("select-secret-by-key.sql").asString()
             ).set(key.getProject())
-            .set(key.getKey())
+            .set(key.getName())
             .select(
                 (rs, stmt) -> {
                     if (!rs.next()) {
                         throw new ResourceNotFoundException(
                             "Secret with project = %s and key = %s not found"
-                                .formatted(key.getProject(), key.getKey())
+                                .formatted(key.getProject(), key.getName())
                         );
                     }
                     return new SecretOf(rs).value();

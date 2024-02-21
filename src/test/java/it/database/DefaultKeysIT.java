@@ -18,9 +18,9 @@
 package it.database;
 
 import git.tracehub.pmo.PmoApplication;
+import git.tracehub.pmo.secret.DefaultKeys;
 import git.tracehub.pmo.secret.Key;
 import git.tracehub.pmo.secret.Keys;
-import git.tracehub.pmo.secret.DefaultKeys;
 import it.PostgresIntegration;
 import java.util.List;
 import java.util.UUID;

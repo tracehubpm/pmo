@@ -103,7 +103,7 @@ final class DefaultKeysTest {
         new MockSecret(this.set).exec(
             new Secret(
                 expected.getProject(),
-                expected.getKey(),
+                expected.getName(),
                 ""
             )
         );

@@ -18,8 +18,8 @@
 package it.database;
 
 import git.tracehub.pmo.PmoApplication;
-import git.tracehub.pmo.secret.Key;
 import git.tracehub.pmo.secret.DefaultSecrets;
+import git.tracehub.pmo.secret.Key;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import it.PostgresIntegration;

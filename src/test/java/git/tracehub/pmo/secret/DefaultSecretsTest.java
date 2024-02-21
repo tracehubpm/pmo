@@ -175,7 +175,7 @@ final class DefaultSecretsTest {
             () -> this.secrets.value(key),
             new Throws<>(
                 "Secret with project = %s and key = %s not found"
-                    .formatted(key.getProject(), key.getKey()),
+                    .formatted(key.getProject(), key.getName()),
                 ResourceNotFoundException.class
             )
         ).affirm();

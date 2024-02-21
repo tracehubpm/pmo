@@ -54,7 +54,7 @@ final class KeyOfTest {
         Mockito.when(this.set.getString("project"))
             .thenReturn(expected.getProject().toString());
         Mockito.when(this.set.getString("key"))
-            .thenReturn(expected.getKey());
+            .thenReturn(expected.getName());
         final Key key = new KeyOf(this.set).value();
         MatcherAssert.assertThat(
             "Key %s is null".formatted(key),
