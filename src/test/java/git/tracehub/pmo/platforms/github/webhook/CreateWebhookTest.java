@@ -25,6 +25,7 @@ import java.net.HttpURLConnection;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -88,6 +89,23 @@ final class CreateWebhookTest {
             new IsEqual<>("/repos/%s/hooks".formatted(location))
         );
         container.stop();
+    }
+
+    @Test
+    void throwsOnInvalidHost() {
+        final String url = "http://localhost:1000";
+        final String location = "user/repo";
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new CreateWebhook(
+                url,
+                "token",
+                location,
+                "test/url",
+                new ListOf<>("push")
+            ).exec(),
+            "Exception is not thrown or valid"
+        );
     }
 
 }

@@ -17,12 +17,15 @@
 
 package git.tracehub.pmo.platforms.github;
 
+import com.jcabi.github.Collaborators;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * Test suite for {@link InviteCollaborator}.
@@ -41,6 +44,20 @@ final class InviteCollaboratorTest {
                 .formatted(collaborator),
             repo.collaborators().isCollaborator(collaborator),
             new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidRepository() throws IOException {
+        final String collaborator = "name";
+        final Repo repo = Mockito.mock(Repo.class);
+        final Collaborators collaborators = Mockito.mock(Collaborators.class);
+        Mockito.when(repo.collaborators()).thenReturn(collaborators);
+        Mockito.doThrow(IOException.class).when(collaborators).add(collaborator);
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new InviteCollaborator(repo, collaborator).exec(),
+            "Exception is not thrown or valid"
         );
     }
 

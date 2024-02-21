@@ -17,8 +17,10 @@
 
 package git.tracehub.pmo.secret;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -26,6 +28,8 @@ import org.hamcrest.core.IsEqual;
 import org.jasypt.util.text.TextEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -113,7 +117,8 @@ final class EncryptedSecretsTest {
             "unique key",
             "unique value"
         );
-        Mockito.when(this.origin.create(Mockito.any())).thenReturn(expected);
+        Mockito.when(this.origin.create(Mockito.any(Scalar.class)))
+            .thenReturn(expected);
         final Secret secret = this.secrets.create(() -> expected);
         MatcherAssert.assertThat(
             "Secret %s isn't created".formatted(secret),
@@ -134,7 +139,8 @@ final class EncryptedSecretsTest {
             "key",
             "value"
         );
-        Mockito.when(this.origin.update(Mockito.any())).thenReturn(expected);
+        Mockito.when(this.origin.update(Mockito.any(Scalar.class)))
+            .thenReturn(expected);
         final Secret secret = this.secrets.update(() -> expected);
         MatcherAssert.assertThat(
             "Secret %s isn't updated".formatted(secret),
@@ -162,6 +168,34 @@ final class EncryptedSecretsTest {
             this.secrets.exists(expected.getProject(), expected.getKey()),
             new IsEqual<>(false)
         );
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidSecretForCreating() {
+        new Assertion<>(
+            "Exception is not thrown",
+            () -> this.secrets.create(
+                () -> {
+                    throw new IOException();
+                }
+            ),
+            new Throws<>(IOException.class)
+        ).affirm();
+    }
+
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidSecretForUpdating() {
+        new Assertion<>(
+            "Exception is not thrown",
+            () -> this.secrets.update(
+                () -> {
+                    throw new IOException();
+                }
+            ),
+            new Throws<>(IOException.class)
+        ).affirm();
     }
 
 }

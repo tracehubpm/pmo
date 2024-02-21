@@ -17,15 +17,19 @@
 
 package git.tracehub.pmo.platforms.github;
 
+import com.jcabi.github.Labels;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.pmo.platforms.ColorInHex;
 import git.tracehub.pmo.platforms.Label;
 import java.awt.Color;
 import java.io.IOException;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * Test suite for {@link CreateLabels}.
@@ -44,6 +48,26 @@ final class CreateLabelsTest {
             "Label %s isn't created".formatted(label),
             repo.labels().get(label).name(),
             new IsEqual<>(label)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidLabel() throws IOException {
+        final Label label = new Label("new", Color.BLUE);
+        final Repo repo = Mockito.mock(Repo.class);
+        final Labels labels = Mockito.mock(Labels.class);
+        Mockito.when(repo.labels()).thenReturn(labels);
+        Mockito.doThrow(IOException.class).when(labels).create(
+            label.getName(),
+            new ColorInHex(label.getColor()).value()
+        );
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new CreateLabels(
+                repo,
+                new ListOf<>(label)
+            ).exec(),
+            "Exception is not thrown or valid"
         );
     }
 

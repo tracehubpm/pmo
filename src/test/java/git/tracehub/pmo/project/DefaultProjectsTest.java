@@ -201,4 +201,15 @@ final class DefaultProjectsTest {
         ).affirm();
     }
 
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidUser() throws SQLException {
+        Mockito.when(this.set.next()).thenThrow(SQLException.class);
+        new Assertion<>(
+            "Exception is not thrown or valid",
+            () -> this.projects.byUser("email"),
+            new Throws<>(SQLException.class)
+        ).affirm();
+    }
+
 }
