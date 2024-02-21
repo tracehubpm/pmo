@@ -68,7 +68,7 @@ final class RetrieveSecretByKeyITCase
             RetrieveSecretByKeyITCase.RAW.formatted(this.port)
         ).uri()
             .queryParam("project", UUID.fromString("74bb5ec8-0e6b-4618-bfa4-a0b76b7b312d"))
-            .queryParam("key", "key")
+            .queryParam("name", "key")
             .back()
             .method(Request.GET)
             .header(
@@ -96,7 +96,7 @@ final class RetrieveSecretByKeyITCase
             RetrieveSecretByKeyITCase.RAW.formatted(this.port)
         ).uri()
             .queryParam("project", project)
-            .queryParam("key", key)
+            .queryParam("name", key)
             .back()
             .method(Request.GET)
             .header(
