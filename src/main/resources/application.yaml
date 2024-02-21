@@ -22,5 +22,6 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:5432/postgres
 platforms:
   github: ${GITHUB_HOST}
+  # @todo #49:60min add support of Github Enterprise domain
 encryptor:
   key: ${ENCRYPTOR_KEY}
