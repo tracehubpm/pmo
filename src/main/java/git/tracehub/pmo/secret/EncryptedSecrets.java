@@ -37,7 +37,7 @@ public class EncryptedSecrets implements Secrets {
     /**
      * Secrets.
      */
-    private final Secrets secrets;
+    private final Secrets origin;
 
     /**
      * Encryptor.
@@ -47,25 +47,25 @@ public class EncryptedSecrets implements Secrets {
     /**
      * Constructor.
      *
-     * @param secrets Secrets
+     * @param origin Secrets
      * @param encryptor Encryptor
      */
     public EncryptedSecrets(
-        @Qualifier("validatedSecrets") final Secrets secrets,
+        @Qualifier("validatedSecrets") final Secrets origin,
         final TextEncryptor encryptor
     ) {
-        this.secrets = secrets;
+        this.origin = origin;
         this.encryptor = encryptor;
     }
 
     @Override
     public List<Secret> keys(final UUID project) {
-        return this.secrets.keys(project);
+        return this.origin.keys(project);
     }
 
     @Override
     public Secret value(final UUID project, final String key) {
-        final Secret secret = this.secrets.value(project, key);
+        final Secret secret = this.origin.value(project, key);
         return new Secret(
             secret.getProject(),
             secret.getKey(),
@@ -77,7 +77,7 @@ public class EncryptedSecrets implements Secrets {
     @SneakyThrows
     public Secret create(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        return this.secrets.create(
+        return this.origin.create(
             () -> new Secret(
                 content.getProject(),
                 content.getKey(),
@@ -90,7 +90,7 @@ public class EncryptedSecrets implements Secrets {
     @SneakyThrows
     public Secret update(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        return this.secrets.update(
+        return this.origin.update(
             () -> new Secret(
                 content.getProject(),
                 content.getKey(),
@@ -101,7 +101,7 @@ public class EncryptedSecrets implements Secrets {
 
     @Override
     public boolean exists(final UUID project, final String key) {
-        return this.secrets.exists(project, key);
+        return this.origin.exists(project, key);
     }
 
 }

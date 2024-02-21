@@ -38,56 +38,56 @@ public class ValidatedSecrets implements Secrets {
     /**
      * Secrets.
      */
-    private final Secrets secrets;
+    private final Secrets origin;
 
     /**
      * Constructor.
      *
-     * @param secrets Secrets
+     * @param origin Secrets
      */
-    public ValidatedSecrets(@Qualifier("defaultSecrets") final Secrets secrets) {
-        this.secrets = secrets;
+    public ValidatedSecrets(@Qualifier("defaultSecrets") final Secrets origin) {
+        this.origin = origin;
     }
 
     @Override
     public List<Secret> keys(final UUID project) {
-        return this.secrets.keys(project);
+        return this.origin.keys(project);
     }
 
     @Override
     public Secret value(final UUID project, final String key) {
-        return this.secrets.value(project, key);
+        return this.origin.value(project, key);
     }
 
     @Override
     @SneakyThrows
     public Secret create(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        if (this.secrets.exists(content.getProject(), content.getKey())) {
+        if (this.origin.exists(content.getProject(), content.getKey())) {
             throw new ResourceAlreadyExistsException(
                 "Secret with project = %s and key = %s already exists"
                     .formatted(secret.value().getProject(), secret.value().getKey())
             );
         }
-        return this.secrets.create(secret);
+        return this.origin.create(secret);
     }
 
     @Override
     @SneakyThrows
     public Secret update(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        if (!this.secrets.exists(content.getProject(), content.getKey())) {
+        if (!this.origin.exists(content.getProject(), content.getKey())) {
             throw new ResourceNotFoundException(
                 "Secret with project = %s and key = %s not found"
                     .formatted(secret.value().getProject(), secret.value().getKey())
             );
         }
-        return this.secrets.update(secret);
+        return this.origin.update(secret);
     }
 
     @Override
     public boolean exists(final UUID project, final String key) {
-        return this.secrets.exists(project, key);
+        return this.origin.exists(project, key);
     }
 
 }
