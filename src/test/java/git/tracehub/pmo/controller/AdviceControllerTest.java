@@ -19,17 +19,13 @@ package git.tracehub.pmo.controller;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.MutableJson;
+import git.tracehub.pmo.exception.RestError;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -40,17 +36,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
  *
  * @since 0.0.0
  */
-@ExtendWith(MockitoExtension.class)
 final class AdviceControllerTest {
-
-    /**
-     * Controller.
-     */
-    private final AdviceController controller = new AdviceController();
 
     @Test
     void handlesMethodArgumentNotValidException() {
-        final String message = "Message";
+        final String message = "MethodArgumentNotValidException";
         final MethodArgumentNotValidException exception =
             Mockito.mock(MethodArgumentNotValidException.class);
         final BindingResult result = Mockito.mock(BindingResult.class);
@@ -60,99 +50,66 @@ final class AdviceControllerTest {
         );
         MatcherAssert.assertThat(
             "MethodArgumentNotValidException isn't handled",
-            this.controller.handle(exception),
+            new AdviceController().handle(exception),
             new IsEqual<>(
-                new ResponseEntity<>(
-                    new Jocument(
-                        new MutableJson()
-                            .with("message", message)
-                    ).byteArray(),
-                    HttpStatus.BAD_REQUEST
-                )
+                new RestError(message, HttpStatus.BAD_REQUEST).value()
             )
         );
     }
 
     @Test
     void handlesResourceAlreadyExistsException() {
-        final String message = "Message";
+        final String message = "ResourceAlreadyExistsException";
         final ResourceAlreadyExistsException exception =
             new ResourceAlreadyExistsException(message);
         MatcherAssert.assertThat(
             "ResourceAlreadyExistsException isn't handled",
-            this.controller.handle(exception),
+            new AdviceController().handle(exception),
             new IsEqual<>(
-                new ResponseEntity<>(
-                    new Jocument(
-                        new MutableJson()
-                            .with("message", message)
-                    ).byteArray(),
-                    HttpStatus.BAD_REQUEST
-                )
+                new RestError(message, HttpStatus.BAD_REQUEST).value()
             )
         );
     }
 
     @Test
     void handlesResourceNotFoundException() {
-        final String message = "Message";
+        final String message = "ResourceNotFoundException";
         final ResourceNotFoundException exception =
             new ResourceNotFoundException(message);
         MatcherAssert.assertThat(
             "ResourceNotFoundException isn't handled",
-            this.controller.handle(exception),
+            new AdviceController().handle(exception),
             new IsEqual<>(
-                new ResponseEntity<>(
-                    new Jocument(
-                        new MutableJson()
-                            .with("message", message)
-                    ).byteArray(),
-                    HttpStatus.NOT_FOUND
-                )
+                new RestError(message, HttpStatus.NOT_FOUND).value()
             )
         );
     }
 
     @Test
     void handlesAccessDeniedException() {
-        final String message = "Message";
+        final String message = "AccessDeniedException";
         final AccessDeniedException exception =
             new AccessDeniedException(message);
         MatcherAssert.assertThat(
             "AccessDeniedException isn't handled",
-            this.controller.handle(exception),
+            new AdviceController().handle(exception),
             new IsEqual<>(
-                new ResponseEntity<>(
-                    new Jocument(
-                        new MutableJson()
-                            .with("message", message)
-                    ).byteArray(),
-                    HttpStatus.FORBIDDEN
-                )
+                new RestError(message, HttpStatus.FORBIDDEN).value()
             )
         );
     }
 
     @Test
     void handlesException() {
-        final String message = "Message";
+        final String message = "Exception";
         final Exception exception = new Exception(message);
         MatcherAssert.assertThat(
             "Exception isn't handled",
-            this.controller.handle(exception),
+            new AdviceController().handle(exception),
             new IsEqual<>(
-                new ResponseEntity<>(
-                    new Jocument(
-                        new MutableJson()
-                            .with("message", message)
-                    ).byteArray(),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-                )
+                new RestError(message, HttpStatus.INTERNAL_SERVER_ERROR).value()
             )
         );
     }
-
-
-
 
 }

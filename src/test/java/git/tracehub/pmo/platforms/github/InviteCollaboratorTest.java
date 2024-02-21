@@ -51,9 +51,9 @@ final class InviteCollaboratorTest {
     void throwsOnInvalidRepository() throws IOException {
         final String collaborator = "name";
         final Repo repo = Mockito.mock(Repo.class);
-        final Collaborators collaborators = Mockito.mock(Collaborators.class);
-        Mockito.when(repo.collaborators()).thenReturn(collaborators);
-        Mockito.doThrow(IOException.class).when(collaborators).add(collaborator);
+        final Collaborators collab = Mockito.mock(Collaborators.class);
+        Mockito.when(repo.collaborators()).thenReturn(collab);
+        Mockito.doThrow(IOException.class).when(collab).add(collaborator);
         Assertions.assertThrows(
             IOException.class,
             () -> new InviteCollaborator(repo, collaborator).exec(),
