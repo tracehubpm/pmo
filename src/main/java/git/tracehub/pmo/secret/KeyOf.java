@@ -29,7 +29,7 @@ import org.cactoos.Scalar;
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class KeyOf implements Scalar<Secret> {
+public final class KeyOf implements Scalar<Key> {
 
     /**
      * Result set.
@@ -38,11 +38,10 @@ public final class KeyOf implements Scalar<Secret> {
 
     @Override
     @SneakyThrows
-    public Secret value() {
-        return new Secret(
+    public Key value() {
+        return new Key(
             UUID.fromString(this.set.getString("project")),
-            this.set.getString("key"),
-            ""
+            this.set.getString("key")
         );
     }
 

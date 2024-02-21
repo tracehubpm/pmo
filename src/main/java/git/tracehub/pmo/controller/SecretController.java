@@ -19,6 +19,8 @@ package git.tracehub.pmo.controller;
 
 import git.tracehub.pmo.controller.request.RqSecret;
 import git.tracehub.pmo.controller.request.SecretFromReq;
+import git.tracehub.pmo.secret.Key;
+import git.tracehub.pmo.secret.Keys;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
 import jakarta.validation.Valid;
@@ -50,38 +52,44 @@ public class SecretController {
     private final Secrets secrets;
 
     /**
+     * Keys.
+     */
+    private final Keys keys;
+
+    /**
      * Constructor.
      *
      * @param secrets Secrets
+     * @param keys Keys
      */
-    public SecretController(@Qualifier("encryptedSecrets") final Secrets secrets) {
+    public SecretController(
+        @Qualifier("encryptedSecrets") final Secrets secrets,
+        final Keys keys
+    ) {
         this.secrets = secrets;
+        this.keys = keys;
     }
 
     /**
      * Keys by project.
      *
      * @param project Project id
-     * @return Secret
+     * @return List of keys
      */
     @GetMapping("/keys")
-    public List<Secret> keys(@RequestParam final UUID project) {
-        return this.secrets.keys(project);
+    public List<Key> keys(@RequestParam final UUID project) {
+        return this.keys.byProject(project);
     }
 
     /**
      * Secret value by key.
      *
-     * @param project Project id
      * @param key Key
      * @return Secret
      */
     @GetMapping
-    public Secret secret(
-        @RequestParam final UUID project,
-        @RequestParam final String key
-    ) {
-        return this.secrets.value(project, key);
+    public Secret secret(final Key key) {
+        return this.secrets.value(key);
     }
 
     /**

@@ -17,37 +17,30 @@
 
 package git.tracehub.pmo.secret;
 
-import org.cactoos.Scalar;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
- * Secrets.
+ * Key of the secret.
  *
+ * @checkstyle ConstantUsageCheck (30 lines)
  * @since 0.0.0
  */
-public interface Secrets {
+@Getter
+@EqualsAndHashCode
+@AllArgsConstructor
+public class Key {
 
     /**
-     * Value by key.
-     *
-     * @param key Key
-     * @return Secret
+     * Project id.
      */
-    Secret value(Key key);
+    private final UUID project;
 
     /**
-     * Create a secret.
-     *
-     * @param secret Secret
-     * @return Secret
+     * Key.
      */
-    Secret create(Scalar<Secret> secret);
-
-    /**
-     * Update secret.
-     *
-     * @param secret Secret
-     * @return Secret
-     */
-    Secret update(Scalar<Secret> secret);
+    private final String key;
 
 }

@@ -18,12 +18,8 @@
 package git.tracehub.pmo.secret;
 
 import com.jcabi.jdbc.JdbcSession;
-import com.jcabi.jdbc.SingleOutcome;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.project.SqlStatement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -47,38 +43,18 @@ public class DefaultSecrets implements Secrets {
 
     @Override
     @SneakyThrows
-    public List<Secret> keys(final UUID project) {
-        return new JdbcSession(this.source)
-            .sql(
-                new SqlStatement("select-secrets-by-project.sql").asString()
-            ).set(project)
-            .select(
-                (rs, stmt) -> {
-                    final List<Secret> secrets = new ArrayList<>(5);
-                    while (rs.next()) {
-                        secrets.add(
-                            new KeyOf(rs).value()
-                        );
-                    }
-                    return secrets;
-                }
-            );
-    }
-
-    @Override
-    @SneakyThrows
-    public Secret value(final UUID project, final String key) {
+    public Secret value(final Key key) {
         return new JdbcSession(this.source)
             .sql(
                 new SqlStatement("select-secret-by-key.sql").asString()
-            ).set(project)
-            .set(key)
+            ).set(key.getProject())
+            .set(key.getKey())
             .select(
                 (rs, stmt) -> {
                     if (!rs.next()) {
                         throw new ResourceNotFoundException(
                             "Secret with project = %s and key = %s not found"
-                                .formatted(project, key)
+                                .formatted(key.getProject(), key.getKey())
                         );
                     }
                     return new SecretOf(rs).value();
@@ -120,16 +96,6 @@ public class DefaultSecrets implements Secrets {
                     return new SecretOf(rs).value();
                 }
             );
-    }
-
-    @Override
-    @SneakyThrows
-    public boolean exists(final UUID project, final String key) {
-        return new JdbcSession(this.source)
-            .sql(new SqlStatement("exists-secret.sql").asString())
-            .set(project)
-            .set(key)
-            .select(new SingleOutcome<>(Boolean.class));
     }
 
 }

@@ -19,8 +19,6 @@ package git.tracehub.pmo.secret;
 
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
-import java.util.List;
-import java.util.UUID;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,29 +39,34 @@ public class ValidatedSecrets implements Secrets {
     private final Secrets origin;
 
     /**
+     * Keys.
+     */
+    private final Keys keys;
+
+    /**
      * Constructor.
      *
      * @param origin Secrets
+     * @param keys Keys
      */
-    public ValidatedSecrets(@Qualifier("defaultSecrets") final Secrets origin) {
+    public ValidatedSecrets(
+        @Qualifier("defaultSecrets") final Secrets origin,
+        final Keys keys
+    ) {
         this.origin = origin;
+        this.keys = keys;
     }
 
     @Override
-    public List<Secret> keys(final UUID project) {
-        return this.origin.keys(project);
-    }
-
-    @Override
-    public Secret value(final UUID project, final String key) {
-        return this.origin.value(project, key);
+    public Secret value(final Key key) {
+        return this.origin.value(key);
     }
 
     @Override
     @SneakyThrows
     public Secret create(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        if (this.origin.exists(content.getProject(), content.getKey())) {
+        if (this.keys.exists(new Key(content.getProject(), content.getKey()))) {
             throw new ResourceAlreadyExistsException(
                 "Secret with project = %s and key = %s already exists"
                     .formatted(secret.value().getProject(), secret.value().getKey())
@@ -76,18 +79,13 @@ public class ValidatedSecrets implements Secrets {
     @SneakyThrows
     public Secret update(final Scalar<Secret> secret) {
         final Secret content = secret.value();
-        if (!this.origin.exists(content.getProject(), content.getKey())) {
+        if (!this.keys.exists(new Key(content.getProject(), content.getKey()))) {
             throw new ResourceNotFoundException(
                 "Secret with project = %s and key = %s not found"
                     .formatted(secret.value().getProject(), secret.value().getKey())
             );
         }
         return this.origin.update(secret);
-    }
-
-    @Override
-    public boolean exists(final UUID project, final String key) {
-        return this.origin.exists(project, key);
     }
 
 }

@@ -17,8 +17,6 @@
 
 package git.tracehub.pmo.secret;
 
-import java.util.List;
-import java.util.UUID;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.jasypt.util.text.TextEncryptor;
@@ -59,13 +57,8 @@ public class EncryptedSecrets implements Secrets {
     }
 
     @Override
-    public List<Secret> keys(final UUID project) {
-        return this.origin.keys(project);
-    }
-
-    @Override
-    public Secret value(final UUID project, final String key) {
-        final Secret secret = this.origin.value(project, key);
+    public Secret value(final Key key) {
+        final Secret secret = this.origin.value(key);
         return new Secret(
             secret.getProject(),
             secret.getKey(),
@@ -97,11 +90,6 @@ public class EncryptedSecrets implements Secrets {
                 this.encryptor.encrypt(content.getValue())
             )
         );
-    }
-
-    @Override
-    public boolean exists(final UUID project, final String key) {
-        return this.origin.exists(project, key);
     }
 
 }
