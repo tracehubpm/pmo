@@ -20,15 +20,13 @@ package git.tracehub.pmo.controller;
 import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
 import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.exception.RestError;
-import org.cactoos.list.ListOf;
+import git.tracehub.pmo.extensions.MkArgumentException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
@@ -39,20 +37,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 final class AdviceControllerTest {
 
     @Test
-    void handlesMethodArgumentNotValidException() {
-        final String message = "MethodArgumentNotValidException";
-        final MethodArgumentNotValidException exception =
-            Mockito.mock(MethodArgumentNotValidException.class);
-        final BindingResult result = Mockito.mock(BindingResult.class);
-        Mockito.when(exception.getBindingResult()).thenReturn(result);
-        Mockito.when(result.getFieldErrors()).thenReturn(
-            new ListOf<>(new FieldError("object", "field", message))
-        );
+    @ExtendWith(MkArgumentException.class)
+    void handlesMethodArgumentNotValidException(
+        final MethodArgumentNotValidException exception
+    ) {
         MatcherAssert.assertThat(
             "MethodArgumentNotValidException isn't handled",
             new AdviceController().handle(exception),
             new IsEqual<>(
-                new RestError(message, HttpStatus.BAD_REQUEST).value()
+                new RestError("Message", HttpStatus.BAD_REQUEST).value()
             )
         );
     }
@@ -60,11 +53,11 @@ final class AdviceControllerTest {
     @Test
     void handlesResourceAlreadyExistsException() {
         final String message = "ResourceAlreadyExistsException";
-        final ResourceAlreadyExistsException exception =
-            new ResourceAlreadyExistsException(message);
         MatcherAssert.assertThat(
             "ResourceAlreadyExistsException isn't handled",
-            new AdviceController().handle(exception),
+            new AdviceController().handle(
+                new ResourceAlreadyExistsException(message)
+            ),
             new IsEqual<>(
                 new RestError(message, HttpStatus.BAD_REQUEST).value()
             )
@@ -74,11 +67,11 @@ final class AdviceControllerTest {
     @Test
     void handlesResourceNotFoundException() {
         final String message = "ResourceNotFoundException";
-        final ResourceNotFoundException exception =
-            new ResourceNotFoundException(message);
         MatcherAssert.assertThat(
             "ResourceNotFoundException isn't handled",
-            new AdviceController().handle(exception),
+            new AdviceController().handle(
+                new ResourceNotFoundException(message)
+            ),
             new IsEqual<>(
                 new RestError(message, HttpStatus.NOT_FOUND).value()
             )
@@ -88,11 +81,11 @@ final class AdviceControllerTest {
     @Test
     void handlesAccessDeniedException() {
         final String message = "AccessDeniedException";
-        final AccessDeniedException exception =
-            new AccessDeniedException(message);
         MatcherAssert.assertThat(
             "AccessDeniedException isn't handled",
-            new AdviceController().handle(exception),
+            new AdviceController().handle(
+                new AccessDeniedException(message)
+            ),
             new IsEqual<>(
                 new RestError(message, HttpStatus.FORBIDDEN).value()
             )
@@ -102,10 +95,11 @@ final class AdviceControllerTest {
     @Test
     void handlesException() {
         final String message = "Exception";
-        final Exception exception = new Exception(message);
         MatcherAssert.assertThat(
             "Exception isn't handled",
-            new AdviceController().handle(exception),
+            new AdviceController().handle(
+                new Exception(message)
+            ),
             new IsEqual<>(
                 new RestError(message, HttpStatus.INTERNAL_SERVER_ERROR).value()
             )
