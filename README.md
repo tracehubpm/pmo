@@ -53,10 +53,22 @@ provided they don't violate our quality standards. To avoid frustration,
 before sending us your pull request please run full Maven build:
 
 ```bash
-$ mvn clean install
+$ mvn clean install -DskipITs
 ```
 
 You will need Maven 3.8.7+ and Java 17+.
+
+If you want to run an integration tests to check whole system, run:
+
+```bash
+$ mvn clean install -DGithubToken=...
+```
+
+You should provide GitHub [token](https://github.com/settings/tokens) as value for `GithubToken` variable.
+Token must be granted with write permissions to `hizmailovich/draft`.
+
+Ensure that you have a running [Docker](https://docs.docker.com/config/daemon/troubleshoot/) in your environment.
+If you test it locally, you can use [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
 All the things above will be run by [Rultor.com](http://rultor.com/)
 and CI [gate](https://github.com/tracehub/pmo/actions).
