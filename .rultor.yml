@@ -6,7 +6,7 @@ assets:
   ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
 merge:
   script: |
-    mvn clean install -DskipITs --errors
+    mvn clean install --errors
 release:
   sensitive:
     - ghcr.txt
@@ -14,7 +14,7 @@ release:
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9_]+)?$ ]] || exit -1
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
-    mvn clean install -DskipITs
+    mvn clean install 
     docker build -t ghcr.io/tracehubpm/pmo:${tag} .
     cat ../ghcr.txt | docker login ghcr.io --username h1alexbel --password-stdin
     docker push ghcr.io/tracehubpm/pmo:${tag}
