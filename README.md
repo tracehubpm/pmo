@@ -6,6 +6,8 @@
 [![codecov](https://codecov.io/gh/tracehubpm/pmo/graph/badge.svg?token=rnRZ3e6s6e)](https://codecov.io/gh/tracehubpm/pmo)
 [![PDD status](http://www.0pdd.com/svg?name=tracehubpm/pmo)](http://www.0pdd.com/p?name=tracehubpm/pmo)
 
+[![Hits-of-Code](https://hitsofcode.com/github/tracehubpm/pmo)](https://hitsofcode.com/view/github/tracehubpm/pmo)
+
 Project architect: [@hizmailovich](https://github.com/hizmailovich)
 
 Project registry, facilities and its governance.
