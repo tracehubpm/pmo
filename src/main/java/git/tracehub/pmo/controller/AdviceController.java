@@ -84,6 +84,26 @@ public class AdviceController {
     }
 
     /**
+     * Handle IllegalArgumentException.
+     *
+     * @param exception Exception
+     * @return ResponseEntity
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<byte[]> handle(
+        final IllegalArgumentException exception
+    ) {
+        return new Logged(
+            exception,
+            new RestError(
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST
+            )
+        ).value();
+    }
+
+    /**
      * Handle ResourceNotFoundException.
      *
      * @param exception Exception

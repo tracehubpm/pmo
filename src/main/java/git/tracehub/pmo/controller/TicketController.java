@@ -22,6 +22,7 @@ import git.tracehub.pmo.controller.request.TicketFromReq;
 import git.tracehub.pmo.ticket.Ticket;
 import git.tracehub.pmo.ticket.Tickets;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,31 +51,28 @@ public class TicketController {
     /**
      * Ticket by path to job and repository.
      *
+     * @param repo Repository name
      * @param job Path to job
-     * @param repo Repository name
-     * @return Ticket
-     */
-    @GetMapping("/job")
-    public Ticket byJob(
-        @RequestParam final String job,
-        @RequestParam final String repo
-    ) {
-        return this.tickets.byJob(job, repo);
-    }
-
-    /**
-     * Ticket by issue number and repository.
-     *
      * @param number Issue number
-     * @param repo Repository name
      * @return Ticket
      */
-    @GetMapping("/number")
-    public Ticket byNumber(
-        @RequestParam final Integer number,
-        @RequestParam final String repo
+    @GetMapping
+    public Ticket byJob(
+        @RequestParam final String repo,
+        @RequestParam final Optional<String> job,
+        @RequestParam final Optional<Integer> number
     ) {
-        return this.tickets.byNumber(number, repo);
+        final Ticket ticket;
+        if (job.isPresent()) {
+            ticket = this.tickets.byJob(job.get(), repo);
+        } else if (number.isPresent()) {
+            ticket = this.tickets.byNumber(number.get(), repo);
+        } else {
+            throw new IllegalArgumentException(
+                "Either job or number must be present"
+            );
+        }
+        return ticket;
     }
 
     /**
