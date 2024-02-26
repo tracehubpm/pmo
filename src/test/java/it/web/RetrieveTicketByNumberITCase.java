@@ -52,7 +52,7 @@ final class RetrieveTicketByNumberITCase
     /**
      * Raw Endpoint.
      */
-    private static final String RAW = "http://localhost:%s/tickets/number";
+    private static final String RAW = "http://localhost:%s/tickets";
 
     /**
      * Application Port.
@@ -62,7 +62,7 @@ final class RetrieveTicketByNumberITCase
 
     @Test
     @Sql("classpath:pre/sql/projects.sql")
-    void retrievesTicketByJobSuccessfully() throws Exception {
+    void retrievesTicketByIssueNumberSuccessfully() throws Exception {
         final Response response = new JdkRequest(
             RetrieveTicketByNumberITCase.RAW.formatted(this.port)
         ).uri()
@@ -122,6 +122,43 @@ final class RetrieveTicketByNumberITCase
                         "message",
                         "Ticket with issue = %s and repo = %s not found"
                             .formatted(number, repo)
+                    ).toString()
+            )
+        );
+    }
+
+    @Test
+    void throwsOnEmptyNumber() throws Exception {
+        final String repo = "user/test";
+        final Response response = new JdkRequest(
+            RetrieveTicketByNumberITCase.RAW.formatted(this.port)
+        ).uri()
+            .queryParam("repo", repo)
+            .back()
+            .method(Request.GET)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(400)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with(
+                        "message",
+                        "Either job or number must be present"
                     ).toString()
             )
         );

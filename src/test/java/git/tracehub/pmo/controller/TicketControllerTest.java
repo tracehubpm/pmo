@@ -66,7 +66,7 @@ final class TicketControllerTest {
     @Test
     void returnsForbiddenOnUnauthorizedUser() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.post("%s/job".formatted(TicketControllerTest.URL))
+            MockMvcRequestBuilders.post(TicketControllerTest.URL)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isForbidden());
     }
@@ -74,7 +74,7 @@ final class TicketControllerTest {
     @Test
     void returnsTicketByJob() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("%s/job".formatted(TicketControllerTest.URL))
+            MockMvcRequestBuilders.get(TicketControllerTest.URL)
                 .param("job", "path/to/job")
                 .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -85,7 +85,7 @@ final class TicketControllerTest {
     @Test
     void returnsTicketByIssueNumber() throws Exception {
         this.mvc.perform(
-            MockMvcRequestBuilders.get("%s/number".formatted(TicketControllerTest.URL))
+            MockMvcRequestBuilders.get(TicketControllerTest.URL)
                 .param("number", "1")
                 .param("repo", "user/repo")
                 .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -127,6 +127,23 @@ final class TicketControllerTest {
                 MockMvcResultMatchers.content().string(
                     new MutableJson()
                         .with("message", "Issue number can't be null")
+                        .toString()
+            )
+        );
+    }
+
+    @Test
+    void throwsOnEmptyRequestParams() throws Exception {
+        this.mvc.perform(
+            MockMvcRequestBuilders.get(TicketControllerTest.URL)
+                .param("repo", "user/repo")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andExpect(
+                MockMvcResultMatchers.content().string(
+                    new MutableJson()
+                        .with("message", "Either job or number must be present")
                         .toString()
             )
         );
