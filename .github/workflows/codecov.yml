@@ -1,12 +1,14 @@
 name: codecov
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 jobs:
   codecov:
-    permissions: write-all
+    name: Scan
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
