@@ -7,6 +7,7 @@
 [![PDD status](http://www.0pdd.com/svg?name=tracehubpm/pmo)](http://www.0pdd.com/p?name=tracehubpm/pmo)
 
 [![Hits-of-Code](https://hitsofcode.com/github/tracehubpm/pmo)](https://hitsofcode.com/view/github/tracehubpm/pmo)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/tracehubpm/pmo/blob/master/LICENSE.txt)
 
 Project architect: [@hizmailovich](https://github.com/hizmailovich)
 
