@@ -20,11 +20,11 @@ it can be found here: `/swagger-ui/index.html`.
 
 **Functionality:**
 
-* It allows to log in using login and password.
-* It allows to log in using such social coding platforms as GitHub, GitLab, and Bitbucket.
-* It allows to create a project.
-* Create and query tickets. 
-* Create and manage [secrets](https://en.wikipedia.org/wiki/Environment_variable), represented as simple `key=value`
+* Allows to log in using login and password.
+* Allows to log in using such social coding platforms as GitHub, GitLab, and Bitbucket.
+* Allows to create a project.
+* Creates and queries tickets. 
+* Creates and manages [secrets](https://en.wikipedia.org/wiki/Environment_variable), represented as simple `key = value`
 pair, where value will be encrypted using [jasypt](http://www.jasypt.org).
 
 After project creation bot [@tracehubgit](https://github.com/tracehubgit) will be invited
