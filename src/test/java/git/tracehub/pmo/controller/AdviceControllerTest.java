@@ -72,6 +72,20 @@ final class AdviceControllerTest {
     }
 
     @Test
+    void handlesIllegalArgumentException() {
+        final String message = "IllegalArgumentException";
+        MatcherAssert.assertThat(
+            "IllegalArgumentException isn't handled",
+            new AdviceController().handle(
+                new IllegalArgumentException(message)
+            ),
+            new IsEqual<>(
+                new RestError(message, HttpStatus.BAD_REQUEST).value()
+            )
+        );
+    }
+
+    @Test
     void handlesResourceNotFoundException() {
         final String message = "ResourceNotFoundException";
         MatcherAssert.assertThat(

@@ -59,7 +59,7 @@ final class RetrieveTicketByJobITCase
     /**
      * Raw Endpoint.
      */
-    private static final String RAW = "http://localhost:%s/tickets/job";
+    private static final String RAW = "http://localhost:%s/tickets";
 
     /**
      * Application Port.
@@ -129,6 +129,43 @@ final class RetrieveTicketByJobITCase
                         "message",
                         "Ticket with job = %s and repo = %s not found"
                             .formatted(job, repo)
+                    ).toString()
+            )
+        );
+    }
+
+    @Test
+    void throwsOnEmptyJob() throws Exception {
+        final String repo = "user/test";
+        final Response response = new JdkRequest(
+            RetrieveTicketByJobITCase.RAW.formatted(this.port)
+        ).uri()
+            .queryParam("repo", repo)
+            .back()
+            .method(Request.GET)
+            .header(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer %s".formatted(
+                    new KeycloakToken(
+                        KeycloakIntegration.KEYCLOAK.getAuthServerUrl()
+                    ).value()
+                )
+            ).fetch();
+        MatcherAssert.assertThat(
+            "Response Status %s does not match to expected one".formatted(
+                response.status()
+            ),
+            response.status(),
+            new IsEqual<>(400)
+        );
+        MatcherAssert.assertThat(
+            "Message %s isn't correct".formatted(response.body()),
+            response.body(),
+            new IsEqual<>(
+                new MutableJson()
+                    .with(
+                        "message",
+                        "Either job or number must be present"
                     ).toString()
             )
         );
