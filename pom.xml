@@ -279,21 +279,6 @@ SOFTWARE.
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>com.qulice</groupId>
         <artifactId>qulice-maven-plugin</artifactId>
         <version>${qulice.version}</version>
@@ -316,4 +301,31 @@ SOFTWARE.
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>simulation</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
