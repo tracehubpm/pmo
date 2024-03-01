@@ -33,6 +33,7 @@ import git.tracehub.pmo.project.Projects;
 import git.tracehub.pmo.security.ClaimOf;
 import git.tracehub.pmo.security.IdProvider;
 import git.tracehub.pmo.security.IdpToken;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class ProjectController {
      * @return List of projects
      */
     @GetMapping
+    @Operation(summary = "Get projects by user")
     public List<Project> byUser(@AuthenticationPrincipal final Jwt jwt) {
         return this.projects.byUser(
             new ClaimOf(jwt, "preferred_username").value()
@@ -97,6 +99,7 @@ public class ProjectController {
      * @return Project
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Get project by id")
     @PreAuthorize("@hasProject.validate(#id)")
     public Project byId(@PathVariable final UUID id) {
         return this.projects.byId(id);
@@ -111,6 +114,7 @@ public class ProjectController {
      * @checkstyle MethodBodyCommentsCheck (20 lines)
      */
     @PostMapping
+    @Operation(summary = "Create a new project")
     @PreAuthorize("hasAuthority('user_github') || hasAuthority('user_gitlab')")
     @ResponseStatus(HttpStatus.CREATED)
     public Project employ(

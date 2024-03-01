@@ -28,6 +28,7 @@ import git.tracehub.pmo.controller.request.RqTicket;
 import git.tracehub.pmo.controller.request.TicketFromReq;
 import git.tracehub.pmo.ticket.Ticket;
 import git.tracehub.pmo.ticket.Tickets;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,7 @@ public class TicketController {
      * @return Ticket
      */
     @GetMapping
+    @Operation(summary = "Get ticket by job path or issue number")
     public Ticket byJob(
         @RequestParam final String repo,
         @RequestParam final Optional<String> job,
@@ -89,6 +91,7 @@ public class TicketController {
      * @return Ticket
      */
     @PostMapping
+    @Operation(summary = "Create a new ticket")
     @ResponseStatus(HttpStatus.CREATED)
     public Ticket create(@RequestBody @Valid final RqTicket ticket) {
         return this.tickets.create(new TicketFromReq(ticket));
