@@ -30,6 +30,7 @@ import git.tracehub.pmo.secret.Key;
 import git.tracehub.pmo.secret.Keys;
 import git.tracehub.pmo.secret.Secret;
 import git.tracehub.pmo.secret.Secrets;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -84,6 +85,7 @@ public class SecretController {
      * @return List of keys
      */
     @GetMapping("/keys")
+    @Operation(summary = "Get keys by project")
     public List<Key> byProject(@RequestParam final UUID project) {
         return this.keys.byProject(project);
     }
@@ -95,6 +97,7 @@ public class SecretController {
      * @return Secret
      */
     @GetMapping
+    @Operation(summary = "Get value by key")
     public Secret byValue(final Key key) {
         return this.secrets.value(key);
     }
@@ -106,6 +109,7 @@ public class SecretController {
      * @return Secret
      */
     @PutMapping
+    @Operation(summary = "Update secret")
     public Secret update(@RequestBody @Valid final RqSecret secret) {
         return this.secrets.update(new SecretFromReq(secret));
     }
@@ -117,6 +121,7 @@ public class SecretController {
      * @return Secret
      */
     @PostMapping
+    @Operation(summary = "Create a new secret")
     @ResponseStatus(HttpStatus.CREATED)
     public Secret create(@RequestBody @Valid final RqSecret secret) {
         return this.secrets.create(new SecretFromReq(secret));
