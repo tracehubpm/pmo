@@ -3,7 +3,7 @@ architect:
 docker:
   image: l3r8y/rultor-image:1.0.3
 assets:
-  ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
+  ghcr.txt: tracehubpm/secrets#assets/ghcr-hanna.txt
   creds.txt: tracehubpm/secrets#assets/creds.txt
   pmo.env: tracehubpm/secrets#assets/pmo.env
   keycloak.env: tracehubpm/secrets#assets/keycloak.env
@@ -19,7 +19,7 @@ release:
     git commit -am "${TAG}"
     mvn clean install 
     docker build -t ghcr.io/tracehubpm/pmo:${TAG} .
-    cat ../ghcr.txt | docker login ghcr.io --username h1alexbel --password-stdin
+    cat ../ghcr.txt | docker login ghcr.io --username hizmailovich --password-stdin
     docker push ghcr.io/tracehubpm/pmo:${TAG}
     sudo apt-get -y install sshpass
     echo ${TAG} >> /home/r/repo/scripts/release/tag.txt
