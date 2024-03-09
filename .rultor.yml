@@ -4,7 +4,7 @@ docker:
   image: l3r8y/rultor-image:1.0.3
 assets:
   ghcr.txt: tracehubpm/secrets#assets/ghcr-hanna.txt
-  creds.txt: tracehubpm/secrets#assets/creds.txt
+  ssh.txt: tracehubpm/secrets#assets/ssh.txt
   pmo.env: tracehubpm/secrets#assets/pmo.env
   keycloak.env: tracehubpm/secrets#assets/keycloak.env
 merge:
@@ -23,17 +23,17 @@ release:
     docker push ghcr.io/tracehubpm/pmo:${TAG}
     sudo apt-get -y install sshpass
     echo ${TAG} >> /home/r/repo/scripts/release/tag.txt
-    sshpass -f ../creds.txt scp -r /home/r/repo/scripts/release root@${IP}:~/
-    sshpass -f ../creds.txt scp ../pmo.env root@${IP}:~/release/pmo.env
-    sshpass -f ../creds.txt scp ../keycloak.env root@${IP}:~/release/keycloak.env
-    sshpass -f ../creds.txt ssh -o StrictHostKeyChecking=no root@${IP}
+    sshpass -f ../ssh.txt scp -r /home/r/repo/scripts/release root@${IP}:~/
+    sshpass -f ../ssh.txt scp ../pmo.env root@${IP}:~/release/pmo.env
+    sshpass -f ../ssh.txt scp ../keycloak.env root@${IP}:~/release/keycloak.env
+    sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
     cd release
     TAG=$(cat tag.txt) 
     TAG=${TAG} docker-compose up -d --build
 deploy:
   script: |
     sudo apt-get -y install sshpass
-    sshpass -f ../creds.txt scp -r /home/r/repo/scripts/deploy root@${IP}:~/
-    sshpass -f ../creds.txt ssh -o StrictHostKeyChecking=no root@${IP}
+    sshpass -f ../ssh.txt scp -r /home/r/repo/scripts/deploy root@${IP}:~/
+    sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
     cd deploy
     sh setup.sh
