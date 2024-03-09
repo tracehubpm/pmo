@@ -28,8 +28,7 @@ release:
     sshpass -f ../ssh.txt scp ../keycloak.env root@${IP}:~/release/keycloak.env
     sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
     cd release
-    TAG=$(cat tag.txt) 
-    TAG=${TAG} docker-compose up -d --build
+    TAG=$(cat tag.txt) docker-compose up -d --build
 deploy:
   script: |
     sudo apt-get -y install sshpass
