@@ -64,9 +64,10 @@ final class AdviceControllerTest {
             "ResourceAlreadyExistsException isn't handled",
             new AdviceController().handle(
                 new ResourceAlreadyExistsException(message)
-            ),
+            ).getStatusCode(),
             new IsEqual<>(
-                new RestError(message, HttpStatus.BAD_REQUEST).value()
+                new RestError(message, HttpStatus.CONFLICT).value()
+                    .getStatusCode()
             )
         );
     }
@@ -92,9 +93,10 @@ final class AdviceControllerTest {
             "ResourceNotFoundException isn't handled",
             new AdviceController().handle(
                 new ResourceNotFoundException(message)
-            ),
+            ).getStatusCode(),
             new IsEqual<>(
                 new RestError(message, HttpStatus.NOT_FOUND).value()
+                    .getStatusCode()
             )
         );
     }

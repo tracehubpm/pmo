@@ -25,8 +25,6 @@
 package git.tracehub.pmo.controller;
 
 import git.tracehub.pmo.exception.Logged;
-import git.tracehub.pmo.exception.ResourceAlreadyExistsException;
-import git.tracehub.pmo.exception.ResourceNotFoundException;
 import git.tracehub.pmo.exception.RestError;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -35,8 +33,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Exception handler.
@@ -54,7 +52,6 @@ public class AdviceController {
      * @return ResponseEntity
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<byte[]> handle(
         final MethodArgumentNotValidException exception
     ) {
@@ -71,21 +68,20 @@ public class AdviceController {
     }
 
     /**
-     * Handle ResourceAlreadyExistsException.
+     * Handle ResponseStatusException.
      *
      * @param exception Exception
      * @return ResponseEntity
      */
-    @ExceptionHandler(ResourceAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<byte[]> handle(
-        final ResourceAlreadyExistsException exception
+        final ResponseStatusException exception
     ) {
         return new Logged(
             exception,
             new RestError(
                 exception.getMessage(),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.valueOf(exception.getStatusCode().value())
             )
         ).value();
     }
@@ -97,7 +93,6 @@ public class AdviceController {
      * @return ResponseEntity
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<byte[]> handle(
         final IllegalArgumentException exception
     ) {
@@ -111,33 +106,12 @@ public class AdviceController {
     }
 
     /**
-     * Handle ResourceNotFoundException.
-     *
-     * @param exception Exception
-     * @return ResponseEntity
-     */
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<byte[]> handle(
-        final ResourceNotFoundException exception
-    ) {
-        return new Logged(
-            exception,
-            new RestError(
-                exception.getMessage(),
-                HttpStatus.NOT_FOUND
-            )
-        ).value();
-    }
-
-    /**
      * Handle AccessDeniedException.
      *
      * @param exception Exception
      * @return ResponseEntity
      */
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<byte[]> handle(
         final AccessDeniedException exception
     ) {
@@ -157,7 +131,6 @@ public class AdviceController {
      * @return ResponseEntity
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<byte[]> handle(final Exception exception) {
         return new Logged(
             exception,
