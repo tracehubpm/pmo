@@ -24,9 +24,9 @@ it can be found here: `/swagger-ui/index.html`.
 * Allows to log in using login and password.
 * Allows to log in using such social coding platforms as GitHub, GitLab, and Bitbucket.
 * Allows to create a project.
-* Creates and queries tickets. 
+* Creates and queries tickets.
 * Creates and manages [secrets](https://en.wikipedia.org/wiki/Environment_variable), represented as simple `key = value`
-pair, where value will be encrypted using [jasypt](http://www.jasypt.org).
+  pair, where value will be encrypted using [jasypt](http://www.jasypt.org).
 
 After project creation bot [@tracehubgit](https://github.com/tracehubgit) will be invited
 to the repository and a `new` label for issues will be added. Moreover, a webhook for `push` events will be
@@ -84,6 +84,11 @@ The instance can be configured from GitHub Issue using bot [@rultor](https://git
 
 ### How to release?
 
-The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and command:
+The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and
+command:
 
-`@rultor release, IP=<IP of the instance>, TAG=<Tag name>`
+`@rultor release, IP=<IP of the instance>, TAG=<Tag name>, SCRIPT=<Shell script name>`
+
+Script name should be `up.sh` to run the [green](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment) instance.
+This version of the app can be tested using `/api-test` prefix.
+After testing, the blue instance can be switched to the green one using `swap.sh` script.
