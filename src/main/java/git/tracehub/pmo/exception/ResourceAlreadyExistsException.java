@@ -24,12 +24,15 @@
 
 package git.tracehub.pmo.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 /**
  * ResourceAlreadyExistsException.
  *
  * @since 0.0.0
  */
-public class ResourceAlreadyExistsException extends RuntimeException {
+public class ResourceAlreadyExistsException extends ResponseStatusException {
 
     /**
      * Constructor.
@@ -37,6 +40,6 @@ public class ResourceAlreadyExistsException extends RuntimeException {
      * @param message Message
      */
     public ResourceAlreadyExistsException(final String message) {
-        super(message);
+        super(HttpStatus.CONFLICT, message);
     }
 }

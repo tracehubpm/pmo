@@ -24,12 +24,15 @@
 
 package git.tracehub.pmo.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 /**
  * ResourceNotFoundException.
  *
  * @since 0.0.0
  */
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends ResponseStatusException {
 
     /**
      * Constructor.
@@ -37,6 +40,6 @@ public class ResourceNotFoundException extends RuntimeException {
      * @param message Message
      */
     public ResourceNotFoundException(final String message) {
-        super(message);
+        super(HttpStatus.NOT_FOUND, message);
     }
 }
