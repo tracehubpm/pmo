@@ -183,7 +183,7 @@ final class UpdateSecretITCase
                 new MutableJson()
                     .with(
                         "message",
-                        "Secret with project = %s and key = %s not found"
+                        "404 NOT_FOUND \"Secret with project = %s and key = %s not found\""
                             .formatted(project, key)
                     )
                     .toString()

@@ -192,7 +192,8 @@ final class DefaultTicketsTest {
             "Exception is not thrown or valid",
             () -> this.tickets.byJob(job, repo),
             new Throws<>(
-                "Ticket with job = %s and repo = %s not found".formatted(job, repo),
+                "404 NOT_FOUND \"Ticket with job = %s and repo = %s not found\""
+                    .formatted(job, repo),
                 ResourceNotFoundException.class
             )
         ).affirm();
@@ -208,7 +209,8 @@ final class DefaultTicketsTest {
             "Exception is not thrown or valid",
             () -> this.tickets.byNumber(number, repo),
             new Throws<>(
-                "Ticket with issue = %s and repo = %s not found".formatted(number, repo),
+                "404 NOT_FOUND \"Ticket with issue = %s and repo = %s not found\""
+                    .formatted(number, repo),
                 ResourceNotFoundException.class
             )
         ).affirm();

@@ -184,7 +184,7 @@ final class DefaultProjectsTest {
             "Exception is not thrown or valid",
             () -> this.projects.byId(id),
             new Throws<>(
-                "Project %s not found".formatted(id),
+                "404 NOT_FOUND \"Project %s not found\"".formatted(id),
                 ResourceNotFoundException.class
             )
         ).affirm();

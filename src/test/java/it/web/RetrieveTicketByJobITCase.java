@@ -127,7 +127,7 @@ final class RetrieveTicketByJobITCase
                 new MutableJson()
                     .with(
                         "message",
-                        "Ticket with job = %s and repo = %s not found"
+                        "404 NOT_FOUND \"Ticket with job = %s and repo = %s not found\""
                             .formatted(job, repo)
                     ).toString()
             )

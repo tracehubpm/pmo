@@ -174,7 +174,7 @@ final class CreateSecretITCase
                 response.status()
             ),
             response.status(),
-            new IsEqual<>(400)
+            new IsEqual<>(409)
         );
         MatcherAssert.assertThat(
             "Message %s isn't correct".formatted(response.body()),
@@ -183,7 +183,7 @@ final class CreateSecretITCase
                 new MutableJson()
                     .with(
                         "message",
-                        "Secret with project = %s and key = %s already exists"
+                        "409 CONFLICT \"Secret with project = %s and key = %s already exists\""
                             .formatted(project, key)
                     )
                     .toString()

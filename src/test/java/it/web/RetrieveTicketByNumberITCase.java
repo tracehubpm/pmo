@@ -127,7 +127,7 @@ final class RetrieveTicketByNumberITCase
                 new MutableJson()
                     .with(
                         "message",
-                        "Ticket with issue = %s and repo = %s not found"
+                        "404 NOT_FOUND \"Ticket with issue = %s and repo = %s not found\""
                             .formatted(number, repo)
                     ).toString()
             )

@@ -144,7 +144,7 @@ final class ValidatedSecretsTest {
             "Exception is not thrown or valid",
             () -> this.secrets.create(() -> expected),
             new Throws<>(
-                "Secret with project = %s and key = %s already exists"
+                "409 CONFLICT \"Secret with project = %s and key = %s already exists\""
                     .formatted(expected.getProject(), expected.getKey()),
                 ResourceAlreadyExistsException.class
             )
@@ -164,7 +164,7 @@ final class ValidatedSecretsTest {
             "Exception is not thrown or valid",
             () -> this.secrets.update(() -> expected),
             new Throws<>(
-                "Secret with project = %s and key = %s not found"
+                "404 NOT_FOUND \"Secret with project = %s and key = %s not found\""
                     .formatted(expected.getProject(), expected.getKey()),
                 ResourceNotFoundException.class
             )

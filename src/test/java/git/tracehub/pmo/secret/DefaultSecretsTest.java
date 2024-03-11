@@ -181,7 +181,7 @@ final class DefaultSecretsTest {
             "Exception is not thrown",
             () -> this.secrets.value(key),
             new Throws<>(
-                "Secret with project = %s and key = %s not found"
+                "404 NOT_FOUND \"Secret with project = %s and key = %s not found\""
                     .formatted(key.getProject(), key.getName()),
                 ResourceNotFoundException.class
             )
