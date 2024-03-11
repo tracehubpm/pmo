@@ -4,6 +4,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.2
     container_name: keycloak
+    restart: always
     environment:
       KC_DB: ${KC_DB}
       KC_DB_URL_HOST: ${KC_DB_URL_HOST}
@@ -20,11 +21,12 @@ services:
       - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     env_file:
       - keycloak.env
-  app:
-    container_name: tracehub-pmo
+  pmo:
+    container_name: pmo-${PORT}
     image: ghcr.io/tracehubpm/pmo:${TAG}
+    restart: always
     ports:
-      - '8080:8080'
+      - ${PORT}:8080
     depends_on:
       - keycloak
     networks:

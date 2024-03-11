@@ -14,6 +14,6 @@ http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" \
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
     | sudo tee /etc/apt/preferences.d/99nginx
 sudo apt-get -y install nginx
-sudo mv default.conf /etc/nginx/conf.d/default.conf
+sudo mv default-8080.conf /etc/nginx/conf.d/default.conf
 sudo systemctl restart nginx
 sudo systemctl status nginx
