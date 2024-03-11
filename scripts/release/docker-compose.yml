@@ -18,7 +18,7 @@ services:
       - pmo
     command: start --import-realm --http-port=8090
     volumes:
-      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - realm-export.json:/opt/keycloak/data/import/realm-export.json
     env_file:
       - keycloak.env
   pmo:

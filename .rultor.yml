@@ -7,6 +7,7 @@ assets:
   ssh.txt: tracehubpm/secrets#assets/ssh.txt
   pmo.env: tracehubpm/secrets#assets/pmo.env
   keycloak.env: tracehubpm/secrets#assets/keycloak.env
+  realm-export.json: tracehubpm/secrets#assets/realm-export.json
 merge:
   script: |
     mvn clean install --errors
@@ -26,6 +27,7 @@ release:
     sshpass -f ../ssh.txt scp -r /home/r/repo/scripts/release root@${IP}:~/
     sshpass -f ../ssh.txt scp ../pmo.env root@${IP}:~/release/pmo.env
     sshpass -f ../ssh.txt scp ../keycloak.env root@${IP}:~/release/keycloak.env
+    sshpass -f ../ssh.txt scp ../realm-export.json root@${IP}:~/release/realm-export.json
     sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
     cd release
     sh ${SCRIPT}
