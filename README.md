@@ -48,6 +48,23 @@ Then you should update client secrets for identity providers in Keycloak using f
 4. Choose appropriate identity provider and update client secret.
 5. Save changes.
 
+### How to deploy?
+
+The instance can be configured from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and command:
+
+`@rultor deploy, IP=<IP of the instance>`
+
+### How to release?
+
+The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and
+command:
+
+`@rultor release, IP=<IP of the instance>, TAG=<Tag name>, SCRIPT=<Shell script name>`
+
+Script name should be `up.sh` to run the [green](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment) instance.
+This version of the app can be tested using `/api-test` prefix.
+After testing, the blue instance can be switched to the green one using `swap.sh` script.
+
 ### How to contribute?
 
 Fork repository, make changes, send us a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
@@ -75,20 +92,3 @@ If you test it locally, you can use [Docker Desktop](https://www.docker.com/prod
 
 All the things above will be run by [Rultor.com](http://rultor.com/)
 and CI [gate](https://github.com/tracehub/pmo/actions).
-
-### How to deploy?
-
-The instance can be configured from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and command:
-
-`@rultor deploy, IP=<IP of the instance>`
-
-### How to release?
-
-The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and
-command:
-
-`@rultor release, IP=<IP of the instance>, TAG=<Tag name>, SCRIPT=<Shell script name>`
-
-Script name should be `up.sh` to run the [green](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment) instance.
-This version of the app can be tested using `/api-test` prefix.
-After testing, the blue instance can be switched to the green one using `swap.sh` script.
