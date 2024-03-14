@@ -3,9 +3,11 @@ name: reports-check
 on:
   issues:
     types: [opened]
+permissions:
+  issues: write
+  contents: read
 jobs:
   check:
-    permissions: write-all
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
