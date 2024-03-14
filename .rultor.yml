@@ -30,7 +30,7 @@ release:
     sshpass -f ../ssh.txt scp ../realm-export.json root@${IP}:~/release/realm-export.json
     sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
     cd release
-    sh ${SCRIPT}
+    sh up.sh
 deploy:
   script: |
     sudo apt-get -y install sshpass
