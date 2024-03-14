@@ -59,11 +59,7 @@ The instance can be configured from GitHub Issue using bot [@rultor](https://git
 The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and
 command:
 
-`@rultor release, IP=<IP of the instance>, TAG=<Tag name>, SCRIPT=<Shell script name>`
-
-Script name should be `up.sh` to run the [green](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment) instance.
-This version of the app can be tested using `/api-test` prefix.
-After testing, the blue instance can be switched to the green one using `swap.sh` script.
+`@rultor release, IP=<IP of the instance>, TAG=<Tag name>`
 
 ### How to contribute?
 
