@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.2
+    container_name: keycloak
+    restart: always
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_URL_HOST: ${KC_DB_URL_HOST}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - '8090:8090'
+    networks:
+      - pmo
+    command: start --import-realm --http-port=8090
+    volumes:
+      - realm-export.json:/opt/keycloak/data/import/realm-export.json
+    env_file:
+      - keycloak.env
+  pmo:
+    container_name: pmo-${PORT}
+    image: ghcr.io/tracehubpm/pmo:${TAG}
+    restart: always
+    ports:
+      - ${PORT}:8080
+    depends_on:
+      - keycloak
+    networks:
+      - pmo
+    env_file:
+      - pmo.env
+
+networks:
+  pmo:
+    driver: bridge

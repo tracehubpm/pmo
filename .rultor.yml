@@ -3,7 +3,11 @@ architect:
 docker:
   image: l3r8y/rultor-image:1.0.3
 assets:
-  ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
+  ghcr.txt: tracehubpm/secrets#assets/ghcr-hanna.txt
+  ssh.txt: tracehubpm/secrets#assets/ssh.txt
+  pmo.env: tracehubpm/secrets#assets/pmo.env
+  keycloak.env: tracehubpm/secrets#assets/keycloak.env
+  realm-export.json: tracehubpm/secrets#assets/realm-export.json
 merge:
   script: |
     mvn clean install --errors
@@ -11,14 +15,26 @@ release:
   sensitive:
     - ghcr.txt
   script: |
-    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9_]+)?$ ]] || exit -1
-    mvn versions:set "-DnewVersion=${tag}"
-    git commit -am "${tag}"
+    [[ "${TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9_]+)?$ ]] || exit -1
+    mvn versions:set "-DnewVersion=${TAG}"
+    git commit -am "${TAG}"
     mvn clean install 
-    docker build -t ghcr.io/tracehubpm/pmo:${tag} .
-    cat ../ghcr.txt | docker login ghcr.io --username h1alexbel --password-stdin
-    docker push ghcr.io/tracehubpm/pmo:${tag}
-# @todo #2:90min Create deploy script for rultor configuration.
-#  We should create deploy script that will deliver our Java software
-#  into some target platform. For now, we assuming that it will be
-#  Cloud VM with public IP, and SSH connection.
+    docker build -t ghcr.io/tracehubpm/pmo:${TAG} .
+    cat ../ghcr.txt | docker login ghcr.io --username hizmailovich --password-stdin
+    docker push ghcr.io/tracehubpm/pmo:${TAG}
+    sudo apt-get -y install sshpass
+    echo ${TAG} >> /home/r/repo/scripts/release/tag.txt
+    sshpass -f ../ssh.txt scp -r /home/r/repo/scripts/release root@${IP}:~/
+    sshpass -f ../ssh.txt scp ../pmo.env root@${IP}:~/release/pmo.env
+    sshpass -f ../ssh.txt scp ../keycloak.env root@${IP}:~/release/keycloak.env
+    sshpass -f ../ssh.txt scp ../realm-export.json root@${IP}:~/release/realm-export.json
+    sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
+    cd release
+    sh up.sh
+deploy:
+  script: |
+    sudo apt-get -y install sshpass
+    sshpass -f ../ssh.txt scp -r /home/r/repo/scripts/deploy root@${IP}:~/
+    sshpass -f ../ssh.txt ssh -o StrictHostKeyChecking=no root@${IP}
+    cd deploy
+    sh setup.sh

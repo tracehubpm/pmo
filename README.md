@@ -24,9 +24,9 @@ it can be found here: `/swagger-ui/index.html`.
 * Allows to log in using login and password.
 * Allows to log in using such social coding platforms as GitHub, GitLab, and Bitbucket.
 * Allows to create a project.
-* Creates and queries tickets. 
+* Creates and queries tickets.
 * Creates and manages [secrets](https://en.wikipedia.org/wiki/Environment_variable), represented as simple `key = value`
-pair, where value will be encrypted using [jasypt](http://www.jasypt.org).
+  pair, where value will be encrypted using [jasypt](http://www.jasypt.org).
 
 After project creation bot [@tracehubgit](https://github.com/tracehubgit) will be invited
 to the repository and a `new` label for issues will be added. Moreover, a webhook for `push` events will be
@@ -47,6 +47,19 @@ Then you should update client secrets for identity providers in Keycloak using f
 3. Go to Identity Providers.
 4. Choose appropriate identity provider and update client secret.
 5. Save changes.
+
+### How to deploy?
+
+The instance can be configured from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and command:
+
+`@rultor deploy, IP=<IP of the instance>`
+
+### How to release?
+
+The updated artifact can be released from GitHub Issue using bot [@rultor](https://github.com/yegor256/rultor) and
+command:
+
+`@rultor release, IP=<IP of the instance>, TAG=<Tag name>`
 
 ### How to contribute?
 
