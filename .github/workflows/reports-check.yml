@@ -5,7 +5,7 @@ on:
     types: [opened]
 jobs:
   check:
-    permissions: write
+    permissions: write-all
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
